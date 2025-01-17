@@ -7,9 +7,81 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
-  email      String    @unique(map: "email") @db.VarChar(255)
-  created_at DateTime? @default(now()) @db.Timestamp(0)
+model credit_funds {
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(255)
+  identity_code String        @unique(map: "identity_code") @db.VarChar(255)
+  respondents   respondents[]
+  surveys       surveys[]
+}
+
+model question_survey {
+  id          Int       @id @default(autoincrement())
+  survey_id   Int
+  question_id Int
+  surveys     surveys   @relation(fields: [survey_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_survey_ibfk_1")
+  questions   questions @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_survey_ibfk_2")
+
+  @@index([question_id], map: "question_id")
+  @@index([survey_id], map: "survey_id")
+}
+
+model questions {
+  id               Int                     @id @default(autoincrement())
+  question_text    String                  @db.Text
+  question_note    String                  @db.Text
+  question_type    questions_question_type
+  answers          answers[]
+  question_options question_options[]
+  question_survey  question_survey[]
+}
+
+model respondents {
+  id             Int          @id @default(autoincrement())
+  name           String       @db.VarChar(255)
+  email          String       @unique(map: "email") @db.VarChar(255)
+  credit_fund_id Int
+  answers        answers[]
+  credit_funds   credit_funds @relation(fields: [credit_fund_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "respondents_ibfk_1")
+
+  @@index([credit_fund_id], map: "credit_fund_id")
+}
+
+model surveys {
+  id              Int               @id @default(autoincrement())
+  credit_fund_id  Int
+  question_survey question_survey[]
+  credit_funds    credit_funds      @relation(fields: [credit_fund_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "surveys_ibfk_1")
+
+  @@index([credit_fund_id], map: "credit_fund_id")
+}
+
+model answers {
+  id                      Int         @id @default(autoincrement())
+  question_id             Int
+  respondent_id           Int
+  answer_text             String?     @db.Text
+  answer_option           String?     @db.VarChar(255)
+  answer_multiple_options Json?
+  questions               questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_ibfk_1")
+  respondents             respondents @relation(fields: [respondent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_ibfk_2")
+
+  @@index([question_id], map: "question_id")
+  @@index([respondent_id], map: "respondent_id")
+}
+
+model question_options {
+  id           Int       @id @default(autoincrement())
+  question_id  Int
+  option_text  String    @db.VarChar(255)
+  option_order Int?
+  questions    questions @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
+
+  @@index([question_id], map: "question_id")
+}
+
+enum questions_question_type {
+  opt
+  multi
+  opinion
 }
