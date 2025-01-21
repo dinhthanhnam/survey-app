@@ -28,12 +28,13 @@ model question_survey {
 
 model questions {
   id               Int                     @id @default(autoincrement())
+  question_name    String                  @db.VarChar(255)
   question_text    String                  @db.Text
   question_note    String                  @db.Text
   question_type    questions_question_type
-  answers          answers[]
   question_options question_options[]
   question_survey  question_survey[]
+  responses        responses[]
 }
 
 model respondents {
@@ -41,47 +42,58 @@ model respondents {
   name           String       @db.VarChar(255)
   email          String       @unique(map: "email") @db.VarChar(255)
   credit_fund_id Int
-  answers        answers[]
   credit_funds   credit_funds @relation(fields: [credit_fund_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "respondents_ibfk_1")
+  responses      responses[]
 
   @@index([credit_fund_id], map: "credit_fund_id")
 }
 
 model surveys {
-  id              Int               @id @default(autoincrement())
-  credit_fund_id  Int
-  question_survey question_survey[]
-  credit_funds    credit_funds      @relation(fields: [credit_fund_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "surveys_ibfk_1")
+  id                    Int                            @id @default(autoincrement())
+  survey_title          String                         @db.Text
+  survey_description    String?                        @db.Text
+  show_questions_number surveys_show_questions_number?
+  credit_fund_id        Int
+  question_survey       question_survey[]
+  credit_funds          credit_funds                   @relation(fields: [credit_fund_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "surveys_ibfk_1")
 
   @@index([credit_fund_id], map: "credit_fund_id")
-}
-
-model answers {
-  id                      Int         @id @default(autoincrement())
-  question_id             Int
-  respondent_id           Int
-  answer_text             String?     @db.Text
-  answer_option           String?     @db.VarChar(255)
-  answer_multiple_options Json?
-  questions               questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_ibfk_1")
-  respondents             respondents @relation(fields: [respondent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "answers_ibfk_2")
-
-  @@index([question_id], map: "question_id")
-  @@index([respondent_id], map: "respondent_id")
 }
 
 model question_options {
   id           Int       @id @default(autoincrement())
   question_id  Int
   option_text  String    @db.VarChar(255)
-  option_order Int?
+  option_value Int?
   questions    questions @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
 
   @@index([question_id], map: "question_id")
 }
 
+model responses {
+  id            Int         @id @default(autoincrement())
+  question_id   Int
+  respondent_id Int
+  response      Json?
+  questions     questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_1")
+  respondents   respondents @relation(fields: [respondent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_2")
+
+  @@index([question_id], map: "question_id")
+  @@index([respondent_id], map: "respondent_id")
+}
+
 enum questions_question_type {
-  opt
-  multi
-  opinion
+  text
+  radiogroup
+  checkbox
+  dropdown
+  rating
+  boolean
+  date
+  datetime
+  file
+}
+
+enum surveys_show_questions_number {
+  onPage
 }

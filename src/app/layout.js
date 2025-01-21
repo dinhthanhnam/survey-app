@@ -1,5 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// styles trong SurveyJS
+import "survey-core/defaultV2.min.css";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

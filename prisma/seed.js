@@ -18,9 +18,9 @@ async function main() {
 
     // Dữ liệu cho surveys
     const surveysData = [
-        { credit_fund_id: 1},
-        { credit_fund_id: 2},
-        { credit_fund_id: 3},
+        { survey_title: 'Survey 1 test', survey_description: 'description 1', show_questions_number: 'onPage', credit_fund_id: 1},
+        { survey_title: 'Survey 2 test', survey_description: 'description 2', show_questions_number: 'onPage', credit_fund_id: 2},
+        { survey_title: 'Survey 3 test', survey_description: 'description 3', show_questions_number: 'onPage', credit_fund_id: 3},
     ];
 
     // Thêm dữ liệu vào bảng surveys
@@ -46,8 +46,9 @@ async function main() {
     // Dữ liệu cho questions
     const questionsData = [
         { question_text: 'Ban thich mau gi?',
+            question_name: 'preference',
             question_note: 'Mau yeu thich cua ban',
-            question_type: 'opt',
+            question_type: 'radiogroup',
             question_options: [
                 {option_text: 'mau xanh'},
                 {option_text: 'mau do'},
@@ -56,8 +57,9 @@ async function main() {
             ]
         },
         { question_text: 'Ban thich dong vat gi?',
+            question_name: 'preference',
             question_note: 'Dong vat yeu thich cua ban',
-            question_type: 'multi',
+            question_type: 'checkbox',
             question_options: [
                 {option_text: 'cho'},
                 {option_text: 'meo'},
@@ -66,14 +68,16 @@ async function main() {
             ]
         },
         { question_text: 'Ban nghi sao ve HVNH?',
+            question_name: 'opinion',
             question_note: 'Trinh bay suy nghi ve giang vien, cung nhu sinh vien, csvc',
-            question_type: 'opinion'
+            question_type: 'text'
         },
     ];
 
     for (const question of questionsData) {
         const createdQuestion = await prisma.questions.create({
             data: {
+                question_name: question.question_name,
                 question_text: question.question_text,
                 question_note: question.question_note,
                 question_type: question.question_type,
@@ -98,9 +102,7 @@ async function main() {
         { survey_id: 1, question_id: 2},
         { survey_id: 1, question_id: 3},
         { survey_id: 2, question_id: 1},
-        { survey_id: 2, question_id: 2},
         { survey_id: 2, question_id: 3},
-        { survey_id: 3, question_id: 1},
         { survey_id: 3, question_id: 2},
         { survey_id: 3, question_id: 3},
     ];

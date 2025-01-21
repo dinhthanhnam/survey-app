@@ -13,7 +13,9 @@
     "@prisma/client": "^6.2.1",
     "next": "15.1.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "survey-core": "^1.12.19",
+    "survey-react-ui": "^1.12.19"
   },
   "devDependencies": {
     "postcss": "^8",
