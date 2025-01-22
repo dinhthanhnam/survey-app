@@ -64,6 +64,21 @@ export default function SurveyForm() {
 
   useEffect(() => {
     const survey = new Model(surveyJson);
+    // Hàm xác định nếu thiết bị hiện tại là mobile (dựa vào kích thước màn hình)
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsCollapsed(true); 
+        // Tự động mở rộng trên thiết bị di động
+      } else {
+        setIsCollapsed(false); // Thu nhỏ trên màn hình lớn
+      }
+    };
+  
+    // Gọi ngay khi component render
+    handleResize();
+  
+    // Lắng nghe sự kiện thay đổi kích thước màn hình
+    window.addEventListener("resize", handleResize);
     survey.onValueChanged.add((sender, options) => {
       if (options.name === "satisfaction") {
         const reasonQuestion = sender.getQuestionByName("reason");
@@ -193,7 +208,7 @@ export default function SurveyForm() {
     const timeout = setTimeout(() => {
       setIsCollapsed(true);
       setSelectedPage(null);
-    }, 50);
+    }, 100);
     setHoverTimeout(timeout);
   };
 
@@ -217,11 +232,30 @@ export default function SurveyForm() {
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
-      <div style={{ flex: 1, padding: "20px"}}>
+      <div style={{ flex: 1, padding: "20px 0 20px 20px "}}>
         <Survey model={surveyModel} />
       </div>
-
       <div
+        className={window.innerWidth <= 768 ? "navigation-disabled" : ""}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "20px",
+          paddingRight: isCollapsed ? "0px" : "10px",
+          paddingLeft: isCollapsed ? "0px" : "10px",
+        }}
+      >
+        <img 
+          src="img/logo.png" 
+          alt="Logo"
+          style={{
+            width: "100px",
+            padding: "10px",
+            marginBottom: "20px"
+          }}></img>
+        {/* Thanh điều hướng */}
+        <div
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
@@ -229,16 +263,13 @@ export default function SurveyForm() {
           backgroundColor: "#f9f9f9",
           borderLeft: "1px solid #ddd",
           borderBottom: "1px solid #ddd",
-          padding: isCollapsed ? "10px" : "20px",
+          borderRight: "1px solid #ddd",
+          padding: isCollapsed ? "10px" : "10px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          height: "100%",
           transition: "width 0.3s ease, padding 0.3s ease",
-          marginRight: "20px",
           borderRadius: "2px",
-          marginTop: "140px",
-          borderLeft: "1px solid #ddd",
           borderTop: "2px solid #19b394",
         }}
       >
@@ -372,6 +403,8 @@ export default function SurveyForm() {
             ))}
         </div>
       </div>
+      </div>
+      
     </div>
   );
 }
