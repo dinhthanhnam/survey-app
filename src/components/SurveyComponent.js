@@ -64,7 +64,6 @@ export default function SurveyForm() {
 
   useEffect(() => {
     const survey = new Model(surveyJson);
-
     survey.onValueChanged.add((sender, options) => {
       if (options.name === "satisfaction") {
         const reasonQuestion = sender.getQuestionByName("reason");
@@ -218,7 +217,7 @@ export default function SurveyForm() {
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
-      <div style={{ flex: 1, padding: "20px" }}>
+      <div style={{ flex: 1, padding: "20px"}}>
         <Survey model={surveyModel} />
       </div>
 
@@ -229,6 +228,7 @@ export default function SurveyForm() {
           width: isCollapsed ? "80px" : "300px",
           backgroundColor: "#f9f9f9",
           borderLeft: "1px solid #ddd",
+          borderBottom: "1px solid #ddd",
           padding: isCollapsed ? "10px" : "20px",
           display: "flex",
           flexDirection: "column",
@@ -236,7 +236,7 @@ export default function SurveyForm() {
           height: "100%",
           transition: "width 0.3s ease, padding 0.3s ease",
           marginRight: "20px",
-          borderRadius: "5px",
+          borderRadius: "2px",
           marginTop: "140px",
           borderLeft: "1px solid #ddd",
           borderTop: "2px solid #19b394",

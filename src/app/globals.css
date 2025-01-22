@@ -3,21 +3,14 @@
 @tailwind utilities;
 
 :root {
-  /*--background: #ffffff;*/
-  /*--foreground: #171717;*/
+  --background: #ededed;
+  --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #ededed;
-    --foreground: #0a0a0a;
+    --foreground: #fff;
   }
 }
 
@@ -25,4 +18,88 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+.answered {
+  border: 2px solid #19b394; /* Viền màu xanh */
+  background-color: #e6fff5; /* Nền màu xanh nhạt */
+}
+
+.unanswered {
+  border: none;
+  background-color: transparent; /* Không màu */
+}
+/* Responsive styles */
+
+/* Đối với màn hình nhỏ (điện thoại, dưới 768px) */
+@media (max-width: 768px) {
+  /* Sidebar */
+  .sidebar {
+    width: 80px; /* Kích thước cố định */
+    overflow: hidden; /* Ẩn nội dung thừa */
+    transition: all 0.3s ease; /* Thêm hiệu ứng mượt */
+    padding: 10px;
+    position: relative; /* Đặt vị trí để điều chỉnh */
+  }
+
+  /* Khi sidebar được mở */
+  .sidebar.open {
+    width: 100%; /* Chiếm toàn bộ chiều rộng màn hình */
+    overflow: auto; /* Hiển thị toàn bộ nội dung */
+  }
+
+  /* Nút để toggle sidebar */
+  .sidebar-toggle {
+    display: block; /* Hiển thị nút toggle */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #19b394;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+  }
+
+  .sidebar-toggle:hover {
+    background-color: #148f7c;
+  }
+}
+
+/* Đối với màn hình trung bình (tablet, từ 768px đến 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Container chính */
+  .container {
+    flex-direction: column; /* Chuyển từ hàng sang cột */
+    padding: 15px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    padding: 15px;
+    border-left: none; /* Bỏ border bên trái */
+    border-top: 2px solid #19b394; /* Chỉ giữ viền trên */
+  }
+
+  .sidebar h4 {
+    font-size: 18px; /* Điều chỉnh kích thước tiêu đề */
+  }
+
+  .sidebar .page-button {
+    font-size: 15px; /* Điều chỉnh kích thước nút */
+  }
+
+  .sidebar .progress-bar-container {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    margin-bottom: 15px;
+  }
+
+  .sidebar .question-list {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    padding: 10px;
+  }
 }
