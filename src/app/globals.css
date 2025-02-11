@@ -2,35 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ededed;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ededed;
-    --foreground: #171717;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-.answered {
-  border: 2px solid #19b394; /* Viền màu xanh */
-  background-color: #e6fff5; /* Nền màu xanh nhạt */
-}
-
-.unanswered {
-  border: none;
-  background-color: transparent; /* Không màu */
-}
-@media (max-width: 768px) {
-  .navigation-disabled {
-    pointer-events: none; /* Vô hiệu hóa tất cả sự kiện click */
-    padding: 8px;
-  }
-}
