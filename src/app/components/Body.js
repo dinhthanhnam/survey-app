@@ -1,11 +1,15 @@
 "use client";
 import React, { useState } from "react";
+import { Question } from "survey-core";
+import { surveyData } from "@/data/data";
 
 const Body = () => {
   const [step, setStep] = useState(1);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
+
+  
 
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
@@ -41,7 +45,7 @@ const Body = () => {
         {/* Step 2: Thực trạng chuyển đổi số */}
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-semibold text-teal-700">Phần 2: Thực trạng chuyển đổi số</h2>
+            <h2 className="text-xl font-semibold text-teal-700">Phần 2: Thực trạng chuyển đổi số {surveyData.survey_title}</h2>
             <div className="mt-4">
               <label className="block text-gray-700">Doanh nghiệp bạn đã áp dụng những công nghệ nào? *</label>
               <div className="mt-2 space-y-2">
