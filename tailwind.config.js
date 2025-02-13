@@ -6,8 +6,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'custom-wave':
-          "url('https://cdn.forms.office.net/images/aio/wave-pattern-v1.svg'), linear-gradient(180deg, rgba(3, 120, 124, 0.2) 0%, rgba(3, 120, 124, 0.8) 100%)",
+        'custom-wave': "url('/img/rose-petals.svg')",
       },
     },
   },
