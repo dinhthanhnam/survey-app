@@ -64,13 +64,27 @@ const Body = () => {
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-gray-700">Mức độ hài lòng với kết quả chuyển đổi số hiện tại *</label>
-              <select className="w-full mt-2 p-2 border border-gray-300 rounded-lg focus:outline-teal-500">
-                <option value="">Chọn mức độ</option>
-                <option value="1">Rất hài lòng</option>
-                <option value="2">Hài lòng</option>
-                <option value="3">Không hài lòng</option>
-              </select>
+            {surveyData?.question_survey?.map((question) => (
+              <div key={question.question_id} className="mb-4">
+                <label htmlFor={`question-${question.question_id}`} className="block text-gray-700">
+                  {question.question_text}
+                </label>
+                <select
+                  id={`question-${question.question_id}`}
+                  className="w-full mt-2 p-2 border border-gray-300 rounded-lg focus:outline-teal-500"
+                >
+                  {question?.question_options?.length > 0 ? (
+                    question.question_options.map((option) => (
+                      <option key={option.question_options_id} value={option.option_value}>
+                        {option.option_text}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Không có tùy chọn</option>
+                  )}
+                </select>
+              </div>
+            ))}
             </div>
           </div>
         )}
