@@ -10,7 +10,7 @@ const Header = () => {
           <img
             src="/img/coop.png"
             alt="Logo CoopBank"
-            className="h-12 sm:h-16 flex-shrink-0 flex-grow-0 basis-1/4 min-w-[180px]"
+            className="h-12 sm:h-16 flex-shrink-0 flex-grow-0 basis-1/4 min-w-[210px]"
           />
 
           {/* Hai logo nhỏ bên phải */}
