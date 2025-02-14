@@ -5,9 +5,8 @@ import Body from "./components/Body";
 
 export default function SurveyPage() {
   return (
-    
-    <div className="min-h-screen bg-custom-wave bg-cover bg-repeat ">
-      <div className="w-1/2 mx-auto bg-white shadow-lg rounded-lg p-8 mt-10 fixed left-1/2 transform -translate-x-1/2 max-h-screen overflow-y-auto">
+    <div className="min-h-screen bg-custom-wave bg-cover bg-repeat flex justify-center items-center p-4">
+      <div className="w-full sm:w-3/4 lg:w-1/2 bg-white shadow-lg rounded-lg p-4 sm:p-8 max-h-[90vh] overflow-y-auto absolute md:static">
         <Header />
         <Body />
       </div>

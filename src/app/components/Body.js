@@ -78,22 +78,23 @@ const Body = () => {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between mt-8">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
             <span className="text-teal-700 font-medium">Bước {step} trên {surveyData.length}</span>
-            <div className="w-40 bg-gray-200 rounded-full h-2.5">
+            <div className="w-full sm:w-40 bg-gray-200 rounded-full h-2.5">
               <div
                 className="bg-teal-600 h-2.5 rounded-full"
                 style={{ width: `${(step / surveyData.length) * 100}%` }}
               ></div>
             </div>
           </div>
-          <div className="space-x-4">
+
+          <div className="flex w-full sm:w-auto gap-4">
             {step > 1 && (
               <button
                 type="button"
                 onClick={prevStep}
-                className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
               >
                 Quay lại
               </button>
@@ -102,20 +103,21 @@ const Body = () => {
               <button
                 type="button"
                 onClick={nextStep}
-                className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
               >
                 Tiếp theo
               </button>
             ) : (
               <button
                 type="submit"
-                className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
               >
                 Gửi khảo sát
               </button>
             )}
           </div>
         </div>
+
       </form>
     </div>
   );
