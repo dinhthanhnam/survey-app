@@ -1,51 +1,67 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Body = () => {
     const [step, setStep] = useState(0);
     const [surveyData, setSurveyData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [answers, setAnswers] = useState({});
+    const [totalSurveys, setTotalSurveys] = useState(0);
 
-    const handleChange = (questionId, value, isCheckbox) => {
-        setAnswers((prev) => {
-            if (isCheckbox) {
-                // Nếu là checkbox, giữ lại các giá trị đã chọn
-                const currentValues = prev[questionId] || [];
-                return {
-                    ...prev,
-                    [questionId]: currentValues.includes(value)
-                        ? currentValues.filter((v) => v !== value) // Bỏ chọn nếu đã có
-                        : [...currentValues, value], // Thêm nếu chưa có
-                };
-            } else {
-                // Nếu là radio hoặc text, chỉ lưu một giá trị duy nhất
-                return {
-                    ...prev,
-                    [questionId]: value,
-                };
+    // Gọi API để lấy số lượng khảo sát
+    useEffect(() => {
+        const fetchSurveyCount = async () => {
+            try {
+                const response = await fetch(`/api/survey/count`);
+                const data = await response.json();
+                setTotalSurveys(data.total); // Giả sử API trả về { total: số khảo sát }
+            } catch (error) {
+                console.error('Lỗi khi lấy số lượng khảo sát:', error);
             }
-        });
-    };
+        };
+
+        fetchSurveyCount();
+    }, []);
 
     const fetchSurvey = async () => {
-        const id = answers[1]; // Lấy ID từ câu trả lời
-        if (!id) return alert('Vui lòng nhập Tên Quỹ Tín Dụng!');
+        if (step === 0 || step > totalSurveys) return; // Không gọi API ở bước đầu
 
         setLoading(true);
         try {
-            const response = await fetch(`/api/survey/${id}`);
+            const response = await fetch(`/api/survey/${step}`);
             if (!response.ok) throw new Error('Khảo sát không tồn tại!');
 
             const data = await response.json();
             setSurveyData(data);
-            setStep(1);
         } catch (error) {
             console.error('Lỗi khi gọi API:', error);
             alert(error.message);
         } finally {
             setLoading(false);
         }
+    };
+
+    useEffect(() => {
+        if (step > 0) fetchSurvey();
+    }, [step]); // Gọi API mỗi khi step thay đổi
+
+    const handleChange = (questionId, value, isCheckbox) => {
+        setAnswers((prev) => {
+            if (isCheckbox) {
+                const currentValues = prev[questionId] || [];
+                return {
+                    ...prev,
+                    [questionId]: currentValues.includes(value)
+                        ? currentValues.filter((v) => v !== value)
+                        : [...currentValues, value],
+                };
+            } else {
+                return {
+                    ...prev,
+                    [questionId]: value,
+                };
+            }
+        });
     };
 
     if (step === 0) {
@@ -64,7 +80,7 @@ const Body = () => {
                         value={answers[1] || ''}
                         onChange={(e) => handleChange(1, e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        placeholder="Nhập 1, 2, 3, ... 8"
+                        placeholder="Nhập câu trả lời của bạn..."
                     />
                 </div>
 
@@ -83,23 +99,25 @@ const Body = () => {
                 <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
                     <div className="flex items-center space-x-2 w-full sm:w-auto">
                         <span className="text-teal-700 font-medium">
-                            Bước {step + 1} trên 2
+                            Bước {step + 1} trên {totalSurveys + 1}
                         </span>
                         <div className="w-full sm:w-40 bg-gray-200 rounded-full h-2.5">
                             <div
                                 className="bg-teal-600 h-2.5 rounded-full"
                                 style={{
-                                    width: `${(step + 1 / 2) * 100}%`,
+                                    width: `${
+                                        ((step + 1) / (totalSurveys + 1)) * 100
+                                    }%`,
                                 }}
                             ></div>
                         </div>
                     </div>
                     <button
-                        onClick={fetchSurvey}
-                        disabled={loading}
+                        onClick={() => setStep(1)}
+                        disabled={loading || totalSurveys === 0}
                         className="mt-6 px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
                     >
-                        {loading ? 'Đang tải...' : 'Tiếp theo'}
+                        Tiếp theo
                     </button>
                 </div>
             </div>
@@ -141,7 +159,6 @@ const Body = () => {
                                         placeholder="Nhập câu trả lời của bạn..."
                                     />
                                 ) : (
-                                    // Nếu là radio hoặc checkbox
                                     question.question_options.map((option) => {
                                         const isCheckbox =
                                             question.question_type ===
@@ -209,16 +226,20 @@ const Body = () => {
                             </div>
                         </div>
                     ))}
+
                     <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
                         <div className="flex items-center space-x-2 w-full sm:w-auto">
                             <span className="text-teal-700 font-medium">
-                                Bước {step + 1} trên 2
+                                Bước {step + 1} trên {totalSurveys + 1}
                             </span>
                             <div className="w-full sm:w-40 bg-gray-200 rounded-full h-2.5">
                                 <div
                                     className="bg-teal-600 h-2.5 rounded-full"
                                     style={{
-                                        width: `${(step + 1 / 2) * 100}%`,
+                                        width: `${
+                                            ((step + 1) / (totalSurveys + 1)) *
+                                            100
+                                        }%`,
                                     }}
                                 ></div>
                             </div>
@@ -227,16 +248,30 @@ const Body = () => {
                             <button
                                 type="button"
                                 className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-                                onClick={() => setStep(0)}
+                                onClick={() => setStep((prev) => prev - 1)}
                             >
                                 Quay lại
                             </button>
-                            <button
-                                type="submit"
-                                className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
-                            >
-                                Gửi khảo sát
-                            </button>
+
+                            {step < totalSurveys ? (
+                                <button
+                                    type="button"
+                                    className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                                    onClick={() => setStep((prev) => prev + 1)}
+                                >
+                                    Tiếp theo
+                                </button>
+                            ) : (
+                                <button
+                                    type="submit"
+                                    className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                                    onClick={() =>
+                                        alert('Gửi khảo sát thành công!')
+                                    } // Thay bằng API gửi dữ liệu
+                                >
+                                    Gửi khảo sát
+                                </button>
+                            )}
                         </div>
                     </div>
                 </form>
