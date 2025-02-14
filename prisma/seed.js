@@ -557,6 +557,120 @@ async function main() {
             ],
         },
         {
+            question_text:
+                'Đơn vị đã trang bị đầy đủ máy tính và thiết bị CNTT cần thiết chưa?',
+            question_name: 'Câu 1',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Hoàn toàn chưa có' },
+                { option_text: 'Trang bị một phần' },
+                { option_text: 'Trang bị gần đầy đủ' },
+                { option_text: 'Trang bị đầy đủ' },
+                { option_text: 'Trang bị đầy đủ và sử dụng hiệu quả' },
+            ],
+        },
+        {
+            question_text:
+                'Mức độ ổn định và tốc độ của mạng nội bộ và internet tại đơn vị là như thế nào?',
+            question_name: 'Câu 2',
+            question_type: 'radiogroup',
+            question_options: [
+                {
+                    option_text: 'Rất kém',
+                    option_note: 'thường xuyên mất kết nối',
+                },
+                { option_text: 'Kém', option_note: 'mạng chậm, không ổn định' },
+                {
+                    option_text: 'Trung bình',
+                    option_note: 'đáp ứng nhu cầu cơ bản',
+                },
+                {
+                    option_text: 'Tốt',
+                    option_note: 'ổn định, ít gián đoạn',
+                },
+                {
+                    option_text: 'Rất tốt',
+                    option_note: 'tốc độ cao, ổn định liên tục',
+                },
+            ],
+        },
+        {
+            question_text:
+                'Đơn vị có kế hoạch nâng cấp cơ sở hạ tầng CNTT trong thời gian tới không?',
+            question_name: 'Câu 3',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Chưa có kế hoạch' },
+                { option_text: 'Có kế hoạch sơ bộ' },
+                { option_text: 'Đang hoàn thiện kế hoạch' },
+                { option_text: 'Kế hoạch đầy đủ' },
+                { option_text: 'Kế hoạch đầy đủ sẵn sàng triển khai' },
+            ],
+        },
+        {
+            question_text:
+                'Nguồn tài chính dành cho việc nâng cấp cơ sở hạ tầng CNTT có đủ không?',
+            question_name: 'Câu 4',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Hoàn toàn không đủ' },
+                { option_text: 'Không đủ' },
+                { option_text: 'Trung bình' },
+                { option_text: 'Đủ' },
+                { option_text: 'Hoàn toàn đủ' },
+            ],
+        },
+        {
+            question_text:
+                'Đơn vị đã tích hợp hoặc có kế hoạch tích hợp điện toán đám mây vào hệ thống hiện tại chưa?',
+            question_name: 'Câu 5',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Chưa tích hợp' },
+                { option_text: 'Đã tích hợp một phần' },
+                { option_text: 'Tích hợp gần hoàn chỉnh' },
+                { option_text: 'Tích hợp đầy đủ' },
+            ],
+        },
+        {
+            question_text:
+                'Mức độ sử dụng các công nghệ AI hỗ trợ trong các quy trình tại đơn vị là như thế nào?',
+            question_name: 'Câu 6',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Không sử dụng' },
+                { option_text: 'Sử dụng thử nghiệm' },
+                { option_text: 'Sử dụng một phần' },
+                { option_text: 'Sử dụng gần hoàn chỉnh' },
+                { option_text: 'Sử dụng hoàn chỉnh và có hiệu quả cao' },
+            ],
+        },
+        {
+            question_text:
+                'Core banking đã được triển khai và vận hành hiệu quả chưa?',
+            question_name: 'Câu 7',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Chưa triển khai' },
+                { option_text: 'Đã triển khai nhưng hiệu quả thấp' },
+                { option_text: 'Hiệu quả trung bình' },
+                { option_text: 'Hiệu quả cao nhưng chưa tối ưu' },
+                { option_text: 'Hiệu quả rất cao và đã tối ưu' },
+            ],
+        },
+        {
+            question_text: 'Mức độ ứng dụng e-banking tại đơn vị như thế nào?',
+            question_name: 'Câu 8',
+            question_type: 'radiogroup',
+            question_options: [
+                { option_text: 'Không sử dụng' },
+                { option_text: 'Sử dụng thử nghiệm' },
+                { option_text: 'Sử dụng nhưng còn hạn chế' },
+                { option_text: 'Sử dụng tốt' },
+                { option_text: 'Sử dụng rất hiệu quả' },
+            ],
+        },
+        {
             question_text: 'adkj',
             question_name: 'Câu',
             question_note: 'Chọn',
