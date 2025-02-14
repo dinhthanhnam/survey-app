@@ -5,18 +5,22 @@ const Header = () => {
     <div className="mb-8 text-center sm:text-left">
       <div>
         {/* Hàng chứa logo */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-between mb-4 gap-4">
+        <div className="flex items-center justify-between mb-4 gap-4">
           {/* Logo lớn bên trái */}
-          <img src="/img/coop.png" alt="Logo CoopBank" className="h-12 sm:h-16 max-w-full" />
+          <img
+            src="/img/coop.png"
+            alt="Logo CoopBank"
+            className="h-12 sm:h-16 flex-shrink-0 flex-grow-0 basis-1/4 min-w-[180px]"
+          />
 
           {/* Hai logo nhỏ bên phải */}
-          <div className="flex space-x-4">
-            <img src="/img/MCG.png" alt="Logo MCG" className="h-12 sm:h-16 max-w-full" />
-            <img src="/img/ITDE.png" alt="Logo ITDE" className="h-12 sm:h-16 max-w-full" />
+          <div className="flex items-center space-x-4">
+            <img src="/img/MCG.png" alt="Logo MCG" className="h-12 sm:h-16 max-w-[150px] flex-shrink-0" />
+            <img src="/img/ITDE.png" alt="Logo ITDE" className="h-12 sm:h-16 max-w-[100px] flex-shrink-0" />
           </div>
         </div>
       </div>
-      
+
       {/* Tiêu đề và mô tả */}
       <h1 className="text-xl sm:text-2xl font-bold text-teal-800">
         Khảo sát chuyển đổi số trong hệ thống quỹ tín dụng Co-op Bank
