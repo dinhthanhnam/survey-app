@@ -1,4 +1,4 @@
-import { PrismaClient, surveys } from "@prisma/client";
+import { PrismaClient, surveys } from '@prisma/client';
 
 const prisma = new PrismaClient();
 /**
@@ -37,35 +37,35 @@ export async function GET(request, { params }) {
         }
 
         // Chuyển đổi dữ liệu thành định dạng SurveyJS
-        const surveyJSON = {
-            title: survey.survey_title,
-            description: survey.survey_description || "",
-            showQuestionsNumber: survey.show_questions_number,
-            pages: [
-                {
-                    elements: survey.question_survey.map((qs) => {
-                        const question = qs.questions;
-                        return {
-                            type: question.question_type, // Loại câu hỏi (ví dụ: "radiogroup", "text")
-                            name: question.question_name, // Đặt tên duy nhất cho câu hỏi
-                            title: question.question_text,
-                            description: question.question_note || "",
-                            choices: question.question_options.map((option) => option.option_text), // Lấy danh sách các lựa chọn
-                        };
-                    }),
-                },
-            ],
+        const surveyData = {
+            survey_id: survey.id,
+            survey_title: survey.survey_title,
+            survey_description: survey.survey_description,
+            question_survey: survey.question_survey.map((qs) => ({
+                question_id: qs.questions.id,
+                question_name: qs.questions.question_name,
+                question_type: qs.questions.question_type,
+                question_text: qs.questions.question_text,
+                question_options: qs.questions.question_options.map(
+                    (option) => ({
+                        question_options_id: option.id,
+                        option_text: option.option_text,
+                        option_note: option.option_note,
+                        option_value: option.option_value,
+                    })
+                ),
+            })),
         };
 
         // Trả dữ liệu JSON
-        return new Response(JSON.stringify(surveyJSON, null, 2), {
+        return new Response(JSON.stringify(surveyData, null, 2), {
             status: 200,
-            headers: { "Content-Type": "application/json" },
+            headers: { 'Content-Type': 'application/json' },
         });
     } catch (error) {
-        console.error("Error fetching survey:", error);
+        console.error('Error fetching survey:', error);
         return new Response(
-            JSON.stringify({ error: "Internal Server Error" }),
+            JSON.stringify({ error: 'Internal Server Error' }),
             { status: 500 }
         );
     }
