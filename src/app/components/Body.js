@@ -135,11 +135,10 @@ const Body = () => {
                         {surveyData.survey_description}
                     </p>
 
-                    {surveyData.question_survey.map((question) => (
+                    {surveyData.question_survey.map((question, index) => (
                         <div key={question.question_id} className="mt-6">
                             <label className="block text-gray-700 font-medium">
-                                {question.question_name}.{' '}
-                                {question.question_text}
+                                Câu {index + 1}. {question.question_text}
                             </label>
 
                             <div className="mt-2 space-y-2">
