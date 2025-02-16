@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { fetchSurveyCount, fetchSurveyByStep } from '@/utils/survey';
-const Body = () => {
+import Navigation from './Navigation';
+
+const Body = ({ scrollToTop }) => {
     const [step, setStep] = useState(0);
     const [surveyData, setSurveyData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -35,6 +37,11 @@ const Body = () => {
         };
         if (step > 0) getSurvey();
     }, [step]);
+
+    const handleNextStep = () => {
+        setStep((prev) => prev + 1);
+        scrollToTop(); // Cuộn lên đầu container
+    };
 
     const handleChange = (questionId, value, isCheckbox) => {
         setAnswers((prev) => {
@@ -249,54 +256,12 @@ const Body = () => {
                             </div>
                         </div>
                     ))}
-
-                    <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
-                        <div className="flex items-center space-x-2 w-full sm:w-auto">
-                            <span className="text-teal-700 font-semibold">
-                                Bước {step + 1} trên {totalSurveys + 1}
-                            </span>
-                            <div className="w-full sm:w-40 bg-gray-200 rounded-full h-2.5">
-                                <div
-                                    className="bg-teal-600 h-2.5 rounded-full"
-                                    style={{
-                                        width: `${
-                                            ((step + 1) / (totalSurveys + 1)) *
-                                            100
-                                        }%`,
-                                    }}
-                                ></div>
-                            </div>
-                        </div>
-                        <div className="flex w-full sm:w-auto gap-4">
-                            <button
-                                type="button"
-                                className="w-full sm:w-auto px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-                                onClick={() => setStep((prev) => prev - 1)}
-                            >
-                                Quay lại
-                            </button>
-
-                            {step < totalSurveys ? (
-                                <button
-                                    type="button"
-                                    className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
-                                    onClick={() => setStep((prev) => prev + 1)}
-                                >
-                                    Tiếp theo
-                                </button>
-                            ) : (
-                                <button
-                                    type="submit"
-                                    className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
-                                    onClick={() =>
-                                        alert('Gửi khảo sát thành công!')
-                                    }
-                                >
-                                    Gửi khảo sát
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                    <Navigation
+                        step={step}
+                        totalSurveys={totalSurveys}
+                        setStep={setStep}
+                        handleNextStep={handleNextStep}
+                    />
                 </form>
             ) : (
                 <p className="text-gray-500">Không tìm thấy khảo sát.</p>

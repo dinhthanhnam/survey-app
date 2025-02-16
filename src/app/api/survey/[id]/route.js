@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  * @property {Array} show_questions_number
  */
 export async function GET(request, { params }) {
-    const { id } = params;
+    const { id } = await params;
 
     try {
         // Lấy dữ liệu survey từ database
