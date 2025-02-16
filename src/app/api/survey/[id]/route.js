@@ -46,6 +46,7 @@ export async function GET(request, { params }) {
                 question_name: qs.questions.question_name,
                 question_type: qs.questions.question_type,
                 question_text: qs.questions.question_text,
+                question_note: qs.questions.question_note,
                 question_options: qs.questions.question_options.map(
                     (option) => ({
                         question_options_id: option.id,
