@@ -36,30 +36,8 @@ export async function GET(request, { params }) {
             );
         }
 
-        // Chuyển đổi dữ liệu thành định dạng SurveyJS
-        const surveyData = {
-            survey_id: survey.id,
-            survey_title: survey.survey_title,
-            survey_description: survey.survey_description,
-            question_survey: survey.question_survey.map((qs) => ({
-                question_id: qs.questions.id,
-                question_name: qs.questions.question_name,
-                question_type: qs.questions.question_type,
-                question_text: qs.questions.question_text,
-                question_note: qs.questions.question_note,
-                question_options: qs.questions.question_options.map(
-                    (option) => ({
-                        question_options_id: option.id,
-                        option_text: option.option_text,
-                        option_note: option.option_note,
-                        option_value: option.option_value,
-                    })
-                ),
-            })),
-        };
-
         // Trả dữ liệu JSON
-        return new Response(JSON.stringify(surveyData, null, 2), {
+        return new Response(JSON.stringify(survey, null, 2), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         });

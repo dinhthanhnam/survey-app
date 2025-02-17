@@ -137,24 +137,25 @@ const Body = ({ scrollToTop }) => {
                         {surveyData.survey_description}
                     </p>
 
-                    {surveyData.question_survey.map((question, index) => (
+                    {surveyData.question_survey.map((questionSurvey, index) => (
                         <div
-                            key={question.question_id}
+                            key={questionSurvey.questions.id}
                             className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50"
                         >
                             <div className="relative">
                                 <label className="block text-gray-700 font-medium flex items-center">
                                     <span className="break-words">
                                         Câu {index + 1}.{' '}
-                                        {question.question_text}
+                                        {questionSurvey.questions.question_text}
                                     </span>
-                                    {question.question_note && (
+                                    {questionSurvey.questions.question_note && (
                                         <div className="relative ml-2">
                                             <FaQuestionCircle
                                                 className="text-teal-500 cursor-pointer"
                                                 onMouseEnter={() =>
                                                     setTooltip(
-                                                        question.question_id
+                                                        questionSurvey.questions
+                                                            .id
                                                     )
                                                 }
                                                 onMouseLeave={() =>
@@ -162,9 +163,12 @@ const Body = ({ scrollToTop }) => {
                                                 }
                                             />
                                             {tooltip ===
-                                                question.question_id && (
+                                                questionSurvey.questions.id && (
                                                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 p-2 bg-gray-200 text-gray-800 rounded-md text-sm shadow-md w-60">
-                                                    {question.question_note}
+                                                    {
+                                                        questionSurvey.questions
+                                                            .question_note
+                                                    }
                                                 </div>
                                             )}
                                         </div>
@@ -173,15 +177,18 @@ const Body = ({ scrollToTop }) => {
                             </div>
 
                             <div className="mt-3 space-y-2">
-                                {question.question_type === 'text' ? (
+                                {questionSurvey.questions.question_type ===
+                                'text' ? (
                                     <input
                                         type="text"
                                         value={
-                                            answers[question.question_id] || ''
+                                            answers[
+                                                questionSurvey.questions.id
+                                            ] || ''
                                         }
                                         onChange={(e) =>
                                             handleChange(
-                                                question.question_id,
+                                                questions.id,
                                                 e.target.value
                                             )
                                         }
@@ -189,69 +196,80 @@ const Body = ({ scrollToTop }) => {
                                         placeholder="Nhập câu trả lời của bạn..."
                                     />
                                 ) : (
-                                    question.question_options.map((option) => {
-                                        const isCheckbox =
-                                            question.question_type ===
-                                            'checkbox';
-                                        return (
-                                            <div
-                                                key={option.question_options_id}
-                                                className="flex items-center space-x-3 bg-white p-2 rounded-md shadow-sm border border-gray-200"
-                                            >
-                                                <input
-                                                    type={
-                                                        isCheckbox
-                                                            ? 'checkbox'
-                                                            : 'radio'
-                                                    }
-                                                    id={`question-${question.question_id}-option-${option.question_options_id}`}
-                                                    name={
-                                                        isCheckbox
-                                                            ? `question-${question.question_id}-${option.question_options_id}`
-                                                            : `question-${question.question_id}`
-                                                    }
-                                                    value={option.option_value}
-                                                    checked={
-                                                        isCheckbox
-                                                            ? (
-                                                                  answers[
-                                                                      question
-                                                                          .question_id
-                                                                  ] || []
-                                                              ).includes(
-                                                                  option.option_value
-                                                              )
-                                                            : answers[
-                                                                  question
-                                                                      .question_id
-                                                              ] ===
-                                                              option.option_value
-                                                    }
-                                                    onChange={() =>
-                                                        handleChange(
-                                                            question.question_id,
-                                                            option.option_value,
-                                                            isCheckbox
-                                                        )
-                                                    }
-                                                    className="w-5 h-5 text-teal-600 focus:ring-teal-500"
-                                                />
-                                                <label
-                                                    htmlFor={`question-${question.question_id}-option-${option.question_options_id}`}
-                                                    className="text-gray-700 font-medium"
+                                    questionSurvey.questions.question_options.map(
+                                        (option) => {
+                                            const isCheckbox =
+                                                questionSurvey.questions
+                                                    .question_type ===
+                                                'checkbox';
+                                            return (
+                                                <div
+                                                    key={option.id}
+                                                    className="flex items-center space-x-3 bg-white p-2 rounded-md shadow-sm border border-gray-200"
                                                 >
-                                                    {option.option_text}{' '}
-                                                    {option.option_note && (
-                                                        <i className="text-gray-400 text-sm">
-                                                            (
-                                                            {option.option_note}
+                                                    <input
+                                                        type={
+                                                            isCheckbox
+                                                                ? 'checkbox'
+                                                                : 'radio'
+                                                        }
+                                                        id={`question-${questionSurvey.questions.id}-option-${option.id}`}
+                                                        name={
+                                                            isCheckbox
+                                                                ? `question-${questionSurvey.questions.id}-${option.id}`
+                                                                : `question-${questionSurvey.questions.id}`
+                                                        }
+                                                        value={
+                                                            option.option_value
+                                                        }
+                                                        checked={
+                                                            isCheckbox
+                                                                ? (
+                                                                      answers[
+                                                                          questionSurvey
+                                                                              .questions
+                                                                              .id
+                                                                      ] || []
+                                                                  ).includes(
+                                                                      option.option_value
+                                                                  )
+                                                                : answers[
+                                                                      questionSurvey
+                                                                          .questions
+                                                                          .id
+                                                                  ] ===
+                                                                  option.option_value
+                                                        }
+                                                        onChange={() =>
+                                                            handleChange(
+                                                                questionSurvey
+                                                                    .questions
+                                                                    .id,
+                                                                option.option_value,
+                                                                isCheckbox
                                                             )
-                                                        </i>
-                                                    )}
-                                                </label>
-                                            </div>
-                                        );
-                                    })
+                                                        }
+                                                        className="w-5 h-5 text-teal-600 focus:ring-teal-500"
+                                                    />
+                                                    <label
+                                                        htmlFor={`question-${questionSurvey.questions.id}-option-${option.id}`}
+                                                        className="text-gray-700 font-medium"
+                                                    >
+                                                        {option.option_text}{' '}
+                                                        {option.option_note && (
+                                                            <i className="text-gray-400 text-sm">
+                                                                (
+                                                                {
+                                                                    option.option_note
+                                                                }
+                                                                )
+                                                            </i>
+                                                        )}
+                                                    </label>
+                                                </div>
+                                            );
+                                        }
+                                    )
                                 )}
                             </div>
                         </div>
