@@ -1004,11 +1004,14 @@ async function main() {
             question_name: 'Câu 5.10',
             question_type: 'radiogroup',
             question_options: [
-                { option_text: 'ádasdasádasdas' },
-                { option_text: 'sddsdssddsds' },
-                { option_text: 'sdsdsd' },
-                { option_text: 'sdasdasdsdasdasd' },
-                { option_text: 'Kádasdaádasda' },
+                { option_text: 'Không sử dụng' },
+                { option_text: 'Có kế hoạch nhưng chưa triển khai' },
+                { option_text: 'Sử dụng một phần' },
+                {
+                    option_text:
+                        'Sử dụng thường xuyên nhưng chưa đạt hiệu quả cao',
+                },
+                { option_text: 'Sử dụng có hiệu quả cao' },
             ],
         },
         {

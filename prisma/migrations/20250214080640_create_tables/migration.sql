@@ -98,3 +98,18 @@ ALTER TABLE `responses` ADD CONSTRAINT `responses_ibfk_1` FOREIGN KEY (`question
 
 -- AddForeignKey
 ALTER TABLE `responses` ADD CONSTRAINT `responses_ibfk_2` FOREIGN KEY (`respondent_id`) REFERENCES `respondents`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+CREATE TRIGGER update_option_order
+BEFORE INSERT ON question_options
+FOR EACH ROW
+BEGIN
+    DECLARE max_value INT;
+
+    -- Lấy giá trị option_order lớn nhất cho question_id hiện tại
+    SELECT COALESCE(MAX(option_value), 0) INTO max_value
+    FROM question_options
+    WHERE question_id = NEW.question_id;
+
+    -- Tăng giá trị option_order lên 1 cho bản ghi mới
+    SET NEW.option_value = max_value + 1;
+END
