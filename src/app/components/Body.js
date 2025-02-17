@@ -100,7 +100,7 @@ const Body = ({ scrollToTop }) => {
                 {/* Thanh tiến trình và nút bấm */}
                 <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
                     <div className="flex items-center space-x-2 w-full sm:w-auto">
-                        <span className="text-teal-700 font-semibold">
+                        <span className="text-teal-600 font-semibold">
                             Bước {step + 1} trên {totalSurveys + 1}
                         </span>
                         <div className="w-full sm:w-40 bg-gray-200 rounded-full h-2.5">
@@ -130,10 +130,10 @@ const Body = ({ scrollToTop }) => {
         <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
             {surveyData ? (
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <h2 className="text-2xl font-bold text-teal-700 mb-4 text-center sm:text-left">
+                    <h2 className="text-lg sm:text-2xl font-bold text-teal-700 mb-4 text-center sm:text-left">
                         {surveyData.survey_title}
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-gray-600 mb-6 text-justify">
                         {surveyData.survey_description}
                     </p>
 
@@ -208,49 +208,25 @@ const Body = ({ scrollToTop }) => {
                                                     className="flex items-center space-x-3 bg-white p-2 rounded-md shadow-sm border border-gray-200"
                                                 >
                                                     <input
-                                                        type={
-                                                            isCheckbox
-                                                                ? 'checkbox'
-                                                                : 'radio'
-                                                        }
+                                                        type={isCheckbox ? 'checkbox' : 'radio'}
                                                         id={`question-${questionSurvey.questions.id}-option-${option.id}`}
                                                         name={
                                                             isCheckbox
                                                                 ? `question-${questionSurvey.questions.id}-${option.id}`
                                                                 : `question-${questionSurvey.questions.id}`
                                                         }
-                                                        value={
-                                                            option.option_value
-                                                        }
+                                                        value={option.option_value}
                                                         checked={
                                                             isCheckbox
-                                                                ? (
-                                                                      answers[
-                                                                          questionSurvey
-                                                                              .questions
-                                                                              .id
-                                                                      ] || []
-                                                                  ).includes(
-                                                                      option.option_value
-                                                                  )
-                                                                : answers[
-                                                                      questionSurvey
-                                                                          .questions
-                                                                          .id
-                                                                  ] ===
-                                                                  option.option_value
+                                                                ? (answers[questionSurvey.questions.id] || []).includes(option.option_value)
+                                                                : answers[questionSurvey.questions.id] === option.option_value
                                                         }
                                                         onChange={() =>
-                                                            handleChange(
-                                                                questionSurvey
-                                                                    .questions
-                                                                    .id,
-                                                                option.option_value,
-                                                                isCheckbox
-                                                            )
+                                                            handleChange(questionSurvey.questions.id, option.option_value, isCheckbox)
                                                         }
-                                                        className="w-5 h-5 text-teal-600 focus:ring-teal-500"
+                                                        className="w-5 h-5 flex-shrink-0 text-teal-600 focus:ring-teal-500"
                                                     />
+
                                                     <label
                                                         htmlFor={`question-${questionSurvey.questions.id}-option-${option.id}`}
                                                         className="text-gray-700 font-medium"
