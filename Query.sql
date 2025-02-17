@@ -44,6 +44,7 @@ CREATE TABLE question_options (
    question_id INT NOT NULL,
    option_text VARCHAR(255) NOT NULL,
    option_value INT,
+   option_note VARCHAR(255) NULL,
    FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 

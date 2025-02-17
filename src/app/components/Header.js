@@ -2,7 +2,7 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="mb-6 text-center sm:text-left px-2">
+    <div className="pt-4 pb-4 rounded-lg mb-6 text-left px-2 bg-teal-600">
       {/* Hàng chứa logo */}
       <div className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-4">
         {/* Logo lớn bên trái */}
@@ -20,10 +20,10 @@ const Header = () => {
       </div>
 
       {/* Tiêu đề và mô tả */}
-      <h1 className="text-lg sm:text-2xl font-bold text-teal-800">
+      <h1 className="text-lg sm:text-2xl font-bold text-white">
         Khảo sát chuyển đổi số trong hệ thống quỹ tín dụng Co-op Bank
       </h1>
-      <p className="text-gray-600 mt-2 text-sm sm:text-base">
+      <p className="text-gray-100 mt-2 text-sm sm:text-base">
         Nghiên cứu này nhằm thu thập ý kiến về thực trạng chuyển đổi số và những khó khăn thách thức trong hành trình này.
       </p>
     </div>
