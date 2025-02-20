@@ -3,16 +3,16 @@ const prisma = new PrismaClient();
 
 async function main() {
     // Dữ liệu cho credit_funds
-    const creditFundsData = [
+    const institutionsData = [
         { name: 'Credit Fund A', identity_code: 'CF-A001' },
         { name: 'Credit Fund B', identity_code: 'CF-B002' },
         { name: 'Credit Fund C', identity_code: 'CF-C003' },
     ];
 
     // Thêm dữ liệu vào bảng credit_funds
-    for (const creditFund of creditFundsData) {
-        await prisma.credit_funds.create({
-            data: creditFund,
+    for (const institution of institutionsData) {
+        await prisma.institutions.create({
+            data: institution,
         });
     }
 
@@ -22,58 +22,50 @@ async function main() {
             survey_title: 'NHÂN LỰC VÀ NĂNG LỰC NHẬN THỨC CHUYỂN ĐỔI SỐ',
             survey_description:
                 'Đánh giá nhận thức, kỹ năng, mức độ sẵn sàng của nhân sự và lãnh đạo QTDND đối với chuyển đổi số (CĐS)',
-            show_questions_number: 'onPage',
-            credit_fund_id: 1,
+            institution_id: 1,
         },
         {
             survey_title:
                 'HIỆN TRẠNG QUY TRÌNH NGHIỆP VỤ VÀ MÔ HÌNH QUẢN TRỊ SỐ',
             survey_description:
                 'Đánh giá mức độ số hóa và tự động hóa trong các quy trình nghiệp vụ cốt lõi tại QTDND',
-            show_questions_number: 'onPage',
-            credit_fund_id: 2,
+            institution_id: 2,
         },
         {
             survey_title: 'CƠ SỞ HẠ TẦNG CNTT VÀ MỨC ĐỘ ỨNG DỤNG CÔNG NGHỆ',
             survey_description:
                 'Đánh giá mức độ hiện đại hóa hạ tầng công nghệ thông tin tại các Quỹ Tín Dụng Nhân Dân (QTDND), đảm bảo khả năng triển khai chuyển đổi số (CĐS) trong hệ thống tài chính vi mô',
-            show_questions_number: 'onPage',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
         {
             survey_title: 'AN NINH THÔNG TIN & QUẢN TRỊ RỦI RO CÔNG NGHỆ',
             survey_description:
                 'Đánh giá mức độ an toàn thông tin và khả năng ứng phó với rủi ro công nghệ tại QTDND',
-            show_questions_number: 'onPage',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
         {
             survey_title: 'QUẢN LÝ & KHAI THÁC DỮ LIỆU SỐ',
             survey_description:
                 'Đánh giá khả năng lưu trữ, phân tích và khai thác dữ liệu số nhằm nâng cao hiệu quả hoạt động tại QTDND',
-            show_questions_number: 'onPage',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
         {
             survey_title: 'PHÁT TRIỂN SẢN PHẨM & DỊCH VỤ NGÂN HÀNG SỐ',
             survey_description:
                 'Đánh giá khả năng triển khai và phát triển các dịch vụ tài chính số tại QTDND nhằm nâng cao trải nghiệm khách hàng và năng lực cạnh tranh',
-            show_questions_number: 'onPage',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
         {
             survey_title: 'NGUỒN LỰC TÀI CHÍNH & KHẢ NĂNG HỢP TÁC',
             survey_description:
                 'Đánh giá mức độ sẵn sàng đầu tư vào công nghệ và khả năng hợp tác tài chính của QTDND trong quá trình thực hiện chuyển đổi số',
-            show_questions_number: 'onPage',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
         {
             survey_title: 'LỘ TRÌNH CHUYỂN ĐỔI SỐ ĐỒNG BỘ & THỐNG NHẤT',
             survey_description:
                 'Đánh giá tổng thể mức độ sẵn sàng của QTDND đối với quá trình chuyển đổi số',
-            show_questions_number: 'onPage',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
     ];
 
@@ -86,16 +78,16 @@ async function main() {
 
     // Dữ liệu cho respondents
     const respondentsData = [
-        { name: 'John Doe', email: 'john.doe@example.com', credit_fund_id: 1 },
+        { name: 'John Doe', email: 'john.doe@example.com', institution_id: 1 },
         {
             name: 'Jane Smith',
             email: 'jane.smith@example.com',
-            credit_fund_id: 2,
+            institution_id: 2,
         },
         {
             name: 'Alice Johnson',
             email: 'alice.johnson@example.com',
-            credit_fund_id: 3,
+            institution_id: 3,
         },
     ];
 

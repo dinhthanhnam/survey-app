@@ -1,14 +1,4 @@
 -- CreateTable
-CREATE TABLE `credit_funds` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
-    `identity_code` VARCHAR(255) NOT NULL,
-
-    UNIQUE INDEX `identity_code`(`identity_code`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `question_survey` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `survey_id` INTEGER NOT NULL,
@@ -26,6 +16,7 @@ CREATE TABLE `questions` (
     `question_text` TEXT NOT NULL,
     `question_note` TEXT NULL,
     `question_type` ENUM('text', 'radiogroup', 'checkbox', 'dropdown', 'rating', 'boolean', 'date', 'datetime', 'file') NOT NULL,
+    `question_target` JSON NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -35,10 +26,11 @@ CREATE TABLE `respondents` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
-    `credit_fund_id` INTEGER NOT NULL,
+    `institution_id` INTEGER NOT NULL,
+    `belong_to_group` ENUM('Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ', 'Nhân viên CNTT & Hỗ trợ kỹ thuật') NULL,
 
     UNIQUE INDEX `email`(`email`),
-    INDEX `credit_fund_id`(`credit_fund_id`),
+    INDEX `credit_fund_id`(`institution_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -47,10 +39,9 @@ CREATE TABLE `surveys` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `survey_title` TEXT NOT NULL,
     `survey_description` TEXT NULL,
-    `show_questions_number` ENUM('onPage') NULL,
-    `credit_fund_id` INTEGER NOT NULL,
+    `institution_id` INTEGER NOT NULL,
 
-    INDEX `credit_fund_id`(`credit_fund_id`),
+    INDEX `credit_fund_id`(`institution_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -71,10 +62,30 @@ CREATE TABLE `responses` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `question_id` INTEGER NOT NULL,
     `respondent_id` INTEGER NOT NULL,
-    `response` LONGTEXT NULL,
+    `question_option_id` INTEGER NOT NULL,
 
     INDEX `question_id`(`question_id`),
     INDEX `respondent_id`(`respondent_id`),
+    INDEX `fk_response_question_option`(`question_option_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `question_group` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `question_id` INTEGER NOT NULL,
+
+    INDEX `question_id`(`question_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `institutions` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `identity_code` VARCHAR(255) NOT NULL,
+
+    UNIQUE INDEX `identity_code`(`identity_code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -85,13 +96,16 @@ ALTER TABLE `question_survey` ADD CONSTRAINT `question_survey_ibfk_1` FOREIGN KE
 ALTER TABLE `question_survey` ADD CONSTRAINT `question_survey_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `respondents` ADD CONSTRAINT `respondents_ibfk_1` FOREIGN KEY (`credit_fund_id`) REFERENCES `credit_funds`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `respondents` ADD CONSTRAINT `respondents_ibfk_1` FOREIGN KEY (`institution_id`) REFERENCES `institutions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `surveys` ADD CONSTRAINT `surveys_ibfk_1` FOREIGN KEY (`credit_fund_id`) REFERENCES `credit_funds`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `surveys` ADD CONSTRAINT `surveys_ibfk_1` FOREIGN KEY (`institution_id`) REFERENCES `institutions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `question_options` ADD CONSTRAINT `question_options_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `responses` ADD CONSTRAINT `fk_response_question_option` FOREIGN KEY (`question_option_id`) REFERENCES `question_options`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE `responses` ADD CONSTRAINT `responses_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -99,17 +113,5 @@ ALTER TABLE `responses` ADD CONSTRAINT `responses_ibfk_1` FOREIGN KEY (`question
 -- AddForeignKey
 ALTER TABLE `responses` ADD CONSTRAINT `responses_ibfk_2` FOREIGN KEY (`respondent_id`) REFERENCES `respondents`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-CREATE TRIGGER update_option_order
-BEFORE INSERT ON question_options
-FOR EACH ROW
-BEGIN
-    DECLARE max_value INT;
-
-    -- Lấy giá trị option_order lớn nhất cho question_id hiện tại
-    SELECT COALESCE(MAX(option_value), 0) INTO max_value
-    FROM question_options
-    WHERE question_id = NEW.question_id;
-
-    -- Tăng giá trị option_order lên 1 cho bản ghi mới
-    SET NEW.option_value = max_value + 1;
-END
+-- AddForeignKey
+ALTER TABLE `question_group` ADD CONSTRAINT `question_group_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
