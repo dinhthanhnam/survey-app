@@ -106,6 +106,7 @@ enum questions_question_type {
   date
   datetime
   file
+  group
 }
 
 enum respondents_belong_to_group {
