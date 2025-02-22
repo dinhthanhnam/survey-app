@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import TextQuestion from './questions/TextQuestion';
 import RadioQuestion from './questions/RadioQuestion';
 import CheckboxQuestion from './questions/CheckboxQuestion';
+import GroupQuestion from './questions/GroupQuestion';
 
 const Body = ({ scrollToTop }) => {
     const [step, setStep] = useState(0);
@@ -13,8 +14,6 @@ const Body = ({ scrollToTop }) => {
     const [loading, setLoading] = useState(false);
     const [answers, setAnswers] = useState({});
     const [totalSurveys, setTotalSurveys] = useState(0);
-    const [tooltip, setTooltip] = useState(null);
-
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
 
     useEffect(() => {
@@ -156,9 +155,14 @@ const Body = ({ scrollToTop }) => {
                     <p className="text-gray-600 mb-6 text-justify">
                         {surveyData.survey_description}
                     </p>
-
                     {surveyData.question_survey.map((questionSurvey, index) => {
                         const question = questionSurvey.questions;
+                        const childQuestions =
+                            surveyData.question_survey.filter((q) =>
+                                q.questions.question_name.startsWith(
+                                    question.question_name + '.'
+                                )
+                            );
                         if (groupQuestionIds.includes(question.id)) return null;
                         return (
                             <div
@@ -189,6 +193,15 @@ const Body = ({ scrollToTop }) => {
                                     {question.question_type === 'checkbox' && (
                                         <CheckboxQuestion
                                             question={question}
+                                            answers={answers}
+                                            handleChange={handleChange}
+                                        />
+                                    )}
+                                    {question.question_type === 'group' && (
+                                        <GroupQuestion
+                                            key={question.id}
+                                            groupQuestion={questionSurvey}
+                                            childQuestions={childQuestions}
                                             answers={answers}
                                             handleChange={handleChange}
                                         />
