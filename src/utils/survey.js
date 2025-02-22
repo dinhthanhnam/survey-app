@@ -21,3 +21,12 @@ export const fetchSurveyByStep = async (step) => {
         throw error;
     }
 };
+
+export const fetchGroupQuestionIds = async () => {
+    try {
+        const response = await fetch('/api/survey/group-questions');
+        return await response.json();
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách câu hỏi nhóm:', error);
+    }
+};

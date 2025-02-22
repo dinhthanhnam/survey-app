@@ -1,7 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
-import { fetchSurveyCount, fetchSurveyByStep } from '@/utils/survey';
+import {
+    fetchSurveyCount,
+    fetchSurveyByStep,
+    fetchGroupQuestionIds,
+} from '@/utils/survey';
 import Navigation from './Navigation';
 import TextQuestion from './questions/TextQuestion';
 import RadioQuestion from './questions/RadioQuestion';
@@ -17,19 +21,12 @@ const Body = ({ scrollToTop }) => {
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
 
     useEffect(() => {
-        const fetchGroupQuestionIds = async () => {
-            try {
-                const response = await fetch('/api/survey/group-questions');
-                const data = await response.json();
-                setGroupQuestionIds(
-                    data.questionGroup.map((q) => q.question_id)
-                );
-            } catch (error) {
-                console.error('Lỗi khi lấy danh sách câu hỏi nhóm:', error);
-            }
+        const getGroupQuestionIds = async () => {
+            const data = await fetchGroupQuestionIds();
+            setGroupQuestionIds(data.questionGroup.map((q) => q.question_id));
         };
 
-        fetchGroupQuestionIds();
+        getGroupQuestionIds();
     }, []);
 
     useEffect(() => {
@@ -114,6 +111,22 @@ const Body = ({ scrollToTop }) => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
                         placeholder="Nhập câu trả lời của bạn..."
                     />
+                </div>
+                {/* Video hướng dẫn thực hiện khảo sát */}
+                <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
+                    HƯỚNG DẪN THỰC HIỆN KHẢO SÁT
+                </h2>
+                <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
+                    <div className="relative w-full aspect-video">
+                        <iframe
+                            src="https://drive.google.com/file/d/1zlcjzi6gEZHADHhNdjAWvjevMzWLmRhh/preview"
+                            width="100%"
+                            height="100%"
+                            allow="autoplay"
+                            allowFullScreen
+                            className="rounded-lg shadow-md"
+                        ></iframe>
+                    </div>
                 </div>
 
                 {/* Thanh tiến trình và nút bấm */}
