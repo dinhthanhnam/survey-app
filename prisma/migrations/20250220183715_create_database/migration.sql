@@ -15,7 +15,7 @@ CREATE TABLE `questions` (
     `question_name` VARCHAR(255) NOT NULL,
     `question_text` TEXT NOT NULL,
     `question_note` TEXT NULL,
-    `question_type` ENUM('text', 'radiogroup', 'checkbox', 'dropdown', 'rating', 'boolean', 'date', 'datetime', 'file') NOT NULL,
+    `question_type` ENUM('text', 'radiogroup', 'checkbox', 'dropdown', 'rating', 'boolean', 'date', 'datetime', 'file', 'group') NOT NULL,
     `question_target` JSON NULL,
 
     PRIMARY KEY (`id`)
@@ -115,3 +115,19 @@ ALTER TABLE `responses` ADD CONSTRAINT `responses_ibfk_2` FOREIGN KEY (`responde
 
 -- AddForeignKey
 ALTER TABLE `question_group` ADD CONSTRAINT `question_group_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+CREATE TRIGGER update_option_order
+BEFORE INSERT ON question_options
+FOR EACH ROW
+BEGIN
+    DECLARE max_value INT;
+
+    -- Lấy giá trị option_order lớn nhất cho question_id hiện tại
+    SELECT COALESCE(MAX(option_value), 0) INTO max_value
+    FROM question_options
+    WHERE question_id = NEW.question_id;
+
+    -- Tăng giá trị option_order lên 1 cho bản ghi mới
+    SET NEW.option_value = max_value + 1;
+END

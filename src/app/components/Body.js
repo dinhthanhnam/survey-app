@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { fetchSurveyCount, fetchSurveyByStep } from '@/utils/survey';
 import Navigation from './Navigation';
+import TextQuestion from './questions/TextQuestion';
+import RadioQuestion from './questions/RadioQuestion';
+import CheckboxQuestion from './questions/CheckboxQuestion';
 
 const Body = ({ scrollToTop }) => {
     const [step, setStep] = useState(0);
@@ -12,7 +15,24 @@ const Body = ({ scrollToTop }) => {
     const [totalSurveys, setTotalSurveys] = useState(0);
     const [tooltip, setTooltip] = useState(null);
 
-    // Gọi API để lấy số lượng khảo sát
+    const [groupQuestionIds, setGroupQuestionIds] = useState([]);
+
+    useEffect(() => {
+        const fetchGroupQuestionIds = async () => {
+            try {
+                const response = await fetch('/api/survey/group-questions');
+                const data = await response.json();
+                setGroupQuestionIds(
+                    data.questionGroup.map((q) => q.question_id)
+                );
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách câu hỏi nhóm:', error);
+            }
+        };
+
+        fetchGroupQuestionIds();
+    }, []);
+
     useEffect(() => {
         const getSurveyCount = async () => {
             const total = await fetchSurveyCount();
@@ -137,119 +157,47 @@ const Body = ({ scrollToTop }) => {
                         {surveyData.survey_description}
                     </p>
 
-                    {surveyData.question_survey.map((questionSurvey, index) => (
-                        <div
-                            key={questionSurvey.questions.id}
-                            className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50"
-                        >
-                            <div className="relative">
-                                <label className="block text-gray-700 font-medium flex items-center">
-                                    <span className="break-words">
-                                        Câu {index + 1}.{' '}
-                                        {questionSurvey.questions.question_text}
-                                    </span>
-                                    {questionSurvey.questions.question_note && (
-                                        <div className="relative ml-2">
-                                            <FaQuestionCircle
-                                                className="text-teal-500 cursor-pointer"
-                                                onMouseEnter={() =>
-                                                    setTooltip(
-                                                        questionSurvey.questions
-                                                            .id
-                                                    )
-                                                }
-                                                onMouseLeave={() =>
-                                                    setTooltip(null)
-                                                }
-                                            />
-                                            {tooltip ===
-                                                questionSurvey.questions.id && (
-                                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 p-2 bg-gray-200 text-gray-800 rounded-md text-sm shadow-md w-60">
-                                                    {
-                                                        questionSurvey.questions
-                                                            .question_note
-                                                    }
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                    {surveyData.question_survey.map((questionSurvey, index) => {
+                        const question = questionSurvey.questions;
+                        if (groupQuestionIds.includes(question.id)) return null;
+                        return (
+                            <div
+                                key={question.id}
+                                className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50"
+                            >
+                                <label className="block text-gray-700 font-medium">
+                                    Câu {index + 1}. {question.question_text}
                                 </label>
-                            </div>
 
-                            <div className="mt-3 space-y-2">
-                                {questionSurvey.questions.question_type ===
-                                'text' ? (
-                                    <input
-                                        type="text"
-                                        value={
-                                            answers[
-                                                questionSurvey.questions.id
-                                            ] || ''
-                                        }
-                                        onChange={(e) =>
-                                            handleChange(
-                                                questions.id,
-                                                e.target.value
-                                            )
-                                        }
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                        placeholder="Nhập câu trả lời của bạn..."
-                                    />
-                                ) : (
-                                    questionSurvey.questions.question_options.map(
-                                        (option) => {
-                                            const isCheckbox =
-                                                questionSurvey.questions
-                                                    .question_type ===
-                                                'checkbox';
-                                            return (
-                                                <div
-                                                    key={option.id}
-                                                    className="flex items-center space-x-3 bg-white p-2 rounded-md shadow-sm border border-gray-200"
-                                                >
-                                                    <input
-                                                        type={isCheckbox ? 'checkbox' : 'radio'}
-                                                        id={`question-${questionSurvey.questions.id}-option-${option.id}`}
-                                                        name={
-                                                            isCheckbox
-                                                                ? `question-${questionSurvey.questions.id}-${option.id}`
-                                                                : `question-${questionSurvey.questions.id}`
-                                                        }
-                                                        value={option.option_value}
-                                                        checked={
-                                                            isCheckbox
-                                                                ? (answers[questionSurvey.questions.id] || []).includes(option.option_value)
-                                                                : answers[questionSurvey.questions.id] === option.option_value
-                                                        }
-                                                        onChange={() =>
-                                                            handleChange(questionSurvey.questions.id, option.option_value, isCheckbox)
-                                                        }
-                                                        className="w-5 h-5 flex-shrink-0 text-teal-600 focus:ring-teal-500"
-                                                    />
-
-                                                    <label
-                                                        htmlFor={`question-${questionSurvey.questions.id}-option-${option.id}`}
-                                                        className="text-gray-700 font-medium"
-                                                    >
-                                                        {option.option_text}{' '}
-                                                        {option.option_note && (
-                                                            <i className="text-gray-400 text-sm">
-                                                                (
-                                                                {
-                                                                    option.option_note
-                                                                }
-                                                                )
-                                                            </i>
-                                                        )}
-                                                    </label>
-                                                </div>
-                                            );
-                                        }
-                                    )
-                                )}
+                                <div className="mt-3">
+                                    {question.question_type === 'text' && (
+                                        <TextQuestion
+                                            question={question}
+                                            answers={answers}
+                                            handleChange={handleChange}
+                                        />
+                                    )}
+                                    {question.question_type ===
+                                        'radiogroup' && (
+                                        <RadioQuestion
+                                            question={question}
+                                            answers={answers}
+                                            handleChange={handleChange}
+                                            groupQuestionIds={groupQuestionIds}
+                                        />
+                                    )}
+                                    {question.question_type === 'checkbox' && (
+                                        <CheckboxQuestion
+                                            question={question}
+                                            answers={answers}
+                                            handleChange={handleChange}
+                                        />
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
+
                     <Navigation
                         step={step}
                         totalSurveys={totalSurveys}
