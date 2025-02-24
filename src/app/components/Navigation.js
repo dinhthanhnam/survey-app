@@ -1,4 +1,10 @@
-const Navigation = ({ step, totalSurveys, setStep, handleNextStep }) => {
+const Navigation = ({
+    step,
+    totalSurveys,
+    setStep,
+    handleNextStep,
+    handleSubmitSurvey,
+}) => {
     return (
         <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
             <div className="flex items-center space-x-2 w-full sm:w-auto">
@@ -30,15 +36,14 @@ const Navigation = ({ step, totalSurveys, setStep, handleNextStep }) => {
                         type="button"
                         className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
                         onClick={handleNextStep}
-                        disabled={step >= totalSurveys}
                     >
                         Tiếp theo
                     </button>
                 ) : (
                     <button
-                        type="submit"
+                        type="button"
                         className="w-full sm:w-auto px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
-                        onClick={() => alert('Gửi khảo sát thành công!')}
+                        onClick={handleSubmitSurvey}
                     >
                         Gửi khảo sát
                     </button>
@@ -47,4 +52,5 @@ const Navigation = ({ step, totalSurveys, setStep, handleNextStep }) => {
         </div>
     );
 };
+
 export default Navigation;

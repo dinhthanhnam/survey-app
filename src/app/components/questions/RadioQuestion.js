@@ -3,6 +3,7 @@ const RadioQuestion = ({
     answers,
     handleChange,
     groupQuestionIds,
+    isReviewMode,
 }) => {
     if (groupQuestionIds.includes(question.id)) {
         return null;
@@ -19,10 +20,9 @@ const RadioQuestion = ({
                         id={`question-${question.id}-option-${option.id}`}
                         name={`question-${question.id}`}
                         value={option.option_value}
-                        checked={answers[question.id] === option.option_value}
-                        onChange={() =>
-                            handleChange(question.id, option.option_value)
-                        }
+                        checked={answers[question.id] === option.id}
+                        onChange={() => handleChange(question.id, option.id)}
+                        disabled={isReviewMode}
                         className="w-5 h-5 flex-shrink-0 text-teal-600 focus:ring-teal-500"
                     />
                     <label

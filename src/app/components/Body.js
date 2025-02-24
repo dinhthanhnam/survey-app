@@ -5,9 +5,11 @@ import {
     fetchSurveyCount,
     fetchSurveyByStep,
     fetchGroupQuestionIds,
+    fetchUserAnswers,
+    fetchReviewData,
+    saveUserResponse,
 } from '@/utils/survey';
 import Navigation from './Navigation';
-import TextQuestion from './questions/TextQuestion';
 import RadioQuestion from './questions/RadioQuestion';
 import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
@@ -20,6 +22,32 @@ const Body = ({ scrollToTop }) => {
     const [answers, setAnswers] = useState({});
     const [totalSurveys, setTotalSurveys] = useState(0);
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
+
+    const [showReview, setShowReview] = useState(false);
+    const [reviewData, setReviewData] = useState(null);
+    const respondentId = 1;
+
+    const handleSubmitSurvey = () => {
+        setShowReview(true); // Chuyển sang trang xem lại
+    };
+    useEffect(() => {
+        const loadUserAnswers = async () => {
+            const userAnswers = await fetchUserAnswers(respondentId);
+            if (userAnswers) setAnswers(userAnswers);
+        };
+        if (step > 0) loadUserAnswers();
+    }, [step]);
+
+    useEffect(() => {
+        const loadReviewData = async () => {
+            const data = await fetchReviewData(respondentId);
+            if (data) {
+                setReviewData(data);
+                setAnswers(await fetchUserAnswers(respondentId));
+            }
+        };
+        if (showReview) loadReviewData();
+    }, [showReview]);
 
     useEffect(() => {
         const getGroupQuestionIds = async () => {
@@ -62,18 +90,9 @@ const Body = ({ scrollToTop }) => {
 
     const handleRadioChange = async (questionId, optionId) => {
         setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
-
-        await fetch('/api/survey/response', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                question_id: questionId,
-                respondent_id: 1, // ID người dùng (có thể lấy từ context)
-                question_option_id: optionId,
-                isCheckbox: false,
-            }),
-        });
+        await saveUserResponse(questionId, respondentId, optionId, false);
     };
+
     const handleCheckboxChange = async (questionId, optionId) => {
         setAnswers((prev) => {
             const currentValues = prev[questionId] || [];
@@ -82,17 +101,7 @@ const Body = ({ scrollToTop }) => {
                 : [...currentValues, optionId];
             return { ...prev, [questionId]: newValues };
         });
-
-        await fetch('/api/survey/response', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                question_id: questionId,
-                respondent_id: 1, // ID người dùng
-                question_option_id: optionId,
-                isCheckbox: true,
-            }),
-        });
+        await saveUserResponse(questionId, respondentId, optionId, true);
     };
 
     if (step === 0) {
@@ -174,6 +183,112 @@ const Body = ({ scrollToTop }) => {
             </div>
         );
     }
+    if (showReview && reviewData) {
+        return (
+            <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
+                <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center">
+                    Xem lại khảo sát
+                </h2>
+
+                {reviewData.surveys.map((survey, surveyIndex) => (
+                    <div key={survey.id} className="mb-8">
+                        <h3 className="text-xl font-semibold text-teal-700">
+                            {survey.survey_title}
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                            {survey.survey_description}
+                        </p>
+
+                        {survey.question_survey.map((questionSurvey, index) => {
+                            const question = questionSurvey.questions;
+                            const childQuestions =
+                                survey.question_survey.filter((q) =>
+                                    q.questions.question_name.startsWith(
+                                        question.question_name + '.'
+                                    )
+                                );
+                            if (groupQuestionIds.includes(question.id))
+                                return null;
+                            return (
+                                <div
+                                    key={question.id}
+                                    className="border border-gray-300 rounded-lg shadow-md p-4 mb-4 bg-gray-50"
+                                >
+                                    <label className="block text-gray-700 font-medium">
+                                        Câu {index + 1}:{' '}
+                                        {question.question_text}
+                                    </label>
+
+                                    <div className="mt-3">
+                                        {question.question_type ===
+                                            'radiogroup' && (
+                                            <RadioQuestion
+                                                question={question}
+                                                answers={answers}
+                                                handleChange={handleRadioChange}
+                                                groupQuestionIds={
+                                                    groupQuestionIds
+                                                }
+                                                isReviewMode={true}
+                                            />
+                                        )}
+                                        {question.question_type ===
+                                            'checkbox' && (
+                                            <CheckboxQuestion
+                                                question={question}
+                                                answers={answers}
+                                                handleChange={
+                                                    handleCheckboxChange
+                                                }
+                                                isReviewMode={true}
+                                            />
+                                        )}
+                                        {question.question_type === 'group' && (
+                                            <GroupQuestion
+                                                key={question.id}
+                                                groupQuestion={questionSurvey}
+                                                childQuestions={childQuestions}
+                                                answers={answers}
+                                                handleRadioChange={
+                                                    handleRadioChange
+                                                }
+                                                isReviewMode={true}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ))}
+
+                <div className="flex justify-between mt-8">
+                    <button
+                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                        onClick={() => setShowReview(false)}
+                    >
+                        Quay lại
+                    </button>
+                    <button
+                        className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                        onClick={async () => {
+                            await fetch('/api/survey/submit', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    respondent_id: 1,
+                                    answers,
+                                }),
+                            });
+                            alert('Khảo sát đã được gửi!');
+                        }}
+                    >
+                        Xác nhận gửi khảo sát
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
@@ -204,13 +319,6 @@ const Body = ({ scrollToTop }) => {
                                 </label>
 
                                 <div className="mt-3">
-                                    {question.question_type === 'text' && (
-                                        <TextQuestion
-                                            question={question}
-                                            answers={answers}
-                                            handleChange={handleChange}
-                                        />
-                                    )}
                                     {question.question_type ===
                                         'radiogroup' && (
                                         <RadioQuestion
@@ -218,6 +326,7 @@ const Body = ({ scrollToTop }) => {
                                             answers={answers}
                                             handleChange={handleRadioChange}
                                             groupQuestionIds={groupQuestionIds}
+                                            isReviewMode={false}
                                         />
                                     )}
                                     {question.question_type === 'checkbox' && (
@@ -225,6 +334,7 @@ const Body = ({ scrollToTop }) => {
                                             question={question}
                                             answers={answers}
                                             handleChange={handleCheckboxChange}
+                                            isReviewMode={false}
                                         />
                                     )}
                                     {question.question_type === 'group' && (
@@ -233,7 +343,10 @@ const Body = ({ scrollToTop }) => {
                                             groupQuestion={questionSurvey}
                                             childQuestions={childQuestions}
                                             answers={answers}
-                                            handleChange={handleChange}
+                                            handleRadioChange={
+                                                handleRadioChange
+                                            }
+                                            isReviewMode={false}
                                         />
                                     )}
                                 </div>
@@ -246,6 +359,7 @@ const Body = ({ scrollToTop }) => {
                         totalSurveys={totalSurveys}
                         setStep={setStep}
                         handleNextStep={handleNextStep}
+                        handleSubmitSurvey={handleSubmitSurvey}
                     />
                 </form>
             ) : (

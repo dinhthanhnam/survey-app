@@ -1,4 +1,9 @@
-const CheckboxQuestion = ({ question, answers, handleChange }) => {
+const CheckboxQuestion = ({
+    question,
+    answers,
+    handleChange,
+    isReviewMode,
+}) => {
     return (
         <div className="mt-3 space-y-2">
             {question.question_options.map((option) => (
@@ -11,12 +16,12 @@ const CheckboxQuestion = ({ question, answers, handleChange }) => {
                         id={`question-${question.id}-option-${option.id}`}
                         name={`question-${question.id}`}
                         value={option.option_value}
-                        checked={(answers[question.id] || []).includes(
-                            option.option_value
-                        )}
-                        onChange={() =>
-                            handleChange(question.id, option.option_value)
+                        checked={
+                            Array.isArray(answers[question.id]) &&
+                            answers[question.id].includes(Number(option.id))
                         }
+                        onChange={() => handleChange(question.id, option.id)}
+                        disabled={isReviewMode}
                         className="w-5 h-5 flex-shrink-0 text-teal-600 focus:ring-teal-500"
                     />
                     <label

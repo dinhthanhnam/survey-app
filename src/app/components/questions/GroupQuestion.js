@@ -2,7 +2,8 @@ const GroupQuestion = ({
     groupQuestion,
     childQuestions,
     answers,
-    handleChange,
+    handleRadioChange,
+    isReviewMode,
 }) => {
     if (!groupQuestion || childQuestions.length === 0) return null;
 
@@ -49,15 +50,15 @@ const GroupQuestion = ({
                                         name={`question-${question.question_id}`}
                                         value={option.option_value}
                                         checked={
-                                            answers[question.question_id] ===
-                                            option.option_value
+                                            answers[question.id] === option.id
                                         }
                                         onChange={() =>
-                                            handleChange(
+                                            handleRadioChange(
                                                 question.question_id,
-                                                option.option_value
+                                                option.id
                                             )
                                         }
+                                        disabled={isReviewMode}
                                         className="w-5 h-5 text-teal-600 focus:ring-teal-500"
                                     />
                                 </td>
