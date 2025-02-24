@@ -11,6 +11,7 @@ import TextQuestion from './questions/TextQuestion';
 import RadioQuestion from './questions/RadioQuestion';
 import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
+import { respondents_belong_to_group } from '@prisma/client';
 
 const Body = ({ scrollToTop }) => {
     const [step, setStep] = useState(0);
@@ -59,22 +60,38 @@ const Body = ({ scrollToTop }) => {
         scrollToTop(); // Cuộn lên đầu container
     };
 
-    const handleChange = (questionId, value, isCheckbox) => {
+    const handleRadioChange = async (questionId, optionId) => {
+        setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+
+        await fetch('/api/survey/response', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                question_id: questionId,
+                respondent_id: 1, // ID người dùng (có thể lấy từ context)
+                question_option_id: optionId,
+                isCheckbox: false,
+            }),
+        });
+    };
+    const handleCheckboxChange = async (questionId, optionId) => {
         setAnswers((prev) => {
-            if (isCheckbox) {
-                const currentValues = prev[questionId] || [];
-                return {
-                    ...prev,
-                    [questionId]: currentValues.includes(value)
-                        ? currentValues.filter((v) => v !== value)
-                        : [...currentValues, value],
-                };
-            } else {
-                return {
-                    ...prev,
-                    [questionId]: value,
-                };
-            }
+            const currentValues = prev[questionId] || [];
+            const newValues = currentValues.includes(optionId)
+                ? currentValues.filter((v) => v !== optionId)
+                : [...currentValues, optionId];
+            return { ...prev, [questionId]: newValues };
+        });
+
+        await fetch('/api/survey/response', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                question_id: questionId,
+                respondent_id: 1, // ID người dùng
+                question_option_id: optionId,
+                isCheckbox: true,
+            }),
         });
     };
 
@@ -199,7 +216,7 @@ const Body = ({ scrollToTop }) => {
                                         <RadioQuestion
                                             question={question}
                                             answers={answers}
-                                            handleChange={handleChange}
+                                            handleChange={handleRadioChange}
                                             groupQuestionIds={groupQuestionIds}
                                         />
                                     )}
@@ -207,7 +224,7 @@ const Body = ({ scrollToTop }) => {
                                         <CheckboxQuestion
                                             question={question}
                                             answers={answers}
-                                            handleChange={handleChange}
+                                            handleChange={handleCheckboxChange}
                                         />
                                     )}
                                     {question.question_type === 'group' && (
