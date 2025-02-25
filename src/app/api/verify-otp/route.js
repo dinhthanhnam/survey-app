@@ -7,6 +7,12 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
     try {
+        const belongToGroupMapping = {
+            Leader: "Lãnh đạo & Quản lý",
+            Officer: "Cán bộ nghiệp vụ",
+            ITSup: "Nhân viên CNTT & Hỗ trợ kỹ thuật"
+        };
+
         const { otp, respondent } = await req.json();
 
         if (!otp || !respondent?.email) {
@@ -44,13 +50,17 @@ export async function POST(req) {
         }
 
         // Tạo JWT token
-        const token = createToken(authedRespondent);
+        const token = await createToken(authedRespondent);
 
         if(!token) {
             return NextResponse.json({ success: false, message: "Không tạo được Token!" });
         }
+        const returnedRespondent = {
+            ...authedRespondent,
+            belong_to_group: belongToGroupMapping[respondent.belong_to_group]
+        };
         // Tạo response và đặt token vào cookie
-        const response = NextResponse.json({ success: true, message: "Xác thực thành công!" });
+        const response = NextResponse.json({ success: true, message: "Xác thực thành công!", respondent: JSON.stringify(returnedRespondent)});
 
         response.cookies.set("token", token, {
             httpOnly: true,

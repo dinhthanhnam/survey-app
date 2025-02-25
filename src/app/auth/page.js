@@ -52,6 +52,7 @@ export default function AuthPage() {
 
             if (response.data.success) {
                 setSuccessMessage(response.data.message);
+                localStorage.setItem("respondent", response.data.respondent);
                 window.location.href = "/"; // Chuyển hướng về trang chủ
             } else {
                 setErrorMessage(response.data.message);
@@ -73,7 +74,7 @@ export default function AuthPage() {
                             <h2 className="text-2xl font-bold text-teal-700">NHẬP THÔNG TIN ĐỂ THỰC HIỆN KHẢO SÁT</h2>
                             <a className="underline text-teal-600 self-end" href="/refresh">Không phải lần đầu?</a>
                         </div>
-                        
+
                         {errorMessage && (
                             <p className="text-red-500 text-sm font-semibold">{errorMessage}</p>
                         )}
