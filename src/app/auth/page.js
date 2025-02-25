@@ -10,13 +10,14 @@ export default function AuthPage() {
     const [phone, setPhone] = useState(""); // Phone
     const [role, setRole] = useState(""); // Vai trò
     const [otp, setOtp] = useState("");
-    const [otpVisible, setOtpVisible] = useState(false); // Hiển thị ô OTP
+    const [successMessage, setSuccessMessage] = useState(""); // Hiển thị ô OTP
     const [errorMessage, setErrorMessage] = useState(""); // Thông báo lỗi
-    const [authedRespondent, setAuthedRespondent] = useState({});
+    const [unAuthedRespondent, setUnAuthedRespondent] = useState({});
 
     // Hàm gửi request lấy OTP
     const handleRequestOTP = async () => {
-        setErrorMessage(""); // Reset lỗi trước khi kiểm tra
+        setErrorMessage("");
+        setSuccessMessage("");
         if (!name || !creditCode || !email || !role) {
             setErrorMessage("Vui lòng nhập và chọn đầy đủ thông tin.");
             return;
@@ -32,9 +33,10 @@ export default function AuthPage() {
             });
 
             if (response.data.success) {
-                setOtpVisible(true);
+                setSuccessMessage(response.data.message);
+                setUnAuthedRespondent(response.data.respondent);
             } else {
-                setErrorMessage("Mã quỹ tín dụng không hợp lệ. Vui lòng kiểm tra lại.");
+                setErrorMessage(response.data.message);
             }
         } catch (error) {
             setErrorMessage("Đã xảy ra lỗi khi lấy OTP. Vui lòng thử lại.");
@@ -42,8 +44,23 @@ export default function AuthPage() {
     };
 
     const handleVerifyOTP = async () => {
+        try {
+            const response = await axios.post("/api/verify-otp",
+                { otp, respondent: unAuthedRespondent },
+                { withCredentials: true }
+            );
 
+            if (response.data.success) {
+                setSuccessMessage(response.data.message);
+                window.location.href = "/"; // Chuyển hướng về trang chủ
+            } else {
+                setErrorMessage(response.data.message);
+            }
+        } catch (error) {
+            setErrorMessage("Xác thực OTP thất bại!");
+        }
     };
+
 
     return (
         <div>
@@ -52,9 +69,11 @@ export default function AuthPage() {
                     <Header />
 
                     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
-                        <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
-                            THÔNG TIN QUỸ TÍN DỤNG
-                        </h2>
+                        <div className="w-full flex flex-col gap-2">
+                            <h2 className="text-2xl font-bold text-teal-700">NHẬP THÔNG TIN ĐỂ THỰC HIỆN KHẢO SÁT</h2>
+                            <a className="underline text-teal-600 self-end" href="/refresh">Không phải lần đầu?</a>
+                        </div>
+                        
                         {errorMessage && (
                             <p className="text-red-500 text-sm font-semibold">{errorMessage}</p>
                         )}
@@ -84,11 +103,39 @@ export default function AuthPage() {
                                 placeholder="Nhập họ tên đầy đủ..."
                             />
                         </div>
+                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
+                            <label className="block text-gray-700 font-semibold text-lg">
+                                2. Số điện thoai
+                            </label>
+                            <input
+                                type="text"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
+                                placeholder="Nhập họ tên đầy đủ..."
+                            />
+                        </div>
 
+                        {/* Vai trò */}
+                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
+                            <label className="block text-gray-700 font-semibold text-lg">
+                                3. Vai trò của bạn:
+                            </label>
+                            <select
+                                onChange={(e) => setRole(e.target.value)}
+                                value={role}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
+                            >
+                                <option value="">Chọn vai trò</option>
+                                <option value="Leader">Lãnh đạo & Quản lý</option>
+                                <option value="Officer">Cán bộ nghiệp vụ</option>
+                                <option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>
+                            </select>
+                        </div>
                         {/* Email */}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                3. Email
+                                4. Email
                             </label>
                             <div className="flex items-center gap-2">
                                 <input
@@ -107,64 +154,30 @@ export default function AuthPage() {
                             </div>
                         </div>
 
-                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
-                            <label className="block text-gray-700 font-semibold text-lg">
-                                2. Số điện thoai
-                            </label>
-                            <input
-                                type="text"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
-                                placeholder="Nhập họ tên đầy đủ..."
-                            />
-                        </div>
-
-                        {/* Vai trò */}
-                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
-                            <label className="block text-gray-700 font-semibold text-lg">
-                                4. Vai trò của bạn:
-                            </label>
-                            <select
-                                onChange={(e) => setRole(e.target.value)}
-                                value={role}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
-                            >
-                                <option value="">Chọn vai trò</option>
-                                <option value="leader">Lãnh đạo & Quản lý</option>
-                                <option value="businessofficer">Cán bộ nghiệp vụ</option>
-                                <option value="itsupport">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>
-                            </select>
-                        </div>
-
-                        {/* Hiển thị thông báo lỗi nếu có */}
-
                         {/* OTP Input (chỉ hiển thị khi thành công) */}
-                        {otpVisible && (
-                            <>
-                                <p className="text-green-600 text-sm font-semibold">OTP đã được gửi, kiểm tra email của bạn.</p>
-                                <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
-                                    <label className="block text-gray-700 font-semibold text-lg">
-                                        5. Nhập OTP
-                                    </label>
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            value={otp}
-                                            onChange={(e) => setOtp(e.target.value)}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                            placeholder="Nhập OTP..."
-                                        />
-                                        <button
-                                            onClick={handleVerifyOTP}
-                                            className="px-4 py-2 bg-gray-200 font-normal rounded-lg hover:bg-gray-300 focus:ring-2 focus:ring-teal-500 whitespace-nowrap"
-                                        >
-                                            Xác nhận OTP
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
+                        {successMessage !== "" && (
+                            <p className="text-green-600 text-sm font-semibold">OTP đã được gửi, kiểm tra email của bạn.</p>
                         )}
+                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
+                            <label className="block text-gray-700 font-semibold text-lg">
+                                5. Nhập OTP
+                            </label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    placeholder="Nhập OTP..."
+                                />
+                                <button
+                                    onClick={handleVerifyOTP}
+                                    className="px-4 py-2 bg-gray-200 font-normal rounded-lg hover:bg-gray-300 focus:ring-2 focus:ring-teal-500 whitespace-nowrap"
+                                >
+                                    Xác nhận OTP
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

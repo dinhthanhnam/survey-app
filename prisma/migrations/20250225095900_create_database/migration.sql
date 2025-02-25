@@ -27,6 +27,7 @@ CREATE TABLE `respondents` (
     `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `phone` VARCHAR(255) NOT NULL,
+    `auth_status` VARCHAR(255) NOT NULL,
     `institution_id` INTEGER NOT NULL,
     `belong_to_group` ENUM('Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ', 'Nhân viên CNTT & Hỗ trợ kỹ thuật') NULL,
 

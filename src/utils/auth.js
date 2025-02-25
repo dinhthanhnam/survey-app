@@ -1,27 +1,38 @@
-import jwt from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from "jose";
 
-const SECRET_KEY = env("JWT_SECRET");
+const JWT_SECRET = process.env.JWT_SECRET;
+const secretKey = new TextEncoder().encode(JWT_SECRET);
 
 // ✅ Hàm tạo JWT
-export function createToken(user) {
-    return jwt.sign(
-        { id: user.id, email: user.email },
-        SECRET_KEY,
-        { expiresIn: '1h' }
-    );
+export async function createToken(user) {
+    const iat = Math.floor(Date.now() / 1000);
+    const exp = iat + 24 * 60 * 60; // Hết hạn sau 24h
+
+    return new SignJWT({
+        id: user.id,
+        email: user.email,
+        auth_status: user.auth_status,
+    })
+        .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+        .setIssuedAt(iat)
+        .setExpirationTime(exp)
+        .sign(secretKey);
 }
 
-// ✅ Hàm xác minh JWT
-export function verifyToken(req) {
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader) return null;
-
-    const token = authHeader.split(' ')[1]; // Lấy token từ `Bearer <token>`
-    if (!token) return null;
-
+// ✅ Hàm xác thực JWT
+export async function verifyToken(token) {
     try {
-        return jwt.verify(token, SECRET_KEY); // Xác minh JWT
+        if (!token) {
+            console.error("❌ Token rỗng hoặc không tồn tại!");
+            return null;
+        }
+
+        console.log("🔐 Đang xác thực token:", token);
+        const { payload } = await jwtVerify(token, secretKey);
+        console.log("✅ Token hợp lệ:", payload);
+        return payload;
     } catch (error) {
-        return null; // Token không hợp lệ hoặc hết hạn
+        console.error("❌ Lỗi xác thực token:", error.message);
+        return null;
     }
 }

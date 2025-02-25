@@ -36,6 +36,7 @@ model respondents {
   name            String                       @db.VarChar(255)
   email           String                       @unique(map: "email") @db.VarChar(255)
   phone           String                       @unique(map: "phone") @db.VarChar(255)
+  auth_status     String                       @default("unauthorized") @db.VarChar(255)
   institution_id  Int
   belong_to_group respondents_belong_to_group?
   institutions    institutions                 @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "respondents_ibfk_1")
