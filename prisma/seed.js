@@ -78,16 +78,26 @@ async function main() {
 
     // Dữ liệu cho respondents
     const respondentsData = [
-        { name: 'John Doe', email: 'john.doe@example.com', institution_id: 1 },
         {
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            institution_id: 2,
+            name: "John Doe",
+            email: "john.doe@example.com",
+            phone: "0125623123",
+            institution_id: 1,
+            belong_to_group: "Leader",  // ✅ Dùng đúng enum
         },
         {
-            name: 'Alice Johnson',
-            email: 'alice.johnson@example.com',
+            name: "Jane Smith",
+            email: "jane.smith@example.com",
+            phone: "0123213123",
+            institution_id: 2,
+            belong_to_group: "Officer", // ✅ Dùng đúng enum
+        },
+        {
+            name: "Alice Johnson",
+            email: "alice.johnson@example.com",
+            phone: "0123123923",
             institution_id: 3,
+            belong_to_group: "ITSup",   // ✅ Dùng đúng enum
         },
     ];
 

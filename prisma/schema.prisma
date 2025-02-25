@@ -35,6 +35,7 @@ model respondents {
   id              Int                          @id @default(autoincrement())
   name            String                       @db.VarChar(255)
   email           String                       @unique(map: "email") @db.VarChar(255)
+  phone           String                       @unique(map: "phone") @db.VarChar(255)
   institution_id  Int
   belong_to_group respondents_belong_to_group?
   institutions    institutions                 @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "respondents_ibfk_1")
@@ -51,7 +52,7 @@ model surveys {
   question_survey    question_survey[]
   institutions       institutions      @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "surveys_ibfk_1")
 
-  @@index([institution_id], map: "credit_fund_id")
+  @@index([institution_id], map: "institution_id")
 }
 
 model question_options {
@@ -96,6 +97,13 @@ model institutions {
   surveys       surveys[]
 }
 
+model OtpToken {
+  id        Int      @id @default(autoincrement())
+  email     String
+  otpHash   String
+  expiresAt DateTime
+}
+
 enum questions_question_type {
   text
   radiogroup
@@ -110,7 +118,7 @@ enum questions_question_type {
 }
 
 enum respondents_belong_to_group {
-  Leader               @map("Lãnh đạo & Quản lý")
-  Officer                 @map("Cán bộ nghiệp vụ")
-  ITSup @map("Nhân viên CNTT & Hỗ trợ kỹ thuật")
+  Leader  @map("Lãnh đạo & Quản lý")
+  Officer @map("Cán bộ nghiệp vụ")
+  ITSup   @map("Nhân viên CNTT & Hỗ trợ kỹ thuật")
 }
