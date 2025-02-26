@@ -18,10 +18,12 @@ export async function POST(req) {
             where: {
                 email: email,
                 institutions: {
-                    some: { identity_code: creditCode }
+                    identity_code: creditCode
                 }
             }
         });
+
+        // if(respondent.institutions()) {}
         if(!respondent) {
             return NextResponse.json({ success: false, message: "Email không đúng với dữ liệu hệ thống!" }, { status: 400 });
         }
