@@ -12,10 +12,16 @@ export async function POST(req) {
             ITSup: "Nhân viên CNTT & Hỗ trợ kỹ thuật"
         };
 
-        const { email } = await req.json();
+        const { email, creditCode } = await req.json();
 
-        const respondent = await prisma.respondents.findFirst({ where: { email } });
-
+        const respondent = await prisma.respondents.findFirst({
+            where: {
+                email: email,
+                institutions: {
+                    some: { identity_code: creditCode }
+                }
+            }
+        });
         if(!respondent) {
             return NextResponse.json({ success: false, message: "Email không đúng với dữ liệu hệ thống!" }, { status: 400 });
         }

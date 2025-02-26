@@ -5,6 +5,7 @@ import axios from "axios";
 
 export default function RefreshPage() {
     const [email, setEmail] = useState(""); // Email
+    const [creditCode, setCreditCode] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleRefresh = async() => {
@@ -14,7 +15,7 @@ export default function RefreshPage() {
         }
         try {
             const response = await axios.post("/api/refresh",
-                {email},
+                {email, creditCode},
                 { withCredentials: true }
             );
 
@@ -54,6 +55,18 @@ export default function RefreshPage() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                                     placeholder="Nhập email của bạn..."
+                                />
+                            </div>
+                            <label className="block text-gray-700 font-semibold text-lg">
+                                Mã quỹ
+                            </label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    value={creditCode}
+                                    onChange={(e) => setCreditCode(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    placeholder="Nhập mã quỹ..."
                                 />
                             </div>
                             <div className={`pt-6 flex flex-row-reverse`}>

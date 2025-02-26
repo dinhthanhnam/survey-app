@@ -29,6 +29,10 @@ export function middleware(req) {
         return NextResponse.redirect(new URL("/", req.url));
     }
 
+    if (url.startsWith("/admin") && user.auth_status === "admin") {
+        console.log("Không phải admin, cút!");
+        return NextResponse.redirect(new URL("/", req.url));
+    }
     console.log("✅ Token hợp lệ! Cho phép vào:", url);
     return NextResponse.next();
 }

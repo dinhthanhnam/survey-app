@@ -22,8 +22,8 @@ const Body = ({ scrollToTop }) => {
     const [answers, setAnswers] = useState({});
     const [totalSurveys, setTotalSurveys] = useState(0);
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
-    const [validCodes, setValidCodes] = useState([]); // Danh sách mã hợp lệ
-    const [isValid, setIsValid] = useState(false);
+    // const [validCodes, setValidCodes] = useState([]); // Danh sách mã hợp lệ
+    // const [isValid, setIsValid] = useState(false);
     const [showReview, setShowReview] = useState(false);
     const [reviewData, setReviewData] = useState(null);
     const respondentId = 1;
@@ -38,15 +38,15 @@ const Body = ({ scrollToTop }) => {
         };
         if (step > 0) loadUserAnswers();
     }, [step]);
-    useEffect(() => {
-        // Gọi API để lấy danh sách Identity_code từ institutions
-        fetch("/api/institutions")
-            .then((res) => res.json())
-            .then((data) => {
-                setValidCodes(data.map((inst) => inst.identity_code));
-            })
-            .catch((error) => console.error("Error fetching institutions:", error));
-    }, []);
+    // useEffect(() => {
+    //     // Gọi API để lấy danh sách Identity_code từ institutions
+    //     fetch("/api/institutions")
+    //         .then((res) => res.json())
+    //         .then((data) => {
+    //             setValidCodes(data.map((inst) => inst.identity_code));
+    //         })
+    //         .catch((error) => console.error("Error fetching institutions:", error));
+    // }, []);
     useEffect(() => {
         const loadReviewData = async () => {
             const data = await fetchReviewData(respondentId);
@@ -95,9 +95,9 @@ const Body = ({ scrollToTop }) => {
         setAnswers((prev) => ({ ...prev, [questionId]: value }));
 
         // Kiểm tra nếu giá trị nhập vào có trong danh sách mã hợp lệ
-        if (questionId === 1) {
-            setIsValid(validCodes.includes(value.trim().toUpperCase()));
-        }
+        // if (questionId === 1) {
+        //     setIsValid(validCodes.includes(value.trim().toUpperCase()));
+        // }
     };
     const handleNextStep = () => {
         setStep((prev) => prev + 1);
@@ -159,12 +159,9 @@ const Body = ({ scrollToTop }) => {
                     </div>
                     <button
                         onClick={() => setStep(1)}
-                        disabled={!isValid || loading}
-                        className={`px-6 py-2 rounded-lg transition duration-200 ease-in-out ${
-                            isValid
-                                ? "bg-teal-600 text-white hover:bg-teal-700"
-                                : "bg-gray-400 text-gray-200 cursor-not-allowed"
-                        }`}
+                        disabled={loading}
+                        className={`px-6 py-2 rounded-lg transition duration-200 ease-in-out
+                         bg-teal-600 text-white hover:bg-teal-700`}
                     >
                         Tiếp theo
                     </button>

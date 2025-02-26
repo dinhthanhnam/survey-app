@@ -39,7 +39,7 @@ export default function AuthPage() {
                 setErrorMessage(response.data.message);
             }
         } catch (error) {
-            setErrorMessage("Đã xảy ra lỗi khi lấy OTP. Vui lòng thử lại.");
+            setErrorMessage("Kiểm tra lại thông tin mã quỹ.");
         }
     };
 
