@@ -1,9 +1,12 @@
 import { PrismaClient } from '@prisma/client';
+import {ProtectApi} from "@/utils/protectapi";
 
 const prisma = new PrismaClient();
 
 export async function GET() {
     try {
+        const authResponse = await ProtectApi();
+        if (authResponse) return authResponse;
         const surveys = await prisma.surveys.findMany();
 
         // Kiểm tra nếu không tìm thấy survey

@@ -94,10 +94,6 @@ const Body = ({ scrollToTop }) => {
     const handleChange = (questionId, value) => {
         setAnswers((prev) => ({ ...prev, [questionId]: value }));
 
-        // Kiểm tra nếu giá trị nhập vào có trong danh sách mã hợp lệ
-        // if (questionId === 1) {
-        //     setIsValid(validCodes.includes(value.trim().toUpperCase()));
-        // }
     };
     const handleNextStep = () => {
         setStep((prev) => prev + 1);

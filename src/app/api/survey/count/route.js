@@ -1,9 +1,13 @@
 import { PrismaClient } from '@prisma/client';
+import {ProtectApi} from "@/utils/protectapi";
 
 const prisma = new PrismaClient();
 
 export async function GET() {
     try {
+        const authResponse = await ProtectApi();
+        if (authResponse) return authResponse;
+
         const total = await prisma.surveys.count();
         return Response.json({ total });
     } catch (error) {

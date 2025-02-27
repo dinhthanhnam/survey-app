@@ -20,7 +20,7 @@ export async function POST(req) {
         }
 
         // Tìm OTP hợp lệ
-        const otpRecord = await prisma.otpToken.findFirst({
+        const otpRecord = await prisma.otptoken.findFirst({
             where: {
                 email: respondent.email,
                 expiresAt: { gte: new Date() } // Lấy OTP chưa hết hạn
@@ -38,7 +38,7 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "OTP không chính xác!" }, { status: 400 });
         }
         // Xoá OTP sau khi dùng
-        await prisma.otpToken.delete({ where: { id: otpRecord.id } });
+        await prisma.otptoken.delete({ where: { id: otpRecord.id } });
 
         // Tạo người dùng đã xác thực
         const authedRespondent = await prisma.respondents.create({

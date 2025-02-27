@@ -14,7 +14,6 @@ export function middleware(req) {
     console.log("🍪 Token from Cookie:", token);
 
     const user = token ? verifyToken(token) : null;
-    console.log("👤 Decoded User:", user);
 
     const url = req.nextUrl.pathname;
 

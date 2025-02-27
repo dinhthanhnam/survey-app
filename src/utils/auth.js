@@ -29,7 +29,7 @@ export async function verifyToken(token) {
 
         console.log("🔐 Đang xác thực token:", token);
         const { payload } = await jwtVerify(token, secretKey);
-        console.log("✅ Token hợp lệ:", payload);
+        console.log("✅ Payload:", payload);
         return payload;
     } catch (error) {
         console.error("❌ Lỗi xác thực token:", error.message);

@@ -6,8 +6,6 @@ import { respondents_belong_to_group } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function POST(req) {
-    try {
-
         const { phone, name, email, creditCode, role  } = await req.json();
 
         if (!email || !creditCode || !role) {
@@ -23,9 +21,9 @@ export async function POST(req) {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const otpHash = await bcrypt.hash(otp, 8);
 
-        await prisma.otpToken.deleteMany({ where: { email } });
+        await prisma.otptoken.deleteMany({ where: { email } });
 
-        await prisma.otpToken.create({
+        await prisma.otptoken.create({
             data: {
                 email,
                 otpHash,
@@ -63,7 +61,4 @@ export async function POST(req) {
             return Response.json({ success: false, message: "Gửi OTP thất bại" }, { status: 500 });
         }
         return Response.json({ success: true, message: "OTP đã được gửi!", respondent: unAuthedRespondent });
-    } catch (error) {
-        return Response.json({ success: false, message: "Lỗi server", error }, { status: 500 });
-    }
 }

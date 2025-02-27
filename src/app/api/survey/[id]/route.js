@@ -1,17 +1,15 @@
 import { PrismaClient, surveys } from '@prisma/client';
+import {ProtectApi} from "@/utils/protectapi";
 
 const prisma = new PrismaClient();
-/**
- * @typedef {Object} survey
- * @property {string} survey_title
- * @property {string} survey_description
- * @property {array} question_survey
- * @property {Array} show_questions_number
- */
+
 export async function GET(request, { params }) {
     const { id } = await params;
 
     try {
+        const authResponse = await ProtectApi();
+        if (authResponse) return authResponse;
+
         // Lấy dữ liệu survey từ database
         const survey = await prisma.surveys.findUnique({
             where: { id: parseInt(id) },

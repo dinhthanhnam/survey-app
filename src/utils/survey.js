@@ -1,10 +1,9 @@
 // src/utils/api.js
+import axios from "axios";
 export const fetchSurveyCount = async () => {
     try {
-        const response = await fetch('/api/survey/count');
-        if (!response.ok) throw new Error('Không thể lấy số lượng khảo sát');
-        const data = await response.json();
-        return data.total; // Giả sử API trả về { total: số khảo sát }
+        const response = await axios.get('/api/survey/count', {withCredentials : true});
+        return response.data.total; // Giả sử API trả về { total: số khảo sát }
     } catch (error) {
         console.error('Lỗi khi lấy số lượng khảo sát:', error);
         return 0; // Trả về 0 nếu lỗi
@@ -13,19 +12,20 @@ export const fetchSurveyCount = async () => {
 
 export const fetchSurveyByStep = async (step) => {
     try {
-        const response = await fetch(`/api/survey/${step}`);
-        if (!response.ok) throw new Error('Khảo sát không tồn tại!');
-        return await response.json();
+        const response = await axios.get(`/api/survey/${step}`, { withCredentials: true });
+
+        // Axios tự động ném lỗi nếu HTTP status không phải 2xx, nên không cần kiểm tra `ok`
+        return response.data;
     } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu khảo sát:', error);
+        console.error("Lỗi khi lấy dữ liệu khảo sát:", error.response?.data || error.message);
         throw error;
     }
 };
 
 export const fetchGroupQuestionIds = async () => {
     try {
-        const response = await fetch('/api/survey/group-questions');
-        return await response.json();
+        const response = await axios.get('/api/survey/group-questions', { withCredentials: true });
+        return response.data;
     } catch (error) {
         console.error('Lỗi khi lấy danh sách câu hỏi nhóm:', error);
     }
@@ -33,13 +33,13 @@ export const fetchGroupQuestionIds = async () => {
 
 export const fetchUserAnswers = async (respondentId) => {
     try {
-        const response = await fetch('/api/survey/review', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ respondent_id: respondentId }),
-        });
+        const response = await axios.post("/api/survey/review", {
+            respondent_id: respondentId,
+        },
+        {withCredentials: true}
+        );
 
-        const data = await response.json();
+        const data = response.data;
 
         const userAnswers = {};
         const questionCount = {};
@@ -67,21 +67,18 @@ export const fetchUserAnswers = async (respondentId) => {
 
         return userAnswers;
     } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu câu trả lời:', error);
+        console.error("Lỗi khi lấy dữ liệu câu trả lời:", error);
         return null;
     }
 };
 
 export const fetchReviewData = async (respondentId) => {
     try {
-        const response = await fetch('/api/survey/review', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ respondent_id: respondentId }),
-        });
-
-        const data = await response.json();
-        return data;
+        const response = await axios.post('/api/survey/review',
+            { respondent_id: respondentId },
+            {withCredentials: true}
+        );
+        return response.data;
     } catch (error) {
         console.error('Lỗi khi lấy dữ liệu xem lại:', error);
         return null;
