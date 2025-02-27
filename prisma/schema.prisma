@@ -36,7 +36,7 @@ model respondents {
   name            String                       @db.VarChar(255)
   email           String                       @unique(map: "email") @db.VarChar(255)
   phone           String                       @unique(map: "phone") @db.VarChar(255)
-  auth_status     String                       @default("unauthorized") @db.VarChar(255)
+  auth_status     String                       @db.VarChar(255)
   institution_id  Int
   belong_to_group respondents_belong_to_group?
   institutions    institutions                 @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "respondents_ibfk_1")
@@ -69,13 +69,15 @@ model question_options {
 }
 
 model responses {
-  id                 Int              @id @default(autoincrement())
-  question_id        Int
-  respondent_id      Int
-  question_option_id Int
-  question_options   question_options @relation(fields: [question_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_response_question_option")
-  questions          questions        @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_1")
-  respondents        respondents      @relation(fields: [respondent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_2")
+  id                     Int                        @id @default(autoincrement())
+  question_id            Int
+  respondent_id          Int
+  question_option_id     Int
+  question_option_answer Json?
+  response_status        responses_response_status?
+  question_options       question_options           @relation(fields: [question_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_response_question_option")
+  questions              questions                  @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_1")
+  respondents            respondents                @relation(fields: [respondent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_2")
 
   @@index([question_id], map: "question_id")
   @@index([respondent_id], map: "respondent_id")
@@ -98,7 +100,7 @@ model institutions {
   surveys       surveys[]
 }
 
-model OtpToken {
+model otptoken {
   id        Int      @id @default(autoincrement())
   email     String
   otpHash   String
@@ -122,4 +124,9 @@ enum respondents_belong_to_group {
   Leader  @map("Lãnh đạo & Quản lý")
   Officer @map("Cán bộ nghiệp vụ")
   ITSup   @map("Nhân viên CNTT & Hỗ trợ kỹ thuật")
+}
+
+enum responses_response_status {
+  saved
+  submitted
 }

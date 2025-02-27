@@ -66,6 +66,8 @@ CREATE TABLE `responses` (
     `question_id` INTEGER NOT NULL,
     `respondent_id` INTEGER NOT NULL,
     `question_option_id` INTEGER NOT NULL,
+    `question_option_answer` JSON NULL,
+    `response_status` ENUM('saved', 'submitted') NULL,
 
     INDEX `question_id`(`question_id`),
     INDEX `respondent_id`(`respondent_id`),
@@ -93,7 +95,7 @@ CREATE TABLE `institutions` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `OtpToken` (
+CREATE TABLE `otptoken` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
     `otpHash` VARCHAR(191) NOT NULL,
