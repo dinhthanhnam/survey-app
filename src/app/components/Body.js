@@ -32,6 +32,9 @@ const Body = ({ scrollToTop }) => {
     const [reviewData, setReviewData] = useState(null);
     const [answeredCount, setAnsweredCount] = useState(0);
     const [totalQuestions, setTotalQuestions] = useState(0);
+    const [showTextBox, setShowTextBox] = useState({});
+    const [textInputs, setTextInputs] = useState({});
+
 
     useEffect(() => {
         if (surveyData) {
@@ -155,20 +158,26 @@ const Body = ({ scrollToTop }) => {
         await saveUserResponse(questionId, respondentId, optionId, false);
     };
 
-    const handleCheckboxChange = async (questionId, optionId) => {
+    const handleCheckboxChange = async (questionId, optionId, requireReason) => {
         setAnswers((prev) => {
-            const currentValues = Array.isArray(prev[questionId])
-                ? prev[questionId]
-                : [];
+            const currentValues = Array.isArray(prev[questionId]) ? prev[questionId] : [];
             const newValues = currentValues.includes(optionId)
-                ? currentValues.filter((v) => v !== optionId)
-                : [...currentValues, optionId];
-
+                ? currentValues.filter((v) => v !== optionId) // Bỏ chọn
+                : [...currentValues, optionId]; // Chọn
+    
+            // Cập nhật showTextBox để ẩn textbox khi bỏ chọn
+            setShowTextBox((prev) => ({
+                ...prev,
+                [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
+            }));
+    
             return { ...prev, [questionId]: newValues };
         });
-
+    
         await saveUserResponse(questionId, respondentId, optionId, true);
     };
+    
+    
 
     if (step === 0) {
         return (
@@ -345,13 +354,51 @@ const Body = ({ scrollToTop }) => {
                                         />
                                     )}
                                     {question.question_type === 'checkbox' && (
-                                        <CheckboxQuestion
-                                            question={question}
-                                            answers={answers}
-                                            handleChange={handleCheckboxChange}
-                                            isReviewMode={false}
-                                        />
+                                        <div className="space-y-3 mt-2">
+                                            {question.question_options.map((option, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
+                                                    onClick={() => handleCheckboxChange(question.id, index, option.require_reason)}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={Array.isArray(answers[question.id]) && answers[question.id].includes(index)}
+                                                        onChange={() => handleCheckboxChange(question.id, index, option.require_reason)}
+                                                        className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <span className="text-gray-800 font-medium">{option.option_text}</span>
+                                                        
+                                                        {/* Hiển thị ghi chú nếu có */}
+                                                        {option.option_note && (
+                                                            <p className="text-gray-500 text-sm mt-1">{option.option_note}</p>
+                                                        )}
+
+                                                        {/* Hiển thị ô nhập nếu tùy chọn yêu cầu nhập lý do */}
+                                                        {showTextBox[`${question.id}-${index}`] && (
+                                                            <input
+                                                                type="text"
+                                                                className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
+                                                                placeholder="Vui lòng nhập chi tiết..."
+                                                                value={textInputs[`${question.id}-${index}`] || ''}
+                                                                onChange={(e) =>
+                                                                    setTextInputs((prev) => ({
+                                                                        ...prev,
+                                                                        [`${question.id}-${index}`]: e.target.value,
+                                                                    }))
+                                                                }
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     )}
+
+
+
                                     {question.question_type === 'group' && (
                                         <GroupQuestion
                                             key={question.id}
