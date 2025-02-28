@@ -1,13 +1,10 @@
-const { PrismaClient } = require('@prisma/client');
+import {PrismaClient} from "@prisma/client"
+import { InstitutionsData } from "../src/data/institutions.js";
 const prisma = new PrismaClient();
 
 async function main() {
     // Dữ liệu cho credit_funds
-    const institutionsData = [
-        { name: 'Credit Fund A', identity_code: 'CF-A001' },
-        { name: 'Credit Fund B', identity_code: 'CF-B002' },
-        { name: 'Credit Fund C', identity_code: 'CF-C003' },
-    ];
+    const institutionsData = [...InstitutionsData]; // Shallow copy
 
     // Thêm dữ liệu vào bảng credit_funds
     for (const institution of institutionsData) {
