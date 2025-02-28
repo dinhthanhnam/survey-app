@@ -44,7 +44,7 @@ export default function RefreshPage() {
                             <a className="underline text-teal-600 self-end" href="/auth">Lần đầu?</a>
                         </div>
 
-                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
+                        <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50 flex flex-col gap-2">
                             <label className="block text-gray-700 font-semibold text-lg">
                                 Email
                             </label>

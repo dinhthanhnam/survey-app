@@ -3,9 +3,7 @@ import { InstitutionsData } from '../src/data/institutions.js';
 const prisma = new PrismaClient();
 
 async function main() {
-    // Dữ liệu cho credit_funds
-    const institutionsData = [...InstitutionsData]; // Shallow copy
-
+    const institutionsData = [...InstitutionData];
     // Thêm dữ liệu vào bảng credit_funds
     for (const institution of institutionsData) {
         await prisma.institutions.create({
@@ -26,43 +24,43 @@ async function main() {
                 'HIỆN TRẠNG QUY TRÌNH NGHIỆP VỤ VÀ MÔ HÌNH QUẢN TRỊ SỐ',
             survey_description:
                 'Đánh giá mức độ số hóa và tự động hóa trong các quy trình nghiệp vụ cốt lõi tại QTDND',
-            institution_id: 2,
+            institution_id: 1,
         },
         {
             survey_title: 'CƠ SỞ HẠ TẦNG CNTT VÀ MỨC ĐỘ ỨNG DỤNG CÔNG NGHỆ',
             survey_description:
                 'Đánh giá mức độ hiện đại hóa hạ tầng công nghệ thông tin tại các Quỹ Tín Dụng Nhân Dân (QTDND), đảm bảo khả năng triển khai chuyển đổi số (CĐS) trong hệ thống tài chính vi mô',
-            institution_id: 3,
+            institution_id: 1,
         },
         {
             survey_title: 'AN NINH THÔNG TIN & QUẢN TRỊ RỦI RO CÔNG NGHỆ',
             survey_description:
                 'Đánh giá mức độ an toàn thông tin và khả năng ứng phó với rủi ro công nghệ tại QTDND',
-            institution_id: 3,
+            institution_id: 1,
         },
         {
             survey_title: 'QUẢN LÝ VÀ KHAI THÁC DỮ LIỆU SỐ',
             survey_description:
                 'Đánh giá khả năng lưu trữ, phân tích và khai thác dữ liệu số nhằm nâng cao hiệu quả hoạt động tại QTDND',
-            institution_id: 3,
+            institution_id: 1,
         },
         {
             survey_title: 'PHÁT TRIỂN SẢN PHẨM VÀ DỊCH VỤ NGÂN HÀNG SỐ',
             survey_description:
                 'Đánh giá khả năng triển khai và phát triển các dịch vụ tài chính số tại QTDND nhằm nâng cao trải nghiệm khách hàng và năng lực cạnh tranh',
-            institution_id: 3,
+            institution_id: 1,
         },
         {
             survey_title: 'NGUỒN LỰC TÀI CHÍNH VÀ KHẢ NĂNG HỢP TÁC',
             survey_description:
                 'Đánh giá mức độ sẵn sàng đầu tư vào công nghệ và khả năng hợp tác tài chính của QTDND trong quá trình thực hiện chuyển đổi số',
-            institution_id: 3,
+            institution_id: 1,
         },
         {
             survey_title: 'LỘ TRÌNH CHUYỂN ĐỔI SỐ ĐỒNG BỘ VÀ THỐNG NHẤT',
             survey_description:
                 'Đánh giá tổng thể mức độ sẵn sàng của QTDND đối với quá trình chuyển đổi số',
-            institution_id: 3,
+            institution_id: 1,
         },
     ];
 
@@ -74,39 +72,39 @@ async function main() {
     }
 
     // Dữ liệu cho respondents
-    const respondentsData = [
-        {
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            phone: '0125623123',
-            institution_id: 1,
-            auth_status: 'unauthorized',
-            belong_to_group: 'Leader', // ✅ Dùng đúng enum
-        },
-        {
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            phone: '0123213123',
-            institution_id: 2,
-            auth_status: 'unauthorized',
-            belong_to_group: 'Officer', // ✅ Dùng đúng enum
-        },
-        {
-            name: 'Alice Johnson',
-            email: 'alice.johnson@example.com',
-            phone: '0123123923',
-            institution_id: 3,
-            auth_status: 'unauthorized',
-            belong_to_group: 'ITSup', // ✅ Dùng đúng enum
-        },
-    ];
-
-    // Thêm dữ liệu vào bảng respondents
-    for (const respondent of respondentsData) {
-        await prisma.respondents.create({
-            data: respondent,
-        });
-    }
+    // const respondentsData = [
+    //     {
+    //         name: 'John Doe',
+    //         email: 'john.doe@example.com',
+    //         phone: '0125623123',
+    //         institution_id: 1,
+    //         auth_status: 'unauthorized',
+    //         belong_to_group: 'Leader', // ✅ Dùng đúng enum
+    //     },
+    //     {
+    //         name: 'Jane Smith',
+    //         email: 'jane.smith@example.com',
+    //         phone: '0123213123',
+    //         institution_id: 2,
+    //         auth_status: 'unauthorized',
+    //         belong_to_group: 'Officer', // ✅ Dùng đúng enum
+    //     },
+    //     {
+    //         name: 'Alice Johnson',
+    //         email: 'alice.johnson@example.com',
+    //         phone: '0123123923',
+    //         institution_id: 3,
+    //         auth_status: 'unauthorized',
+    //         belong_to_group: 'ITSup', // ✅ Dùng đúng enum
+    //     },
+    // ];
+    //
+    // // Thêm dữ liệu vào bảng respondents
+    // for (const respondent of respondentsData) {
+    //     await prisma.respondents.create({
+    //         data: respondent,
+    //     });
+    // }
     // Dữ liệu cho questions
     const questionsData = [
         {

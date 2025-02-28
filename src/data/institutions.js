@@ -1,4 +1,4 @@
-export const InstitutionsData = [
+export const InstitutionData = [
   {
     "identity_code": "1902001",
     "name": "QTDND xã Vĩnh Ngọc"
