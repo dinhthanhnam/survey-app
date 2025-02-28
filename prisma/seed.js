@@ -1,5 +1,5 @@
-import {PrismaClient} from "@prisma/client"
-import { InstitutionsData } from "../src/data/institutions.js";
+import { PrismaClient } from '@prisma/client';
+import { InstitutionsData } from '../src/data/institutions.js';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -218,7 +218,7 @@ async function main() {
                     option_text:
                         'Đào tạo theo hình thức hướng dẫn thực tế khi làm việc',
                 },
-                { 
+                {
                     option_text: 'Khác ...',
                     require_reason: 1,
                 },
@@ -306,7 +306,7 @@ async function main() {
                 { option_text: 'Cán bộ kiêm nhiệm cho CNTT' },
                 { option_text: 'Có cán bộ phụ trách CNTT' },
                 { option_text: 'Hợp tác với đối tác bên ngoài' },
-                { 
+                {
                     option_text: 'Khác ...',
                     require_reason: 1,
                 },
@@ -729,7 +729,7 @@ async function main() {
                 { option_text: 'Thiếu nhân lực chuyên môn' },
                 { option_text: 'Thiếu hạ tầng công nghệ' },
                 { option_text: 'Chưa có kế hoạch rõ ràng' },
-                { 
+                {
                     option_text: 'Các rào cản khác',
                     require_reason: 1,
                 },
@@ -737,8 +737,9 @@ async function main() {
         },
         {
             question_text:
-                'Anh/Chị vui lòng cho biết những rào cản và khó khăn trong việc sử dụng các hệ thống thông tin tại đơn vị? (Chọn tối đa 3 lý do chính)',
+                'Anh/Chị vui lòng cho biết những rào cản và khó khăn trong việc sử dụng các hệ thống thông tin tại đơn vị?',
             question_name: 'Câu 2.10',
+            question_note: 'Chọn tối đa 3 lý do chính',
             question_type: 'checkbox',
             question_options: [
                 {
@@ -763,8 +764,8 @@ async function main() {
                 },
                 { option_text: 'Chi phí vận hành & duy trì hệ thống quá cao' },
                 { option_text: 'Nhân sự chưa được đào tạo đầy đủ về hệ thống' },
-                { 
-                    option_text: 'Khác', 
+                {
+                    option_text: 'Khác',
                     require_reason: 1,
                 },
             ],
@@ -811,9 +812,9 @@ async function main() {
                     option_text:
                         'Hệ thống trục thanh toán Payment Hub kết nối với NHHT',
                 },
-                { 
+                {
                     option_text: 'Giải pháp khác',
-                    require_reason: 1, 
+                    require_reason: 1,
                 },
             ],
         },
@@ -835,7 +836,7 @@ async function main() {
                 { option_text: 'Hệ thống trục thanh toán Payment Hub' },
                 { option_text: 'Hệ thống quản lý tài khoản định danh CfeAM' },
                 { option_text: 'Không sử dụng bất kỳ hệ thống nào' },
-                { 
+                {
                     option_text: 'Khác',
                     require_reason: 1,
                 },
@@ -1330,10 +1331,10 @@ async function main() {
                 { option_text: 'Virus/Trojan ảnh hưởng đến hệ thống' },
                 { option_text: 'Nhân viên vô tình gây ra lỗi bảo mật' },
                 { option_text: 'Chưa từng gặp sự cố nào' },
-                { 
+                {
                     option_text: 'Khác',
-                    require_reason: 1, 
-                    option_note: 'Ghi tên sự cố đã gặp' 
+                    require_reason: 1,
+                    option_note: 'Ghi tên sự cố đã gặp',
                 },
             ],
         },
@@ -1760,10 +1761,11 @@ async function main() {
                 { option_text: 'Dữ liệu tài khoản' },
                 { option_text: 'Thông tin khách hàng' },
                 { option_text: 'Báo cáo tài chính' },
-                { 
+                {
                     option_text: 'Khác',
                     require_reason: 1,
-                    option_note: 'Vui lòng ghi rõ...' },
+                    option_note: 'Vui lòng ghi rõ...',
+                },
             ],
         },
         {
@@ -1989,7 +1991,7 @@ async function main() {
                         'Ngại thay đổi, chưa sẵn sàng áp dụng công nghệ mới...',
                 },
                 {
-                    option_text: 'KKhác',
+                    option_text: 'Khác',
                     option_note: 'Vui lòng mô tả thêm...',
                 },
             ],
@@ -2255,7 +2257,7 @@ async function main() {
                     option_text: 'Các công ty thương mại điện tử',
                     option_note: 'Shopee, Tiki, Sendo, Lazada…',
                 },
-                { 
+                {
                     option_text: 'Các bên khác',
                     require_reason: 1,
                 },
