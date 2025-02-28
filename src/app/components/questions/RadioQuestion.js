@@ -29,7 +29,12 @@ const RadioQuestion = ({
                         htmlFor={`question-${question.id}-option-${option.id}`}
                         className="text-gray-700 font-medium"
                     >
-                        {option.option_text}
+                        {option.option_text}{' '}
+                        {option.option_note && (
+                            <span className="text-gray-500 italic text-sm">
+                                ({option.option_note})
+                            </span>
+                        )}
                     </label>
                 </div>
             ))}
