@@ -27,6 +27,7 @@ const Body = ({ scrollToTop }) => {
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
     // const [validCodes, setValidCodes] = useState([]); // Danh sách mã hợp lệ
     // const [isValid, setIsValid] = useState(false);
+    const [tooltipId, setTooltipId] = useState(null);
     const [showReview, setShowReview] = useState(false);
     const [reviewData, setReviewData] = useState(null);
     const [answeredCount, setAnsweredCount] = useState(0);
