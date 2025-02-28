@@ -217,7 +217,10 @@ async function main() {
                     option_text:
                         'Đào tạo theo hình thức hướng dẫn thực tế khi làm việc',
                 },
-                { option_text: 'Khác ...' },
+                { 
+                    option_text: 'Khác ...',
+                    require_reason: 1,
+                },
             ],
         },
         {
@@ -302,7 +305,10 @@ async function main() {
                 { option_text: 'Cán bộ kiêm nhiệm cho CNTT' },
                 { option_text: 'Có cán bộ phụ trách CNTT' },
                 { option_text: 'Hợp tác với đối tác bên ngoài' },
-                { option_text: 'Khác ...' },
+                { 
+                    option_text: 'Khác ...',
+                    require_reason: 1,
+                },
             ],
         },
         {
@@ -707,7 +713,10 @@ async function main() {
                 { option_text: 'Thiếu nhân lực chuyên môn' },
                 { option_text: 'Thiếu hạ tầng công nghệ' },
                 { option_text: 'Chưa có kế hoạch rõ ràng' },
-                { option_text: 'Các rào cản khác' },
+                { 
+                    option_text: 'Các rào cản khác',
+                    require_reason: 1,
+                },
             ],
         },
         {
@@ -738,7 +747,10 @@ async function main() {
                 },
                 { option_text: 'Chi phí vận hành & duy trì hệ thống quá cao' },
                 { option_text: 'Nhân sự chưa được đào tạo đầy đủ về hệ thống' },
-                { option_text: 'Khác' },
+                { 
+                    option_text: 'Khác', 
+                    require_reason: 1,
+                },
             ],
         },
         {
@@ -782,7 +794,10 @@ async function main() {
                     option_text:
                         'Hệ thống trục thanh toán Payment Hub kết nối với NHHT',
                 },
-                { option_text: 'Giải pháp khác' },
+                { 
+                    option_text: 'Giải pháp khác',
+                    require_reason: 1, 
+                },
             ],
         },
         {
@@ -803,7 +818,10 @@ async function main() {
                 { option_text: 'Hệ thống trục thanh toán Payment Hub' },
                 { option_text: 'Hệ thống quản lý tài khoản định danh CfeAM' },
                 { option_text: 'Không sử dụng bất kỳ hệ thống nào' },
-                { option_text: 'Khác' },
+                { 
+                    option_text: 'Khác',
+                    require_reason: 1,
+                },
             ],
         },
         {
@@ -1261,7 +1279,11 @@ async function main() {
                 { option_text: 'Virus/Trojan ảnh hưởng đến hệ thống' },
                 { option_text: 'Nhân viên vô tình gây ra lỗi bảo mật' },
                 { option_text: 'Chưa từng gặp sự cố nào' },
-                { option_text: 'Khác', option_note: 'Ghi tên sự cố đã gặp' },
+                { 
+                    option_text: 'Khác',
+                    require_reason: 1, 
+                    option_note: 'Ghi tên sự cố đã gặp' 
+                },
             ],
         },
         {
@@ -1654,7 +1676,10 @@ async function main() {
                 { option_text: 'Dữ liệu tài khoản' },
                 { option_text: 'Thông tin khách hàng' },
                 { option_text: 'Báo cáo tài chính' },
-                { option_text: 'Khác', option_note: 'Vui lòng ghi rõ...' },
+                { 
+                    option_text: 'Khác',
+                    require_reason: 1,
+                    option_note: 'Vui lòng ghi rõ...' },
             ],
         },
         {
@@ -1761,6 +1786,7 @@ async function main() {
                 },
                 {
                     option_text: 'Cách thức khác',
+                    require_reason: 1,
                     option_note: 'Vui lòng mô tả...',
                 },
             ],
@@ -1806,6 +1832,7 @@ async function main() {
                 },
                 {
                     option_text: 'Cách thức khác',
+                    require_reason: 1,
                     option_note: 'Vui lòng mô tả...',
                 },
             ],
@@ -2095,7 +2122,10 @@ async function main() {
                     option_text: 'Các công ty thương mại điện tử',
                     option_note: 'Shopee, Tiki, Sendo, Lazada…',
                 },
-                { option_text: 'Các bên khác' },
+                { 
+                    option_text: 'Các bên khác',
+                    require_reason: 1,
+                },
             ],
         },
         {
@@ -2411,6 +2441,7 @@ async function main() {
         if (question.question_options && question.question_options.length > 0) {
             const optionsData = question.question_options.map((option) => ({
                 option_text: option.option_text,
+                require_reason: option.require_reason ?? 0,
                 option_note: option.option_note ?? null, // Thêm dòng này
                 question_id: createdQuestion.id,
             }));

@@ -61,6 +61,7 @@ model question_options {
   question_id  Int
   option_text  String      @db.VarChar(255)
   option_value Int?
+  require_reason Int
   option_note  String?     @db.VarChar(255)
   questions    questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
   responses    responses[]

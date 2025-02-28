@@ -54,6 +54,7 @@ CREATE TABLE `question_options` (
     `question_id` INTEGER NOT NULL,
     `option_text` VARCHAR(255) NOT NULL,
     `option_value` INTEGER NULL,
+    `require_reason` INTEGER,
     `option_note` VARCHAR(255) NULL,
 
     INDEX `question_id`(`question_id`),
