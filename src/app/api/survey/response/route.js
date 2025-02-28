@@ -29,7 +29,12 @@ export const POST = async (req) => {
             } else {
                 // Nếu chưa có thì thêm mới
                 await prisma.responses.create({
-                    data: { question_id, respondent_id, question_option_id },
+                    data: {
+                        question_id,
+                        respondent_id,
+                        question_option_id,
+                        response_status: 'saved',
+                    },
                 });
                 return NextResponse.json(
                     { message: 'Checkbox responses saved' },
@@ -44,7 +49,12 @@ export const POST = async (req) => {
 
             // Lưu câu trả lời mới
             await prisma.responses.create({
-                data: { question_id, respondent_id, question_option_id },
+                data: {
+                    question_id,
+                    respondent_id,
+                    question_option_id,
+                    response_status: 'saved',
+                },
             });
 
             return NextResponse.json(
