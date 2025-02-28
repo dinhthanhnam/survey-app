@@ -21,7 +21,7 @@ async function main() {
         {
             survey_title: 'NHÂN LỰC VÀ NĂNG LỰC NHẬN THỨC CHUYỂN ĐỔI SỐ',
             survey_description:
-                'Đánh giá mức độ nhận thức về chuyển đổi số và năng lực CNTT của nhân sự',
+                'Đánh giá nhận thức, kỹ năng, mức độ sẵn sàng của nhân sự và lãnh đạo QTDND đối với chuyển đổi số (CĐS)',
             institution_id: 1,
         },
         {
@@ -79,28 +79,28 @@ async function main() {
     // Dữ liệu cho respondents
     const respondentsData = [
         {
-            name: "John Doe",
-            email: "john.doe@example.com",
-            phone: "0125623123",
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            phone: '0125623123',
             institution_id: 1,
-            auth_status: "unauthorized",
-            belong_to_group: "Leader",  // ✅ Dùng đúng enum
+            auth_status: 'unauthorized',
+            belong_to_group: 'Leader', // ✅ Dùng đúng enum
         },
         {
-            name: "Jane Smith",
-            email: "jane.smith@example.com",
-            phone: "0123213123",
+            name: 'Jane Smith',
+            email: 'jane.smith@example.com',
+            phone: '0123213123',
             institution_id: 2,
-            auth_status: "unauthorized",
-            belong_to_group: "Officer", // ✅ Dùng đúng enum
+            auth_status: 'unauthorized',
+            belong_to_group: 'Officer', // ✅ Dùng đúng enum
         },
         {
-            name: "Alice Johnson",
-            email: "alice.johnson@example.com",
-            phone: "0123123923",
+            name: 'Alice Johnson',
+            email: 'alice.johnson@example.com',
+            phone: '0123123923',
             institution_id: 3,
-            auth_status: "unauthorized",
-            belong_to_group: "ITSup",   // ✅ Dùng đúng enum
+            auth_status: 'unauthorized',
+            belong_to_group: 'ITSup', // ✅ Dùng đúng enum
         },
     ];
 
@@ -150,7 +150,7 @@ async function main() {
         },
         {
             question_text:
-                'Anh/Chị có hiểu và tuân thủ các nguyên tắc bảo mật dữ liệu trong công việc không?',
+                'Anh/Chị có được đào tạo về nguyên tắc bảo mật dữ liệu trong công việc không?',
             question_name: 'Câu 1.3',
             question_type: 'radiogroup',
             question_target: [
@@ -159,19 +159,18 @@ async function main() {
             ],
             question_options: [
                 {
-                    option_text: 'Hoàn toàn không tuân thủ',
-                    option_note: 'Không biết về các nguyên tắc bảo mật',
-                },
-                {
                     option_text:
-                        'Biết một số nguyên tắc nhưng chưa áp dụng thường xuyên',
+                        'Hoàn toàn không được đào tạo, không biết về bảo mật',
                 },
                 {
-                    option_text: 'Áp dụng bảo mật cơ bản',
-                    option_note:
-                        'Đổi mật khẩu định kỳ, không chia sẻ thông tin',
+                    option_text: 'Được đào tạo nhưng chưa hiểu rõ',
                 },
-                { option_text: 'Tuân thủ chặt chẽ các quy tắc bảo mật' },
+                {
+                    option_text: 'Hiểu một số nguyên tắc cơ bản',
+                },
+                {
+                    option_text: 'Hiểu rõ và bước đầu tuân thủ',
+                },
                 {
                     option_text:
                         'Thành thạo về bảo mật và có thể hướng dẫn người khác',
@@ -202,10 +201,12 @@ async function main() {
                 'Nhân viên CNTT & Hỗ trợ kỹ thuật',
             ],
             question_options: [
-                { option_text: 'Không thực hiện chương trình đào tạo nào' },
                 {
-                    option_text:
-                        'Tổ chức các buổi đào tạo nội bộ định kỳ (Nhân viên có kinh nghiệm hướng dẫn)',
+                    option_text: 'Không thực hiện chương trình đào tạo nào',
+                    option_note: 'Nhân viên có kinh nghiệm hướng dẫn',
+                },
+                {
+                    option_text: 'Tổ chức các buổi đào tạo nội bộ định kỳ',
                 },
                 {
                     option_text:
@@ -482,6 +483,7 @@ async function main() {
                 'Mức độ chuẩn bị của đơn vị trong việc số hóa quy trình nghiệp vụ và vận hành theo mô hình ngân hàng số như thế nào?',
             question_name: 'Câu 2.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 {
                     option_text: 'Chưa có kế hoạch',
@@ -516,6 +518,7 @@ async function main() {
                 'Mức độ chuẩn bị của đơn vị trong việc triển khai hệ thống quản trị số (bao gồm quản lý nội bộ, tài chính, dữ liệu và ra quyết định thông minh) như thế nào?',
             question_name: 'Câu 2.2',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 {
                     option_text: 'Chưa có kế hoạch',
@@ -550,6 +553,7 @@ async function main() {
                 'Mức độ số hóa quy trình tín dụng tại đơn vị hiện nay như thế nào? (bao gồm Core Bank, AI, tự động hóa quy trình)',
             question_name: 'Câu 2.3',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 {
                     option_text: 'Hoàn toàn thủ công',
@@ -582,6 +586,7 @@ async function main() {
                 'Mức độ số hóa quy trình kế toán tại đơn vị hiện nay như thế nào?',
             question_name: 'Câu 2.4',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 {
                     option_text: 'Hoàn toàn thủ công',
@@ -610,6 +615,7 @@ async function main() {
                 'Mức độ tích hợp công nghệ vào các dịch vụ khách hàng tại đơn vị như thế nào?',
             question_name: 'Câu 2.5',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 {
                     option_text: 'Không tích hợp',
@@ -639,6 +645,7 @@ async function main() {
                 'Anh/chị cho biết mức độ tích hợp (liên thông) giữa các hệ thống thông tin trong đơn vị hiện nay như thế nào?',
             question_name: 'Câu 2.6',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Hoàn toàn chưa tích hợp' },
                 { option_text: 'Đã tích hợp các nghiệp vụ trong core nội bộ' },
@@ -658,44 +665,52 @@ async function main() {
                 'Đơn vị có kế hoạch tự động hóa các quy trình nghiệp vụ, bao gồm ứng dụng AI, RPA và quy trình vận hành tự động, như thế nào?',
             question_name: 'Câu 2.7',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không có kế hoạch' },
-                { option_text: 'Có kế hoạch sơ bộ' },
-                { option_text: 'Đang triển khai từng phần' },
-                { option_text: 'Đã triển khai nhưng chưa hoàn thiện' },
+                { option_text: 'Không có kế hoạch nhưng có nhu cầu' },
+                {
+                    option_text:
+                        'Có kế hoạch sơ bộ và đang triển khai từng phần',
+                },
+                {
+                    option_text:
+                        'Có kế hoạch hoàn chỉnh và đã triển khai nhưng chưa hoàn thiện',
+                },
                 { option_text: 'Đã hoàn thiện và đang tối ưu' },
             ],
         },
         {
             question_text:
-                'Mức độ tuân thủ các tiêu chuẩn ngành ngân hàng trong quy trình nghiệp vụ tại đơn vị như thế nào?',
+                'Mức độ tuân thủ các tiêu chuẩn ngành ngân hàng (NHNN, Basel II/III, ISO 20022, IFRS) trong quy trình nghiệp vụ tại đơn vị như thế nào?',
             question_name: 'Câu 2.8',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 {
                     option_text: 'Hoàn toàn không tuân thủ',
                     option_note:
-                        'Chưa áp dụng bất kỳ tiêu chuẩn nào của NHNN, Basel, ISO 20022 hoặc IFRS',
+                        'Các quy trình chưa được chuẩn hóa, chưa áp dụng bất kỳ tiêu chuẩn nào của NHNN, Basel, ISO 20022 hoặc IFRS',
                 },
                 {
                     option_text: 'Không tuân thủ đầy đủ',
                     option_note:
-                        'Có áp dụng một số quy định của NHNN nhưng chưa đáp ứng các tiêu chuẩn quốc tế',
+                        'Có áp dụng một số quy định của NHNN nhưng chưa đáp ứng các tiêu chuẩn Basel, ISO 20022 hoặc IFRS',
                 },
                 {
                     option_text: 'Tuân thủ một phần',
                     option_note:
-                        'Đã áp dụng một số tiêu chuẩn ngành nhưng chưa đồng bộ',
+                        'Đã áp dụng một số tiêu chuẩn ngành nhưng chưa hoàn chỉnh hoặc chưa có sự đồng bộ giữa các hệ thống',
                 },
                 {
                     option_text: 'Tuân thủ tương đối tốt',
                     option_note:
-                        'Hầu hết quy trình đã tuân thủ các tiêu chuẩn NHNN và một phần tiêu chuẩn quốc tế',
+                        'Hầu hết quy trình đã tuân thủ các tiêu chuẩn NHNN và một phần tiêu chuẩn quốc tế, nhưng chưa hoàn thiện về tích hợp dữ liệu hoặc hệ thống quản trị rủi ro',
                 },
                 {
                     option_text: 'Hoàn toàn tuân thủ',
                     option_note:
-                        'Quy trình nghiệp vụ đã tuân thủ đầy đủ NHNN, Basel, ISO 20022 và IFRS',
+                        'Quy trình nghiệp vụ của đơn vị đã tuân thủ đầy đủ các quy định của NHNN, Basel, ISO 20022 và IFRS, có hệ thống tích hợp để đảm bảo tuân thủ tự động',
                 },
             ],
         },
@@ -705,6 +720,7 @@ async function main() {
             question_name: 'Câu 2.9',
             question_note: 'Có thể chọn nhiều đáp án',
             question_type: 'checkbox',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Thiếu tài chính' },
                 { option_text: 'Thiếu nhân lực chuyên môn' },
@@ -749,6 +765,7 @@ async function main() {
                 'Đơn vị có kế hoạch gì để khắc phục các rào cản trong số hóa quy trình?',
             question_name: 'Câu 2.11',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Chưa có kế hoạch cụ thể' },
                 { option_text: 'Đang xây dựng kế hoạch nhưng chưa triển khai' },
@@ -925,6 +942,7 @@ async function main() {
             question_name: 'Câu 3.1',
             question_note: 'Vui lòng chọn một đáp án phù hợp nhất',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn chưa có' },
                 { option_text: 'Trang bị rất hạn chế' },
@@ -943,6 +961,7 @@ async function main() {
             question_name: 'Câu 3.2',
             question_note: 'Có thể chọn nhiều đáp án',
             question_type: 'checkbox',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Máy chủ dùng riêng cho Core Banking' },
                 {
@@ -971,6 +990,7 @@ async function main() {
                 'Mức độ ổn định và tốc độ của mạng nội bộ và internet tại đơn vị là như thế nào?',
             question_name: 'Câu 3.3',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 {
                     option_text: 'Rất kém',
@@ -993,6 +1013,7 @@ async function main() {
                 'Đơn vị có kế hoạch nâng cấp cơ sở hạ tầng CNTT trong thời gian tới không?',
             question_name: 'Câu 3.4',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Chưa có kế hoạch' },
                 { option_text: 'Có kế hoạch sơ bộ' },
@@ -1006,6 +1027,7 @@ async function main() {
                 'Nguồn tài chính dành cho việc nâng cấp cơ sở hạ tầng CNTT có đủ không?',
             question_name: 'Câu 3.5',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đủ' },
                 { option_text: 'Không đủ' },
@@ -1019,6 +1041,7 @@ async function main() {
                 'Đơn vị đã có kế hoạch hoặc đã tích hợp điện toán đám mây vào hệ thống hiện tại chưa?',
             question_name: 'Câu 3.6',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Chưa có kế hoạch' },
                 { option_text: 'Chưa tích hợp' },
@@ -1032,6 +1055,10 @@ async function main() {
                 'Mức độ sử dụng các công nghệ AI hỗ trợ trong các quy trình tại đơn vị là như thế nào?',
             question_name: 'Câu 3.7',
             question_type: 'radiogroup',
+            question_target: [
+                'Cán bộ nghiệp vụ',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 { option_text: 'Chưa sử dụng' },
                 { option_text: 'Sử dụng ở mức thử nghiệm một vài nghiệp vụ' },
@@ -1051,6 +1078,10 @@ async function main() {
                 'Core Banking đã được triển khai và vận hành tại đơn vị anh/chị hiện nay như thế nào?',
             question_name: 'Câu 3.8',
             question_type: 'radiogroup',
+            question_target: [
+                'Cán bộ nghiệp vụ',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 { option_text: 'Chưa triển khai Core Banking' },
                 {
@@ -1076,6 +1107,7 @@ async function main() {
                 'Đơn vị có kế hoạch triển khai hoặc mở rộng ứng dụng AI, Blockchain vào quản lý hoạt động không?',
             question_name: 'Câu 3.9',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Chưa có kế hoạch' },
                 { option_text: 'Đang xây dựng kế hoạch sơ bộ' },
@@ -1088,6 +1120,10 @@ async function main() {
             question_text: 'Mức độ ứng dụng e-banking tại đơn vị như thế nào?',
             question_name: 'Câu 3.10',
             question_type: 'radiogroup',
+            question_target: [
+                'Cán bộ nghiệp vụ',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 { option_text: 'Không sử dụng' },
                 { option_text: 'Sử dụng thử nghiệm' },
@@ -1101,6 +1137,10 @@ async function main() {
                 'Mức độ tích hợp Core với hệ thống Co-opBank và NHNN tại đơn vị anh/chị như thế nào?',
             question_name: 'Câu 3.11',
             question_type: 'radiogroup',
+            question_target: [
+                'Cán bộ nghiệp vụ',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 { option_text: 'Chưa có kế hoạch' },
                 { option_text: 'Chưa tích hợp' },
@@ -1117,6 +1157,7 @@ async function main() {
                 'Mức độ tích hợp hệ thống CNTT của đơn vị với các nền tảng của NHNN & NHHTX như thế nào?',
             question_name: 'Câu 3.12',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không tích hợp' },
                 { option_text: 'Tích hợp một phần nhỏ' },
@@ -1130,6 +1171,7 @@ async function main() {
                 'Mức độ sẵn sàng của nhân sự trong việc vận hành công nghệ mới như AI, điện toán đám mây tại đơn vị?',
             question_name: 'Câu 3.13',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không sẵn sàng' },
                 { option_text: 'Không sẵn sàng' },
@@ -1146,6 +1188,7 @@ async function main() {
                 'Mức độ an toàn của hệ thống CNTT tại đơn vị trong việc bảo vệ dữ liệu khách hàng và giao dịch như thế nào?',
             question_name: 'Câu 4.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không an toàn' },
                 { option_text: 'Không an toàn' },
@@ -1159,6 +1202,7 @@ async function main() {
                 'Đơn vị có chính sách bảo mật dữ liệu rõ ràng không?',
             question_name: 'Câu 4.2',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Không có chính sách' },
                 { option_text: 'Có chính sách nhưng chưa áp dụng' },
@@ -1172,6 +1216,7 @@ async function main() {
                 'Nhân viên tại đơn vị có nhận thức đầy đủ về rủi ro an ninh mạng và bảo mật dữ liệu không?',
             question_name: 'Câu 4.3',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Hoàn toàn không nhận thức' },
                 { option_text: 'Nhận thức hạn chế' },
@@ -1185,6 +1230,7 @@ async function main() {
                 'Đơn vị có tổ chức đào tạo định kỳ về nhận thức an ninh mạng và phòng chống rủi ro công nghệ không?',
             question_name: 'Câu 4.4',
             question_type: 'radiogroup',
+            question_target: ['Nhân viên CNTT & Hỗ trợ kỹ thuật'],
             question_options: [
                 { option_text: 'Chưa có chương trình đào tạo' },
                 { option_text: 'Có kế hoạch nhưng chưa đào tạo' },
@@ -1202,6 +1248,7 @@ async function main() {
                 'Khi gặp sự cố an ninh mạng (rò rỉ dữ liệu, tấn công mạng, virus…), anh/chị có biết cách xử lý không?',
             question_name: 'Câu 4.5',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không biết cách xử lý' },
                 { option_text: 'Có thể xử lý với sự hỗ trợ từ IT' },
@@ -1215,6 +1262,7 @@ async function main() {
                 'Đơn vị đã có kế hoạch ứng phó rõ ràng khi xảy ra sự cố an ninh mạng chưa?',
             question_name: 'Câu 4.6',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Chưa có kế hoạch' },
                 { option_text: 'Có kế hoạch một phần' },
@@ -1228,6 +1276,7 @@ async function main() {
                 'Đơn vị đã thực hiện diễn tập các kịch bản ứng phó với sự cố an ninh mạng chưa?',
             question_name: 'Câu 4.7',
             question_type: 'radiogroup',
+            question_target: ['Nhân viên CNTT & Hỗ trợ kỹ thuật'],
             question_options: [
                 { option_text: 'Chưa thực hiện' },
                 { option_text: 'Đã thực hiện sơ bộ' },
@@ -1241,6 +1290,7 @@ async function main() {
                 'Khi gặp sự cố thực tế, đơn vị có thể xử lý ngay lập tức không?',
             question_name: 'Câu 4.8',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Hoàn toàn không có phương án' },
                 { option_text: 'Cần thời gian dài để khắc phục' },
@@ -1254,6 +1304,7 @@ async function main() {
                 'Đơn vị đã từng gặp phải sự cố an ninh mạng nào chưa?',
             question_name: 'Câu 4.9',
             question_type: 'checkbox',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_note: 'Có thể chọn nhiều đáp án',
             question_options: [
                 { option_text: 'Lộ dữ liệu khách hàng' },
@@ -1272,6 +1323,7 @@ async function main() {
                 'Đơn vị đã trang bị các công cụ giám sát an ninh mạng đầy đủ chưa?',
             question_name: 'Câu 4.10',
             question_type: 'radiogroup',
+            question_target: ['Nhân viên CNTT & Hỗ trợ kỹ thuật'],
             question_options: [
                 { option_text: 'Chưa có công cụ' },
                 { option_text: 'Trang bị cơ bản nhưng chưa sử dụng hiệu quả' },
@@ -1285,6 +1337,7 @@ async function main() {
                 'Các công cụ giám sát an ninh mạng tại đơn vị có hoạt động hiệu quả không?',
             question_name: 'Câu 4.11',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không hiệu quả' },
                 { option_text: 'Hiệu quả thấp' },
@@ -1298,6 +1351,7 @@ async function main() {
                 'Mức độ tuân thủ các tiêu chuẩn bảo mật theo quy định của NHNN và ngành ngân hàng tại đơn vị như thế nào?',
             question_name: 'Câu 4.12',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không tuân thủ' },
                 { option_text: 'Tuân thủ ở mức cơ bản' },
@@ -1311,6 +1365,7 @@ async function main() {
                 'Đơn vị có nhận được sự hỗ trợ từ các tổ chức bên ngoài trong việc đảm bảo an ninh mạng không?',
             question_name: 'Câu 4.13',
             question_type: 'radiogroup',
+            question_target: ['Nhân viên CNTT & Hỗ trợ kỹ thuật'],
             question_options: [
                 { option_text: 'Không có hỗ trợ' },
                 { option_text: 'Hỗ trợ hạn chế' },
@@ -1324,12 +1379,14 @@ async function main() {
                 'Anh/Chị đánh giá như thế nào về công tác quản trị CNTT của QTDND trong việc đảm bảo an ninh thông tin và quản trị rủi ro công nghệ?',
             question_name: 'Câu 4.14',
             question_type: 'group',
+            question_target: ['Lãnh đạo & Quản lý'],
         },
         {
             question_text:
                 'QTDND đã xây dựng và cập nhật thường xuyên các chính sách quản trị CNTT theo quy định của NHNN nhằm đảm bảo an ninh thông tin.',
             question_name: 'Câu 4.14.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1343,6 +1400,7 @@ async function main() {
                 'Việc ứng dụng CNTT trong quản trị có đảm bảo các quy chế, quy trình nghiệp vụ với các chốt kiểm soát bảo mật đầy đủ.',
             question_name: 'Câu 4.14.2',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1356,6 +1414,7 @@ async function main() {
                 'Việc ứng dụng CNTT tại QTDND giúp phát hiện và giảm thiểu các lỗ hổng bảo mật trong quy trình nghiệp vụ.',
             question_name: 'Câu 4.14.3',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1369,6 +1428,7 @@ async function main() {
                 'QTDND đã có cơ chế giám sát và kiểm tra định kỳ hệ thống CNTT nhằm đảm bảo an toàn thông tin',
             question_name: 'Câu 4.14.4',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1382,6 +1442,7 @@ async function main() {
                 'Đơn vị có quy trình xử lý sự cố bảo mật CNTT rõ ràng và hiệu quả khi có rủi ro xảy ra.',
             question_name: 'Câu 4.14.5',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1395,6 +1456,7 @@ async function main() {
                 'QTDND đã triển khai các tài liệu hướng dẫn sử dụng hệ thống CNTT, bao gồm check-list kiểm tra vận hành và quy trình bảo trì định kỳ',
             question_name: 'Câu 4.14.6',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1408,6 +1470,7 @@ async function main() {
                 'Đơn vị có quy trình rõ ràng để xử lý sự cố CNTT và sự cố bảo mật, giúp giảm thiểu rủi ro công nghệ.',
             question_name: 'Câu 4.14.7',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1421,6 +1484,7 @@ async function main() {
                 'Hệ thống CNTT của QTDND có ghi nhận và lưu trữ nhật ký truy cập (log system) để kiểm tra và theo dõi bảo mật.',
             question_name: 'Câu 4.14.8',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1434,6 +1498,7 @@ async function main() {
                 'Đơn vị đã xây dựng quy trình phân loại lỗi, sự cố và tiêu chuẩn dịch vụ (SLA) cho việc giải quyết, khắc phục lỗi CNTT.',
             question_name: 'Câu 4.14.9',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1447,6 +1512,7 @@ async function main() {
                 'Hầu hết các lỗi hoặc sự cố về CNTT đều được xử lý, khắc phục theo đúng quy định và thời gian SLA cam kết',
             question_name: 'Câu 4.14.10',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1460,6 +1526,7 @@ async function main() {
                 'Các sự cố an ninh mạng và CNTT tại đơn vị được ghi nhận, phân loại và lưu trữ để phục vụ công tác thống kê, đánh giá và cải thiện vận hành.',
             question_name: 'Câu 4.14.11',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1473,6 +1540,10 @@ async function main() {
                 'Đơn vị hiện đang ở mức độ nào trong quá trình số hóa dữ liệu? (Số hóa bao gồm việc chuyển đổi dữ liệu từ dạng giấy tờ sang dạng số và có hệ thống lưu trữ, quản lý tập trung.',
             question_name: 'Câu 5.1',
             question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_note:
                 'Vui lòng chọn mức độ phù hợp nhất với tình trạng số hóa dữ liệu tại đơn vị của Anh/Chị',
             question_options: [
@@ -1514,6 +1585,10 @@ async function main() {
                 'Hệ thống lưu trữ dữ liệu tại đơn vị có đảm bảo khả năng truy xuất và khai thác dữ liệu hiệu quả không?',
             question_name: 'Câu 5.2',
             question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_note: 'Vui lòng chọn mức độ phù hợp nhất.',
             question_options: [
                 { option_text: 'Không biết/không rõ' },
@@ -1537,6 +1612,7 @@ async function main() {
                 'Đơn vị đang sử dụng loại công cụ phân tích dữ liệu nào?',
             question_name: 'Câu 5.3',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_note: 'Vui lòng chọn mức độ phù hợp nhất.',
             question_options: [
                 { option_text: 'Không biết/không rõ' },
@@ -1561,6 +1637,10 @@ async function main() {
                 'Công cụ phân tích dữ liệu hiện tại của đơn vị được sử dụng ở mức độ nào?',
             question_name: 'Câu 5.4',
             question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 {
                     option_text: 'Không sử dụng',
@@ -1586,6 +1666,7 @@ async function main() {
                 'Đơn vị có sử dụng dữ liệu khách hàng vào các hoạt động sau không?',
             question_name: 'Câu 5.5',
             question_type: 'checkbox',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_note: 'Có thể chọn nhiều đáp án.',
             question_options: [
                 { option_text: 'Không sử dụng' },
@@ -1601,6 +1682,7 @@ async function main() {
                 'Đơn vị đã có chiến lược cụ thể để khai thác dữ liệu khách hàng nhằm quản trị rủi ro tín dụng và hỗ trợ ra quyết định chưa?',
             question_name: 'Câu 5.6',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 {
                     option_text: 'Chưa có chiến lược',
@@ -1634,6 +1716,7 @@ async function main() {
                 'Đơn vị có sử dụng dữ liệu phân tích để cải thiện hiệu suất kinh doanh không?',
             question_name: 'Câu 5.7',
             question_type: 'radiogroup',
+            question_target: ['Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không sử dụng' },
                 { option_text: 'Có kế hoạch nhưng chưa triển khai' },
@@ -1650,6 +1733,7 @@ async function main() {
                 'Dữ liệu nào đã được liên thông với hệ thống NHNN/NHHTX?',
             question_name: 'Câu 5.8',
             question_type: 'checkbox',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_note: 'Có thể chọn nhiều đáp án.',
             question_options: [
                 { option_text: 'Chưa liên thông dữ liệu nào' },
@@ -1665,6 +1749,10 @@ async function main() {
                 'Mức độ liên thông dữ liệu của hệ thống tại đơn vị với các nền tảng ngân hàng số và hệ thống bên ngoài như thế nào?',
             question_name: 'Câu 5.9',
             question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 { option_text: 'Hoàn toàn không có kết nối liên thông' },
                 { option_text: 'Chỉ liên thông một số nghiệp vụ cơ bản' },
@@ -1684,12 +1772,14 @@ async function main() {
                 'Anh/Chị hãy đánh giá mức độ đồng ý của mình đối với các nhận định liên quan đến việc quản lý thông tin, dữ liệu phục vụ công việc của QTDND.',
             question_name: 'Câu 5.10',
             question_type: 'group',
+            question_target: ['Lãnh đạo & Quản lý'],
         },
         {
             question_text:
                 'Có thể dễ dàng có đầy đủ các thông tin theo yêu cầu',
             question_name: 'Câu 5.10.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1703,6 +1793,7 @@ async function main() {
                 'Việc tập hợp thông tin, dữ liệu được thực hiện nhanh chóng',
             question_name: 'Câu 5.10.2',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1716,6 +1807,7 @@ async function main() {
                 'Các thông tin được cung cấp luôn đảm bảo sự chính xác và nhất quán',
             question_name: 'Câu 5.10.3',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1729,6 +1821,7 @@ async function main() {
                 'Việc tập hợp thông tin, dữ liệu mất nhiều thời gian, công sức và có thể không đầy đủ ',
             question_name: 'Câu 5.10.4',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: 'Hoàn toàn không đồng ý' },
                 { option_text: 'Không đồng ý' },
@@ -1741,6 +1834,7 @@ async function main() {
             question_text:
                 'Hiện tại, QTDND đang áp dụng phương thức nào để quản lý thông tin khách hàng?',
             question_name: 'Câu 5.11',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_type: 'checkbox',
             question_note: 'Chọn tất cả phương án phù hợp.',
             question_options: [
@@ -1773,6 +1867,7 @@ async function main() {
                 'Hiện tại, Anh/Chị đang sử dụng các phương thức nào để lưu trữ thông tin và dữ liệu phục vụ công việc?',
             question_name: 'Câu 5.12',
             question_type: 'checkbox',
+            question_target: ['Nhân viên CNTT & Hỗ trợ kỹ thuật'],
             question_note: 'Chọn tất cả các phương án phù hợp.',
             question_options: [
                 {
@@ -1818,6 +1913,10 @@ async function main() {
                 'Đơn vị có gặp khó khăn gì khi khai thác dữ liệu số để phục vụ kinh doanh?',
             question_name: 'Câu 5.13',
             question_type: 'checkbox',
+            question_target: [
+                'Cán bộ nghiệp vụ',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_note: 'Có thể chọn nhiều đáp án.',
             question_options: [
                 { option_text: 'Dữ liệu không đầy đủ, thiếu chính xác' },
@@ -1830,9 +1929,53 @@ async function main() {
         },
         {
             question_text:
+                'Theo anh/chị, đơn vị có gặp khó khăn gì trong việc số hóa và khai thác dữ liệu?',
+            question_name: 'Câu 5.14',
+            question_type: 'radiogroup',
+            question_options: [
+                {
+                    option_text: 'Thiếu cơ sở hạ tầng công nghệ',
+                    option_note:
+                        'Chưa có hệ thống phần mềm quản lý tập trung, thiếu máy chủ, hệ thống lưu trữ chưa tối ưu...',
+                },
+                {
+                    option_text:
+                        'Thiếu nhân sự có chuyên môn về phân tích & khai thác dữ liệu',
+                    option_note:
+                        'Nhân sự chưa được đào tạo chuyên sâu về quản trị dữ liệu, chưa có bộ phận chuyên trách...',
+                },
+                {
+                    option_text: 'Thiếu công cụ hỗ trợ phân tích dữ liệu',
+                    option_note:
+                        'Chưa có phần mềm phân tích chuyên sâu, chủ yếu dùng Excel hoặc báo cáo thủ công...',
+                },
+                {
+                    option_text: 'Lo ngại về bảo mật & an toàn dữ liệu',
+                    option_note:
+                        'Dữ liệu có nguy cơ rò rỉ, chưa có hệ thống kiểm soát truy cập chặt chẽ...',
+                },
+                {
+                    option_text: 'Chi phí đầu tư cao, ngân sách hạn chế',
+                    option_note:
+                        'Chưa có nguồn vốn đủ để triển khai hệ thống số hóa đồng bộ...',
+                },
+                {
+                    option_text: 'Rào cản từ tư duy lãnh đạo & nhân viên',
+                    option_note:
+                        'Ngại thay đổi, chưa sẵn sàng áp dụng công nghệ mới...',
+                },
+                {
+                    option_text: 'KKhác',
+                    option_note: 'Vui lòng mô tả thêm...',
+                },
+            ],
+        },
+        {
+            question_text:
                 'QTDND của anh chị đã và đang triển khai thực hiện cung ứng sản phẩm dịch vụ ngân hàng số ở cấp độ nào?',
             question_name: 'Câu 6.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 {
                     option_text:
@@ -1858,34 +2001,10 @@ async function main() {
         },
         {
             question_text:
-                'Đơn vị đã triển khai hoặc có kế hoạch cho phép khách hàng đăng ký tài khoản online chưa?',
+                'Cho phép khách hàng, thành viên của Quỹ thanh toán/chuyển tiền 247 chưa?',
             question_name: 'Câu 6.2',
             question_type: 'radiogroup',
-            question_note: 'Chọn đáp án đúng nhất với đơn vị.',
-            question_options: [
-                { option_text: 'Chưa có kế hoạch triển khai' },
-                {
-                    option_text:
-                        'Có kế hoạch thực hiện trong thời gian 5 năm tới',
-                },
-                {
-                    option_text:
-                        'Có kế hoạch thực hiện trong thời gian 3 năm tới',
-                },
-                {
-                    option_text:
-                        'Có kế hoạch thực hiện trong thời gian 1 năm tới',
-                },
-                { option_text: 'Đã triển khai nhưng chưa hiệu quả' },
-                { option_text: 'Đã triển khai và hoạt động tốt' },
-                { option_text: 'Không biết/không rõ' },
-            ],
-        },
-        {
-            question_text:
-                'Cho phép khách hàng, thành viên của Quỹ thanh toán/chuyển tiền 247 chưa?',
-            question_name: 'Câu 6.3',
-            question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_note: 'Chọn đáp án đúng nhất với đơn vị.',
             question_options: [
                 { option_text: 'Chưa có kế hoạch triển khai' },
@@ -1909,7 +2028,8 @@ async function main() {
         {
             question_text:
                 'Cho phép khách hàng, thành viên của Quỹ mở sổ tiết kiệm online:',
-            question_name: 'Câu 6.4',
+            question_name: 'Câu 6.3',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_type: 'radiogroup',
             question_note: 'Chọn đáp án đúng nhất với đơn vị.',
             question_options: [
@@ -1934,7 +2054,8 @@ async function main() {
         {
             question_text:
                 'Cho phép khách hàng, thành viên của Quỹ đăng ký vay vốn online:',
-            question_name: 'Câu 6.5',
+            question_name: 'Câu 6.4',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_type: 'radiogroup',
             question_note: 'Chọn đáp án đúng nhất với đơn vị.',
             question_options: [
@@ -1959,7 +2080,8 @@ async function main() {
         {
             question_text:
                 'Cho phép khách hàng, thành viên của Quỹ tra cứu số dư, quản lý các loại tài khoản tiền gửi, tiền vay online:',
-            question_name: 'Câu 6.6',
+            question_name: 'Câu 6.5',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_type: 'radiogroup',
             question_note: 'Chọn đáp án đúng nhất với đơn vị.',
             question_options: [
@@ -1984,7 +2106,8 @@ async function main() {
         {
             question_text:
                 'Cho phép khách hàng, thành viên của Quỹ thực hiện dịch vụ phi ngân hàng (Đặt vé xem phim, mua vé máy bay, thanh toán hóa đơn...) online:',
-            question_name: 'Câu 6.7',
+            question_name: 'Câu 6.6',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_type: 'radiogroup',
             question_note: 'Chọn đáp án đúng nhất với đơn vị.',
             question_options: [
@@ -2009,8 +2132,9 @@ async function main() {
         {
             question_text:
                 'Khách hàng đánh giá mức độ hài lòng với các sản phẩm số hóa đã được cung cấp tại Quỹ như thế nào?',
-            question_name: 'Câu 6.8',
+            question_name: 'Câu 6.7',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 {
                     option_text: 'Rất không hài lòng',
@@ -2039,8 +2163,9 @@ async function main() {
         {
             question_text:
                 'Đơn vị có kế hoạch hợp tác với các tổ chức công nghệ để phát triển sản phẩm & dịch vụ ngân hàng số không?',
-            question_name: 'Câu 6.9',
+            question_name: 'Câu 6.8',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không có kế hoạch hợp tác' },
                 { option_text: 'Đã cân nhắc nhưng chưa lập kế hoạch cụ thể' },
@@ -2055,8 +2180,12 @@ async function main() {
         {
             question_text:
                 'Mức độ hợp tác hiện tại của đơn vị với các tổ chức công nghệ (Fintech, TCTD, NHHTX) để nâng cao dịch vụ ngân hàng số như thế nào? (Bao gồm hợp tác phát triển sản phẩm số, tích hợp công nghệ, thanh toán điện tử...)',
-            question_name: 'Câu 6.10',
+            question_name: 'Câu 6.9',
             question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 {
                     option_text: 'Chưa có hợp tác',
@@ -2088,7 +2217,11 @@ async function main() {
         {
             question_text:
                 'Quỹ đã có kế hoạch tích hợp, kết nối mở rộng với các tổ chức nào để mở rộng hệ sinh thái số?',
-            question_name: 'Câu 6.11',
+            question_name: 'Câu 6.10',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_type: 'checkbox',
             question_options: [
                 { option_text: 'Các công ty Fintech' },
@@ -2103,9 +2236,47 @@ async function main() {
         },
         {
             question_text:
+                'Khách hàng đánh giá mức độ hài lòng với các sản phẩm số hóa đã được cung cấp tại Quỹ như thế nào?',
+            question_name: 'Câu 6.11',
+            question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
+            question_options: [
+                {
+                    option_text: 'Rất không hài lòng',
+                    option_note:
+                        'Dịch vụ kém, khó sử dụng, nhiều lỗi kỹ thuật, không đáp ứng được nhu cầu',
+                },
+                {
+                    option_text: 'Không hài lòng',
+                    option_note:
+                        'Có dịch vụ nhưng còn nhiều hạn chế, trải nghiệm chưa tốt, thường xuyên gặp lỗi',
+                },
+                {
+                    option_text: 'Trung lập',
+                    option_note:
+                        'Dịch vụ ở mức chấp nhận được, không có ấn tượng đặc biệt',
+                },
+                {
+                    option_text: 'Hài lòng',
+                    option_note:
+                        'Dịch vụ tốt, đáp ứng nhu cầu, ít lỗi, dễ sử dụng',
+                },
+                {
+                    option_text: 'Rất hài lòng',
+                    option_note:
+                        'Dịch vụ xuất sắc, vượt mong đợi, trải nghiệm mượt mà, tiện lợi',
+                },
+            ],
+        },
+        {
+            question_text:
                 'Ngân sách hiện tại dành cho CNTT và chuyển đổi số của đơn vị hàng năm là bao nhiêu?',
             question_name: 'Câu 7.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_note: 'Chọn đáp án phù hợp nhất',
             question_options: [
                 { option_text: 'Dưới 50 triệu VNĐ' },
@@ -2120,6 +2291,7 @@ async function main() {
                 'Ngân sách dành cho CNTT hiện tại có đảm bảo đủ cho các hoạt động và dự án chuyển đổi số không?',
             question_name: 'Câu 7.2',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Hoàn toàn không đủ' },
                 { option_text: 'Không đủ' },
@@ -2133,6 +2305,7 @@ async function main() {
                 'Mức độ sẵn sàng của đơn vị trong việc đầu tư thêm ngân sách cho công nghệ và chuyển đổi số là như thế nào?',
             question_name: 'Câu 7.3',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Hoàn toàn không sẵn sàng' },
                 { option_text: 'Không sẵn sàng' },
@@ -2146,6 +2319,7 @@ async function main() {
                 'Ngân sách dự kiến để mở rộng đầu tư công nghệ tại đơn vị trong 3 năm tới là bao nhiêu?',
             question_name: 'Câu 7.4',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Dưới 100 triệu VNĐ' },
                 { option_text: '100 - 300 triệu VNĐ' },
@@ -2159,6 +2333,7 @@ async function main() {
                 'Đơn vị có kế hoạch dài hạn để tăng ngân sách đầu tư CNTT không?',
             question_name: 'Câu 7.5',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không có kế hoạch' },
                 { option_text: 'Đang cân nhắc nhưng chưa có kế hoạch cụ thể' },
@@ -2172,6 +2347,7 @@ async function main() {
                 'Đơn vị có sẵn sàng tham gia tài chính vào các dự án CNTT dùng chung với NHNN/NHHTX không?',
             question_name: 'Câu 7.6',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Hoàn toàn không sẵn sàng' },
                 { option_text: 'Không sẵn sàng' },
@@ -2188,6 +2364,10 @@ async function main() {
                 'Đơn vị đánh giá mức độ hiệu quả của việc tham gia vào các dự án CNTT dùng chung như thế nào?',
             question_name: 'Câu 7.7',
             question_type: 'radiogroup',
+            question_target: [
+                'Lãnh đạo & Quản lý',
+                'Nhân viên CNTT & Hỗ trợ kỹ thuật',
+            ],
             question_options: [
                 { option_text: 'Hoàn toàn không hiệu quả' },
                 { option_text: 'Hiệu quả rất thấp' },
@@ -2201,6 +2381,7 @@ async function main() {
                 'Đơn vị có nhận được hỗ trợ tài chính từ các tổ chức để thực hiện chuyển đổi số không?',
             question_name: 'Câu 7.8',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_options: [
                 { option_text: 'Không có bất kỳ hỗ trợ nào' },
                 { option_text: 'Hỗ trợ rất hạn chế' },
@@ -2217,6 +2398,7 @@ async function main() {
                 'Dự kiến từ năm 2025 đến năm 2030, tỷ lệ các nghiệp vụ ngân hàng của Quỹ (thanh toán, mở tài khoản, vay vốn...) có thể thực hiện trên môi trường số là bao nhiêu?',
             question_name: 'Câu 8.1',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: '20%' },
                 { option_text: '50%' },
@@ -2230,6 +2412,7 @@ async function main() {
                 'Đến năm 2035, các nghiệp vụ ngân hàng của Quỹ có thể cho phép khách hàng và thành viên thực hiện trên môi trường số là bao nhiêu?',
             question_name: 'Câu 8.2',
             question_type: 'radiogroup',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_options: [
                 { option_text: '20%' },
                 { option_text: '50%' },
@@ -2243,6 +2426,7 @@ async function main() {
                 'Từ nay đến năm 2030, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
             question_name: 'Câu 8.3',
             question_type: 'checkbox',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_note: 'Có thể chọn nhiều phương án',
             question_options: [
                 { option_text: 'Thanh toán 247' },
@@ -2256,6 +2440,7 @@ async function main() {
             question_text:
                 'Từ nay đến năm 2035, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
             question_name: 'Câu 8.4',
+            question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
             question_type: 'checkbox',
             question_note: 'Có thể chọn nhiều phương án',
             question_options: [
@@ -2270,6 +2455,7 @@ async function main() {
             question_text:
                 'Đơn vị đã xây dựng lộ trình cụ thể để thực hiện chuyển đổi số theo định hướng của ngành ngân hàng chưa? (Bao gồm kế hoạch chi tiết về hạ tầng CNTT, nhân sự, tài chính và hợp tác với NHHTX, TCTD...)',
             question_name: 'Câu 8.5',
+            question_target: ['Lãnh đạo & Quản lý'],
             question_type: 'radiogroup',
             question_options: [
                 {
