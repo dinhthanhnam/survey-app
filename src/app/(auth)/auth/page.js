@@ -13,7 +13,7 @@ export default function AuthPage() {
     const [successMessage, setSuccessMessage] = useState(""); // Hiển thị ô OTP
     const [errorMessage, setErrorMessage] = useState(""); // Thông báo lỗi
     const [unAuthedRespondent, setUnAuthedRespondent] = useState({});
-
+    const [maskedCode, setMaskedCode] = useState("");
     // Hàm gửi request lấy OTP
     const handleRequestOTP = async () => {
         setErrorMessage("");
@@ -62,6 +62,16 @@ export default function AuthPage() {
         }
     };
 
+    const maskCreditCode = (value) => {
+        if (value.length <= 3) return value; // Hiển thị toàn bộ nếu ngắn
+        return value.slice(0, 3) + "*".repeat(value.length - 4) + value.slice(-1);
+    };
+
+    const handleChange = (e) => {
+        const value = e.target.value;
+        setCreditCode(value);
+        setMaskedCode(maskCreditCode(value));
+    };
 
     return (
         <div>
@@ -85,8 +95,8 @@ export default function AuthPage() {
                             </label>
                             <input
                                 type="text"
-                                value={creditCode}
-                                onChange={(e) => setCreditCode(e.target.value)}
+                                value={maskedCode}
+                                onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
                                 placeholder="Nhập mã quỹ tín dụng..."
                             />
