@@ -164,10 +164,9 @@ const Body = ({ scrollToTop }) => {
         setAnswers((prev) => {
             const currentValues = Array.isArray(prev[questionId]) ? prev[questionId] : [];
             const newValues = currentValues.includes(optionId)
-                ? currentValues.filter((v) => v !== optionId) // Bỏ chọn
-                : [...currentValues, optionId]; // Chọn
+                ? currentValues.filter((v) => v !== optionId) 
+                : [...currentValues, optionId]; 
     
-            // Cập nhật showTextBox để ẩn textbox khi bỏ chọn
             setShowTextBox((prev) => ({
                 ...prev,
                 [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
@@ -359,35 +358,35 @@ const Body = ({ scrollToTop }) => {
                                     )}
                                     {question.question_type === 'checkbox' && (
                                         <div className="space-y-3 mt-2">
-                                            {question.question_options.map((option, index) => (
+                                            {question.question_options.map((option) => (
                                                 <div 
-                                                    key={index} 
+                                                    key={option.id} 
                                                     className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
-                                                    onClick={() => handleCheckboxChange(question.id, index, option.require_reason)}
+                                                    onClick={() => handleCheckboxChange(question.id, option.id, option.require_reason)}
                                                 >
                                                     <input
                                                         type="checkbox"
-                                                        checked={Array.isArray(answers[question.id]) && answers[question.id].includes(index)}
-                                                        onChange={() => handleCheckboxChange(question.id, index, option.require_reason)}
+                                                        checked={Array.isArray(answers[question.id]) && answers[question.id].includes(option.id)}
+                                                        onChange={() => handleCheckboxChange(question.id, option.id, option.require_reason)}
                                                         className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
                                                     />
                                                     <div className="flex-1">
                                                         <span className="text-gray-800 font-medium">{option.option_text}</span>
-                                                        
+
                                                         {option.option_note && (
                                                             <p className="text-gray-500 text-sm mt-1">{option.option_note}</p>
                                                         )}
 
-                                                        {showTextBox[`${question.id}-${index}`] && (
+                                                        {showTextBox[`${question.id}-${option.id}`] && (
                                                             <input
                                                                 type="text"
                                                                 className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
                                                                 placeholder="Vui lòng nhập chi tiết..."
-                                                                value={textInputs[`${question.id}-${index}`] || ''}
+                                                                value={textInputs[`${question.id}-${option.id}`] || ''}
                                                                 onChange={(e) =>
                                                                     setTextInputs((prev) => ({
                                                                         ...prev,
-                                                                        [`${question.id}-${index}`]: e.target.value,
+                                                                        [`${question.id}-${option.id}`]: e.target.value,
                                                                     }))
                                                                 }
                                                                 onClick={(e) => e.stopPropagation()}
