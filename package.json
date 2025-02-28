@@ -2,6 +2,7 @@
   "name": "survey-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
@@ -14,6 +15,7 @@
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
+    "fs-extra": "^11.3.0",
     "jose": "^6.0.6",
     "next": "15.1.4",
     "nodemailer": "^6.10.0",
