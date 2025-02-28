@@ -106,7 +106,7 @@ export default function AuthPage() {
                         </div>
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                2. Số điện thoai
+                                2. Số điện thoại
                             </label>
                             <input
                                 type="text"
