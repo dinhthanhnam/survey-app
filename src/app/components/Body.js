@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
+import { FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import axios from 'axios';
 import {
     fetchSurveyCount,
@@ -219,10 +221,11 @@ const Body = ({ scrollToTop }) => {
                     <button
                         onClick={() => setStep(1)}
                         disabled={loading}
-                        className={`px-6 py-2 rounded-lg transition duration-200 ease-in-out
-                         bg-teal-600 text-white hover:bg-teal-700`}
+                        className={`px-6 py-2 flex items-center gap-2 rounded-lg transition duration-200 ease-in-out
+                            bg-teal-600 text-white hover:bg-teal-700`}
                     >
                         Tiếp theo
+                        <FaArrowRight size={18} />
                     </button>
                 </div>
             </div>
@@ -273,6 +276,7 @@ const Body = ({ scrollToTop }) => {
                         onClick={() => setShowReview(false)}
                     >
                         Quay lại
+                        <FaArrowLeft size={18} />
                     </button>
                     <button
                         className={`px-6 py-2 rounded-lg transition duration-200 ${
@@ -370,12 +374,10 @@ const Body = ({ scrollToTop }) => {
                                                     <div className="flex-1">
                                                         <span className="text-gray-800 font-medium">{option.option_text}</span>
                                                         
-                                                        {/* Hiển thị ghi chú nếu có */}
                                                         {option.option_note && (
                                                             <p className="text-gray-500 text-sm mt-1">{option.option_note}</p>
                                                         )}
 
-                                                        {/* Hiển thị ô nhập nếu tùy chọn yêu cầu nhập lý do */}
                                                         {showTextBox[`${question.id}-${index}`] && (
                                                             <input
                                                                 type="text"
