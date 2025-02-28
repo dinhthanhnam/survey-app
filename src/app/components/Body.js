@@ -367,15 +367,17 @@ const Body = ({ scrollToTop }) => {
                                                     <input
                                                         type="checkbox"
                                                         checked={Array.isArray(answers[question.id]) && answers[question.id].includes(option.id)}
-                                                        onChange={() => handleCheckboxChange(question.id, option.id, option.require_reason)}
+                                                        readOnly
                                                         className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
                                                     />
                                                     <div className="flex-1">
-                                                        <span className="text-gray-800 font-medium">{option.option_text}</span>
+                                                        <div className="inline-flex items-center space-x-2">
+                                                            <span className="text-gray-800 font-medium">{option.option_text}</span>
 
-                                                        {option.option_note && (
-                                                            <p className="text-gray-500 text-sm mt-1">{option.option_note}</p>
-                                                        )}
+                                                            {option.option_note && (
+                                                                <span className="text-gray-500 italic text-sm font-semibold">({option.option_note})</span>
+                                                            )}
+                                                        </div>
 
                                                         {showTextBox[`${question.id}-${option.id}`] && (
                                                             <input
