@@ -1,8 +1,17 @@
 import React from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const handleLogout = () => {
-    window.location.href = "/"; 
+  const router = useRouter();
+  const handleLogout = async () => {
+      try {
+        await axios.post("/api/logout", {}, { withCredentials: true }); 
+        localStorage.removeItem("respondent"); 
+        router.push("/auth"); 
+    } catch (error) {
+        console.error("Lỗi khi đăng xuất:", error);
+    }
   };
   return (
     <div className="pt-4 pb-4 rounded-lg mb-6 text-left px-4 bg-teal-600">
