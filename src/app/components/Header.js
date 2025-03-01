@@ -1,18 +1,21 @@
 import React from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const Header = () => {
   const router = useRouter();
+  const pathname = usePathname(); // Lấy đường dẫn hiện tại
+
   const handleLogout = async () => {
-      try {
-        await axios.post("/api/logout", {}, { withCredentials: true }); 
-        localStorage.removeItem("respondent"); 
-        router.push("/auth"); 
+    try {
+      await axios.post("/api/logout", {}, { withCredentials: true });
+      localStorage.removeItem("respondent");
+      router.push("/auth");
     } catch (error) {
-        console.error("Lỗi khi đăng xuất:", error);
+      console.error("Lỗi khi đăng xuất:", error);
     }
   };
+
   return (
     <div className="pt-4 pb-4 rounded-lg mb-6 text-left px-4 bg-teal-600">
       <div className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-4">
@@ -45,14 +48,16 @@ const Header = () => {
         </p>
       </div>
 
-      <div className="mt-4 text-right">
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-semibold shadow-md hover:bg-red-600 transition"
-        >
-          Đăng xuất
-        </button>
-      </div>
+      {pathname !== "/auth" && pathname !== "/refresh" && (
+        <div className="mt-4 text-right">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-semibold shadow-md hover:bg-red-600 transition"
+          >
+            Đăng xuất
+          </button>
+        </div>
+      )}
     </div>
   );
 };
