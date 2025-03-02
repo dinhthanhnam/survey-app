@@ -35,7 +35,7 @@ model respondents {
   id              Int                          @id @default(autoincrement())
   name            String                       @db.VarChar(255)
   email           String                       @unique(map: "email") @db.VarChar(255)
-  phone           String                       @unique(map: "phone") @db.VarChar(255)
+  phone           String                       @db.VarChar(255)
   auth_status     String                       @db.VarChar(255)
   institution_id  Int
   belong_to_group respondents_belong_to_group?
@@ -57,14 +57,14 @@ model surveys {
 }
 
 model question_options {
-  id           Int         @id @default(autoincrement())
-  question_id  Int
-  option_text  String      @db.VarChar(255)
-  option_value Int?
+  id             Int         @id @default(autoincrement())
+  question_id    Int
+  option_text    String      @db.VarChar(255)
+  option_value   Int?
   require_reason Int
-  option_note  String?     @db.VarChar(255)
-  questions    questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
-  responses    responses[]
+  option_note    String?     @db.VarChar(255)
+  questions      questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
+  responses      responses[]
 
   @@index([question_id], map: "question_id")
 }

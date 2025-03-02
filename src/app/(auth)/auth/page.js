@@ -22,7 +22,7 @@ export default function AuthPage() {
             setErrorMessage("Vui lòng nhập và chọn đầy đủ thông tin.");
             return;
         }
-
+        console.log({ name, creditCode, email, role });
         try {
             const response = await axios.post("/api/generate-otp", {
                 name,
