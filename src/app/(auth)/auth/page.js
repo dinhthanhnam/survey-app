@@ -85,7 +85,7 @@ export default function AuthPage() {
                             <input
                                 type="text"
                                 value={creditCode}
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={(e) => setCreditCode(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
                                 placeholder="Nhập mã quỹ tín dụng..."
                             />
