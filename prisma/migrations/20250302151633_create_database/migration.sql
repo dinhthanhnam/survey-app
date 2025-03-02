@@ -32,7 +32,6 @@ CREATE TABLE `respondents` (
     `belong_to_group` ENUM('Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ', 'Nhân viên CNTT & Hỗ trợ kỹ thuật') NULL,
 
     UNIQUE INDEX `email`(`email`),
-    UNIQUE INDEX `phone`(`phone`),
     INDEX `credit_fund_id`(`institution_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -54,7 +53,7 @@ CREATE TABLE `question_options` (
     `question_id` INTEGER NOT NULL,
     `option_text` VARCHAR(255) NOT NULL,
     `option_value` INTEGER NULL,
-    `require_reason` INTEGER,
+    `require_reason` INTEGER NOT NULL,
     `option_note` VARCHAR(255) NULL,
 
     INDEX `question_id`(`question_id`),
