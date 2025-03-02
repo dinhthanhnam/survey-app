@@ -103,7 +103,8 @@ export const saveUserResponse = async (
     questionId,
     respondentId,
     optionId,
-    isCheckbox
+    isCheckbox,
+    reason
 ) => {
     try {
         await fetch('/api/survey/response', {
@@ -114,6 +115,7 @@ export const saveUserResponse = async (
                 respondent_id: respondentId,
                 question_option_id: optionId,
                 isCheckbox,
+                question_option_answer: reason
             }),
         });
     } catch (error) {

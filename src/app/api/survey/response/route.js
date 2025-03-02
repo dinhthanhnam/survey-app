@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 export const POST = async (req) => {
     try {
-        const { question_id, respondent_id, question_option_id, isCheckbox } =
+        const { question_id, respondent_id, question_option_id, isCheckbox, question_option_answer } =
             await req.json();
 
         if (isCheckbox) {
@@ -34,6 +34,7 @@ export const POST = async (req) => {
                         respondent_id,
                         question_option_id,
                         response_status: 'saved',
+                        question_option_answer: question_option_answer
                     },
                 });
                 return NextResponse.json(
@@ -54,6 +55,7 @@ export const POST = async (req) => {
                     respondent_id,
                     question_option_id,
                     response_status: 'saved',
+                    question_option_answer: question_option_answer
                 },
             });
 
