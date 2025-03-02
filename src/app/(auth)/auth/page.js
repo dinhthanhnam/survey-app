@@ -95,7 +95,7 @@ export default function AuthPage() {
                             </label>
                             <input
                                 type="text"
-                                value={maskedCode}
+                                value={creditCode}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
                                 placeholder="Nhập mã quỹ tín dụng..."
