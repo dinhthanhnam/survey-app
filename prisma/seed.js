@@ -2639,13 +2639,13 @@ async function main() {
         }
     }
 
-    const totalQuestions = 118; // Tổng số câu hỏi
+    const totalQuestions = 119; // Tổng số câu hỏi
     const surveyData = [
         { surveyId: 1, numQuestions: 14 },
         { surveyId: 2, numQuestions: 22 },
         { surveyId: 3, numQuestions: 13 },
         { surveyId: 4, numQuestions: 25 },
-        { surveyId: 5, numQuestions: 17 },
+        { surveyId: 5, numQuestions: 18 },
         { surveyId: 6, numQuestions: 11 },
         { surveyId: 7, numQuestions: 8 },
         { surveyId: 8, numQuestions: 8 },

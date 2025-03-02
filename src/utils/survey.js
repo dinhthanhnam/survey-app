@@ -14,11 +14,14 @@ export const fetchSurveyCount = async () => {
 
 export const fetchSurveyByStep = async (step) => {
     try {
+        const respondent = localStorage.getItem('respondent');
+        if (!respondent) throw new Error('No respondent data in localStorage');
+
         const response = await axios.get(`/api/survey/${step}`, {
+            params: { respondent }, // Gửi respondent lên
             withCredentials: true,
         });
 
-        // Axios tự động ném lỗi nếu HTTP status không phải 2xx, nên không cần kiểm tra `ok`
         return response.data;
     } catch (error) {
         console.error(

@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FaQuestionCircle } from 'react-icons/fa';
-import { FaArrowRight } from "react-icons/fa";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import {
     fetchSurveyCount,
@@ -36,7 +36,7 @@ const Body = ({ scrollToTop }) => {
     const [totalQuestions, setTotalQuestions] = useState(0);
     const [showTextBox, setShowTextBox] = useState({});
     const [textInputs, setTextInputs] = useState({});
-
+    const [surveyCounts, setSurveyCounts] = useState([]);
 
     useEffect(() => {
         if (surveyData) {
@@ -52,22 +52,22 @@ const Body = ({ scrollToTop }) => {
     }, [surveyData, answers]);
 
     const [respondentId, setRespondentId] = useState(null);
+    const [role, setRole] = useState(null);
 
     useEffect(() => {
         const respondentData = localStorage.getItem('respondent');
         if (respondentData) {
             const respondent = JSON.parse(respondentData);
             setRespondentId(respondent.id);
+            setRole(respondent.belong_to_group);
         }
     }, []);
-    const [surveyCounts, setSurveyCounts] = useState([]);
 
     const handleReviewSurvey = async () => {
         setShowReview(true); // Chuyển sang trang xem lại
-
         try {
             const response = await axios.get('/api/survey/response/count', {
-                params: { respondent_id: respondentId },
+                params: { respondent_id: respondentId, belong_to_group: role },
             });
             setSurveyCounts(response.data);
         } catch (error) {
@@ -160,25 +160,31 @@ const Body = ({ scrollToTop }) => {
         await saveUserResponse(questionId, respondentId, optionId, false);
     };
 
-    const handleCheckboxChange = async (questionId, optionId, requireReason) => {
+    const handleCheckboxChange = async (
+        questionId,
+        optionId,
+        requireReason
+    ) => {
         setAnswers((prev) => {
-            const currentValues = Array.isArray(prev[questionId]) ? prev[questionId] : [];
+            const currentValues = Array.isArray(prev[questionId])
+                ? prev[questionId]
+                : [];
             const newValues = currentValues.includes(optionId)
-                ? currentValues.filter((v) => v !== optionId) 
-                : [...currentValues, optionId]; 
-    
+                ? currentValues.filter((v) => v !== optionId)
+                : [...currentValues, optionId];
+
             setShowTextBox((prev) => ({
                 ...prev,
-                [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
+                [`${questionId}-${optionId}`]: requireReason
+                    ? newValues.includes(optionId)
+                    : false,
             }));
-    
+
             return { ...prev, [questionId]: newValues };
         });
-    
+
         await saveUserResponse(questionId, respondentId, optionId, true);
     };
-    
-    
 
     if (step === 0) {
         return (
@@ -358,49 +364,96 @@ const Body = ({ scrollToTop }) => {
                                     )}
                                     {question.question_type === 'checkbox' && (
                                         <div className="space-y-3 mt-2">
-                                            {question.question_options.map((option) => (
-                                                <div 
-                                                    key={option.id} 
-                                                    className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
-                                                    onClick={() => handleCheckboxChange(question.id, option.id, option.require_reason)}
-                                                >
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={Array.isArray(answers[question.id]) && answers[question.id].includes(option.id)}
-                                                        readOnly
-                                                        className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
-                                                    />
-                                                    <div className="flex-1">
-                                                        <div className="inline-flex items-center space-x-2">
-                                                            <span className="text-gray-800 font-medium">{option.option_text}</span>
+                                            {question.question_options.map(
+                                                (option) => (
+                                                    <div
+                                                        key={option.id}
+                                                        className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
+                                                        onClick={() =>
+                                                            handleCheckboxChange(
+                                                                question.id,
+                                                                option.id,
+                                                                option.require_reason
+                                                            )
+                                                        }
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={
+                                                                Array.isArray(
+                                                                    answers[
+                                                                        question
+                                                                            .id
+                                                                    ]
+                                                                ) &&
+                                                                answers[
+                                                                    question.id
+                                                                ].includes(
+                                                                    option.id
+                                                                )
+                                                            }
+                                                            readOnly
+                                                            className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
+                                                        />
+                                                        <div className="flex-1">
+                                                            <div className="inline-flex items-center space-x-2">
+                                                                <span className="text-gray-800 font-medium">
+                                                                    {
+                                                                        option.option_text
+                                                                    }
+                                                                </span>
 
-                                                            {option.option_note && (
-                                                                <span className="text-gray-500 italic text-sm font-semibold">({option.option_note})</span>
+                                                                {option.option_note && (
+                                                                    <span className="text-gray-500 italic text-sm font-semibold">
+                                                                        (
+                                                                        {
+                                                                            option.option_note
+                                                                        }
+                                                                        )
+                                                                    </span>
+                                                                )}
+                                                            </div>
+
+                                                            {showTextBox[
+                                                                `${question.id}-${option.id}`
+                                                            ] && (
+                                                                <input
+                                                                    type="text"
+                                                                    className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
+                                                                    placeholder="Vui lòng nhập chi tiết..."
+                                                                    value={
+                                                                        textInputs[
+                                                                            `${question.id}-${option.id}`
+                                                                        ] || ''
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        setTextInputs(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [`${question.id}-${option.id}`]:
+                                                                                    e
+                                                                                        .target
+                                                                                        .value,
+                                                                            })
+                                                                        )
+                                                                    }
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        e.stopPropagation()
+                                                                    }
+                                                                />
                                                             )}
                                                         </div>
-
-                                                        {showTextBox[`${question.id}-${option.id}`] && (
-                                                            <input
-                                                                type="text"
-                                                                className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
-                                                                placeholder="Vui lòng nhập chi tiết..."
-                                                                value={textInputs[`${question.id}-${option.id}`] || ''}
-                                                                onChange={(e) =>
-                                                                    setTextInputs((prev) => ({
-                                                                        ...prev,
-                                                                        [`${question.id}-${option.id}`]: e.target.value,
-                                                                    }))
-                                                                }
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            />
-                                                        )}
                                                     </div>
-                                                </div>
-                                            ))}
+                                                )
+                                            )}
                                         </div>
                                     )}
-
-
 
                                     {question.question_type === 'group' && (
                                         <GroupQuestion

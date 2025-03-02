@@ -1,16 +1,26 @@
 import { PrismaClient, surveys } from '@prisma/client';
-import {ProtectApi} from "@/utils/protectapi";
+import { ProtectApi } from '@/utils/protectapi';
 
 const prisma = new PrismaClient();
 
-export async function GET(request, { params }) {
-    const { id } = await params;
-
+export async function GET(request, context) {
     try {
-        const authResponse = await ProtectApi();
-        if (authResponse) return authResponse;
+        const params = await context.params;
+        const id = params.id;
 
-        // Lấy dữ liệu survey từ database
+        const url = new URL(request.url);
+        const respondentParam = url.searchParams.get('respondent');
+
+        if (!respondentParam) {
+            return new Response(
+                JSON.stringify({ error: 'Respondent data missing.' }),
+                { status: 400 }
+            );
+        }
+
+        const respondent = JSON.parse(respondentParam);
+        console.log('Received respondent:', respondent);
+
         const survey = await prisma.surveys.findUnique({
             where: { id: parseInt(id) },
             include: {
@@ -18,7 +28,7 @@ export async function GET(request, { params }) {
                     include: {
                         questions: {
                             include: {
-                                question_options: true, // Bao gồm các options
+                                question_options: true,
                             },
                         },
                     },
@@ -26,7 +36,6 @@ export async function GET(request, { params }) {
             },
         });
 
-        // Kiểm tra nếu không tìm thấy survey
         if (!survey) {
             return new Response(
                 JSON.stringify({ error: `Survey with ID ${id} not found.` }),
@@ -34,7 +43,17 @@ export async function GET(request, { params }) {
             );
         }
 
-        // Trả dữ liệu JSON
+        // Lọc câu hỏi theo `belong_to_group`
+        const filteredQuestions = survey.question_survey.filter((q) => {
+            const targetGroups = q.questions.question_target;
+            return (
+                !targetGroups ||
+                targetGroups.includes(respondent.belong_to_group)
+            );
+        });
+
+        survey.question_survey = filteredQuestions;
+
         return new Response(JSON.stringify(survey, null, 2), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
