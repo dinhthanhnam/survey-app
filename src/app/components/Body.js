@@ -20,6 +20,7 @@ import { respondents_belong_to_group } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 
 const Body = ({ scrollToTop }) => {
+    let questionCounter = 0;
     const router = useRouter();
     const [step, setStep] = useState(0);
     const [surveyData, setSurveyData] = useState(null);
@@ -318,6 +319,7 @@ const Body = ({ scrollToTop }) => {
                                 )
                             );
                         if (groupQuestionIds.includes(question.id)) return null;
+                        questionCounter++;
                         return (
                             <div
                                 key={question.id}
@@ -325,7 +327,7 @@ const Body = ({ scrollToTop }) => {
                             >
                                 <label className="block text-black font-medium text-lg text-justify flex items-center justify-between">
                                     <span>
-                                        Câu {index + 1}.{' '}
+                                        Câu {questionCounter}. {' '}
                                         {question.question_text}
                                     </span>
                                     {question.question_note && (
