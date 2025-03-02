@@ -117,7 +117,7 @@ export const saveUserResponse = async (
                 isCheckbox,
                 question_option_answer: reason
             }),
-        });
+        })
     } catch (error) {
         console.error('Lỗi khi lưu câu trả lời:', error);
     }

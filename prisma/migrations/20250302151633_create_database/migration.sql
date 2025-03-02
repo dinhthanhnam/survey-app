@@ -66,7 +66,7 @@ CREATE TABLE `responses` (
     `question_id` INTEGER NOT NULL,
     `respondent_id` INTEGER NOT NULL,
     `question_option_id` INTEGER NOT NULL,
-    `question_option_answer` JSON NULL,
+    `question_option_answer` TEXT NULL,
     `response_status` ENUM('saved', 'submitted') NULL,
 
     INDEX `question_id`(`question_id`),

@@ -74,7 +74,7 @@ model responses {
   question_id            Int
   respondent_id          Int
   question_option_id     Int
-  question_option_answer Json?
+  question_option_answer String?                    @db.Text
   response_status        responses_response_status?
   question_options       question_options           @relation(fields: [question_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_response_question_option")
   questions              questions                  @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_1")
