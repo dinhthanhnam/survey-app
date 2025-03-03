@@ -46,7 +46,7 @@ export default function RefreshPage() {
             );
 
             if (response.data.success) {
-                localStorage.setItem("respondent", JSON.stringify(response.data.respondent));
+                localStorage.setItem("respondent", response.data.respondent);
                 window.location.href = "/";
             } else {
                 setErrorMessage(response.data.message);
