@@ -161,16 +161,24 @@ const Body = ({ scrollToTop }) => {
         await saveUserResponse(questionId, respondentId, optionId, false);
     };
 
-    const handleCheckboxChange = async (questionId, optionId, requireReason) => {
+    const handleCheckboxChange = async (
+        questionId,
+        optionId,
+        requireReason
+    ) => {
         setAnswers((prev) => {
-            const currentValues = Array.isArray(prev[questionId]) ? prev[questionId] : [];
+            const currentValues = Array.isArray(prev[questionId])
+                ? prev[questionId]
+                : [];
             const newValues = currentValues.includes(optionId)
                 ? currentValues.filter((v) => v !== optionId) // Bỏ chọn
                 : [...currentValues, optionId]; // Chọn mới
 
             setShowTextBox((prev) => ({
                 ...prev,
-                [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
+                [`${questionId}-${optionId}`]: requireReason
+                    ? newValues.includes(optionId)
+                    : false,
             }));
 
             //Fix this
@@ -178,7 +186,9 @@ const Body = ({ scrollToTop }) => {
 
             setTextInputs((prev) => ({
                 ...prev,
-                [`${questionId}-${optionId}`]: isPreviouslyChecked ? 0 : prev[`${questionId}-${optionId}`] || 0,
+                [`${questionId}-${optionId}`]: isPreviouslyChecked
+                    ? 0
+                    : prev[`${questionId}-${optionId}`] || 0,
             }));
             return { ...prev, [questionId]: newValues };
             //
@@ -186,7 +196,6 @@ const Body = ({ scrollToTop }) => {
 
         await saveUserResponse(questionId, respondentId, optionId, true, null); //Khác tham số null
     };
-
 
     if (step === 0) {
         return (
@@ -328,7 +337,7 @@ const Body = ({ scrollToTop }) => {
                             >
                                 <label className="block text-black font-medium text-lg text-justify flex items-center justify-between">
                                     <span>
-                                        Câu {questionCounter}. {' '}
+                                        Câu {questionCounter}.{' '}
                                         {question.question_text}
                                     </span>
                                     {question.question_note && (
@@ -424,23 +433,43 @@ const Body = ({ scrollToTop }) => {
                                                                     type="text"
                                                                     className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
                                                                     placeholder="Vui lòng nhập chi tiết..."
-                                                                    value={textInputs[`${question.id}-${option.id}`] || ''}
-                                                                    onChange={ async (e) => {
-                                                                        setTextInputs((prev) => ({
-                                                                            ...prev,
-                                                                            [`${question.id}-${option.id}`]: e.target.value,
-                                                                        }));
+                                                                    value={
+                                                                        textInputs[
+                                                                            `${question.id}-${option.id}`
+                                                                        ] || ''
+                                                                    }
+                                                                    onChange={async (
+                                                                        e
+                                                                    ) => {
+                                                                        setTextInputs(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [`${question.id}-${option.id}`]:
+                                                                                    e
+                                                                                        .target
+                                                                                        .value,
+                                                                            })
+                                                                        );
                                                                         //fix this
                                                                         await saveUserResponse(
                                                                             question.id,
                                                                             respondentId,
                                                                             option.id,
                                                                             true,
-                                                                            textInputs[`${question.id}-${option.id}`] || null
+                                                                            textInputs[
+                                                                                `${question.id}-${option.id}`
+                                                                            ] ||
+                                                                                null
                                                                         );
                                                                         //
                                                                     }}
-                                                                    onClick={(e) => e.stopPropagation()}
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        e.stopPropagation()
+                                                                    }
                                                                 />
                                                             )}
                                                         </div>
