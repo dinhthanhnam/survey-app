@@ -11,6 +11,7 @@ import {
     fetchUserAnswers,
     fetchReviewData,
     saveUserResponse,
+    saveReasonResponse
 } from '@/utils/survey';
 import Navigation from './Navigation';
 import RadioQuestion from './questions/RadioQuestion';
@@ -161,40 +162,37 @@ const Body = ({ scrollToTop }) => {
         await saveUserResponse(questionId, respondentId, optionId, false);
     };
 
-    const handleCheckboxChange = async (
-        questionId,
-        optionId,
-        requireReason
-    ) => {
+    const handleCheckboxChange = async (questionId, optionId, requireReason) => {
         setAnswers((prev) => {
-            const currentValues = Array.isArray(prev[questionId])
-                ? prev[questionId]
-                : [];
+            // Xử lý giá trị hiện tại của questionId
+            let currentValues = prev[questionId];
+            if (!currentValues) {
+                currentValues = []; // Nếu chưa có đáp án nào
+            } else if (!Array.isArray(currentValues)) {
+                currentValues = [currentValues]; // Nếu là số (từ radiogroup), chuyển thành mảng
+            }
+
             const newValues = currentValues.includes(optionId)
                 ? currentValues.filter((v) => v !== optionId) // Bỏ chọn
                 : [...currentValues, optionId]; // Chọn mới
 
             setShowTextBox((prev) => ({
                 ...prev,
-                [`${questionId}-${optionId}`]: requireReason
-                    ? newValues.includes(optionId)
-                    : false,
+                [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
             }));
 
-            //Fix this
-            const isPreviouslyChecked = currentValues.includes(optionId);
+            // Reset text input nếu bỏ chọn
+            if (!newValues.includes(optionId)) {
+                setTextInputs((prev) => ({
+                    ...prev,
+                    [`${questionId}-${optionId}`]: '',
+                }));
+            }
 
-            setTextInputs((prev) => ({
-                ...prev,
-                [`${questionId}-${optionId}`]: isPreviouslyChecked
-                    ? 0
-                    : prev[`${questionId}-${optionId}`] || 0,
-            }));
             return { ...prev, [questionId]: newValues };
-            //
         });
 
-        await saveUserResponse(questionId, respondentId, optionId, true, null); //Khác tham số null
+        await saveUserResponse(questionId, respondentId, optionId, true);
     };
 
     if (step === 0) {
@@ -376,106 +374,57 @@ const Body = ({ scrollToTop }) => {
                                     )}
                                     {question.question_type === 'checkbox' && (
                                         <div className="space-y-3 mt-2">
-                                            {question.question_options.map(
-                                                (option) => (
-                                                    <div
-                                                        key={option.id}
-                                                        className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
-                                                        onClick={() =>
-                                                            handleCheckboxChange(
-                                                                question.id,
-                                                                option.id,
-                                                                option.require_reason
-                                                            )
+                                            {question.question_options.map((option) => (
+                                                <div
+                                                    key={option.id}
+                                                    className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={
+                                                            answers[question.id]
+                                                                ? Array.isArray(answers[question.id])
+                                                                    ? answers[question.id].includes(option.id)
+                                                                    : answers[question.id] === option.id
+                                                                : false
                                                         }
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={
-                                                                Array.isArray(
-                                                                    answers[
-                                                                        question
-                                                                            .id
-                                                                    ]
-                                                                ) &&
-                                                                answers[
-                                                                    question.id
-                                                                ].includes(
-                                                                    option.id
-                                                                )
-                                                            }
-                                                            readOnly
-                                                            className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
-                                                        />
-                                                        <div className="flex-1">
-                                                            <div className="inline-flex items-center space-x-2">
-                                                                <span className="text-gray-800 font-medium">
-                                                                    {
-                                                                        option.option_text
-                                                                    }
-                                                                </span>
-
-                                                                {option.option_note && (
-                                                                    <span className="text-gray-500 italic text-sm font-semibold">
-                                                                        (
-                                                                        {
-                                                                            option.option_note
-                                                                        }
-                                                                        )
-                                                                    </span>
-                                                                )}
-                                                            </div>
-
-                                                            {showTextBox[
-                                                                `${question.id}-${option.id}`
-                                                            ] && (
-                                                                <input
-                                                                    type="text"
-                                                                    className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
-                                                                    placeholder="Vui lòng nhập chi tiết..."
-                                                                    value={
-                                                                        textInputs[
-                                                                            `${question.id}-${option.id}`
-                                                                        ] || ''
-                                                                    }
-                                                                    onChange={async (
-                                                                        e
-                                                                    ) => {
-                                                                        setTextInputs(
-                                                                            (
-                                                                                prev
-                                                                            ) => ({
-                                                                                ...prev,
-                                                                                [`${question.id}-${option.id}`]:
-                                                                                    e
-                                                                                        .target
-                                                                                        .value,
-                                                                            })
-                                                                        );
-                                                                        //fix this
-                                                                        await saveUserResponse(
-                                                                            question.id,
-                                                                            respondentId,
-                                                                            option.id,
-                                                                            true,
-                                                                            textInputs[
-                                                                                `${question.id}-${option.id}`
-                                                                            ] ||
-                                                                                null
-                                                                        );
-                                                                        //
-                                                                    }}
-                                                                    onClick={(
-                                                                        e
-                                                                    ) =>
-                                                                        e.stopPropagation()
-                                                                    }
-                                                                />
+                                                        onChange={() => handleCheckboxChange(question.id, option.id, option.require_reason)}
+                                                        className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <div className="inline-flex items-center space-x-2">
+                                                            <span className="text-gray-800 font-medium">
+                                                              {option.option_text}
+                                                            </span>
+                                                            {option.option_note && (
+                                                                <span className="text-gray-500 italic text-sm font-semibold">
+                                                                {option.option_note}
+                                                              </span>
                                                             )}
                                                         </div>
+
+                                                        {showTextBox[`${question.id}-${option.id}`] && (
+                                                            <input
+                                                                type="text"
+                                                                className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
+                                                                placeholder="Vui lòng nhập chi tiết..."
+                                                                value={textInputs[`${question.id}-${option.id}`] || ''}
+                                                                onChange={async (e) => {
+                                                                    const newText = e.target.value;
+                                                                    setTextInputs((prev) => ({
+                                                                        ...prev,
+                                                                        [`${question.id}-${option.id}`]: newText,
+                                                                    }))}
+                                                                }
+                                                                onBlur={ async () => {
+                                                                    await saveReasonResponse(question.id, respondentId, option.id, textInputs[`${question.id}-${option.id}`] || null);
+                                                                }}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
+                                                        )}
                                                     </div>
-                                                )
-                                            )}
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
 

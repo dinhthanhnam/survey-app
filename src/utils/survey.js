@@ -104,7 +104,6 @@ export const saveUserResponse = async (
     respondentId,
     optionId,
     isCheckbox,
-    reason
 ) => {
     try {
         await fetch('/api/survey/response', {
@@ -115,11 +114,25 @@ export const saveUserResponse = async (
                 respondent_id: respondentId,
                 question_option_id: optionId,
                 isCheckbox,
-                question_option_answer: reason
             }),
         })
     } catch (error) {
         console.error('Lỗi khi lưu câu trả lời:', error);
+    }
+};
+
+export const saveReasonResponse = async (questionId, respondentId, optionId, reasonText) => {
+    try {
+        const response = await axios.post('/api/survey/reason', {
+            question_id: questionId,
+            respondent_id: respondentId,
+            question_option_id: optionId,
+            question_option_answer: reasonText,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error saving reason response:', error);
+        throw error;
     }
 };
 
