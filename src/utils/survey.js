@@ -47,15 +47,14 @@ export const fetchUserAnswers = async (respondentId) => {
     try {
         const response = await axios.post(
             '/api/survey/review',
-            {
-                respondent_id: respondentId,
-            },
+            { respondent_id: respondentId },
             { withCredentials: true }
         );
 
         const data = response.data;
 
         const userAnswers = {};
+        const textInputs = {}; // Thêm object để lưu lý do
         const questionCount = {};
 
         // Đếm số lần xuất hiện của mỗi question_id
@@ -64,25 +63,33 @@ export const fetchUserAnswers = async (respondentId) => {
                 (questionCount[response.question_id] || 0) + 1;
         });
 
+        // Xử lý dữ liệu responses
         data.responses.forEach((response) => {
-            if (questionCount[response.question_id] > 1) {
-                if (!userAnswers[response.question_id]) {
-                    userAnswers[response.question_id] = [];
+            const questionId = response.question_id;
+            const optionId = Number(response.question_option_id);
+            const reasonText = response.question_option_answer || ''; // Lấy lý do, mặc định là chuỗi rỗng nếu không có
+
+            // Xử lý userAnswers
+            if (questionCount[questionId] > 1) {
+                if (!userAnswers[questionId]) {
+                    userAnswers[questionId] = [];
                 }
-                userAnswers[response.question_id].push(
-                    Number(response.question_option_id)
-                );
+                userAnswers[questionId].push(optionId);
             } else {
-                userAnswers[response.question_id] = Number(
-                    response.question_option_id
-                );
+                userAnswers[questionId] = optionId;
+            }
+
+            // Lưu lý do nếu có
+            if (reasonText) {
+                textInputs[`${questionId}-${optionId}`] = reasonText;
             }
         });
 
-        return userAnswers;
+        // Trả về cả answers và textInputs
+        return { answers: userAnswers, textInputs };
     } catch (error) {
         console.error('Lỗi khi lấy dữ liệu câu trả lời:', error);
-        return null;
+        return { answers: {}, textInputs: {} };
     }
 };
 

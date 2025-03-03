@@ -91,11 +91,16 @@ const Body = ({ scrollToTop }) => {
 
     useEffect(() => {
         const loadUserAnswers = async () => {
-            const userAnswers = await fetchUserAnswers(respondentId);
-            if (userAnswers) setAnswers(userAnswers);
+            const { answers, textInputs } = await fetchUserAnswers(respondentId);
+            if (answers) {
+                setAnswers(answers);
+            }
+            if (textInputs) {
+                setTextInputs(textInputs);
+            }
         };
         if (step > 0) loadUserAnswers();
-    }, [step]);
+    }, [step, respondentId]);
     // useEffect(() => {
     //     // Gọi API để lấy danh sách Identity_code từ institutions
     //     fetch("/api/institutions")
@@ -164,12 +169,11 @@ const Body = ({ scrollToTop }) => {
 
     const handleCheckboxChange = async (questionId, optionId, requireReason) => {
         setAnswers((prev) => {
-            // Xử lý giá trị hiện tại của questionId
             let currentValues = prev[questionId];
             if (!currentValues) {
-                currentValues = []; // Nếu chưa có đáp án nào
+                currentValues = [];
             } else if (!Array.isArray(currentValues)) {
-                currentValues = [currentValues]; // Nếu là số (từ radiogroup), chuyển thành mảng
+                currentValues = [currentValues];
             }
 
             const newValues = currentValues.includes(optionId)
@@ -187,6 +191,7 @@ const Body = ({ scrollToTop }) => {
                     ...prev,
                     [`${questionId}-${optionId}`]: '',
                 }));
+
             }
 
             return { ...prev, [questionId]: newValues };
