@@ -39,19 +39,20 @@ const Body = ({ scrollToTop }) => {
     const [showTextBox, setShowTextBox] = useState({});
     const [textInputs, setTextInputs] = useState({});
     const [surveyCounts, setSurveyCounts] = useState([]);
+    const [isReviewLoading, setIsReviewLoading] = useState(false);
 
-    useEffect(() => {
-        if (surveyData) {
-            let total = 0;
-            surveyCounts.forEach((survey) => {
-                total += survey.total;
-            });
-
-            const answered = Object.keys(answers).length;
-            setTotalQuestions(total);
-            setAnsweredCount(answered);
-        }
-    }, [surveyData, answers]);
+    // useEffect(() => {
+    //     if (surveyData) {
+    //         let total = 0;
+    //         surveyCounts.forEach((survey) => {
+    //             total += survey.total;
+    //         });
+    //
+    //         const answered = Object.keys(answers).length;
+    //         setTotalQuestions(total);
+    //         setAnsweredCount(answered);
+    //     }
+    // }, [surveyData, answers]);
 
     const [respondentId, setRespondentId] = useState(null);
     const [role, setRole] = useState(null);
@@ -66,14 +67,31 @@ const Body = ({ scrollToTop }) => {
     }, []);
 
     const handleReviewSurvey = async () => {
-        setShowReview(true); // Chuyển sang trang xem lại
+        setIsReviewLoading(true);
         try {
-            const response = await axios.get('/api/survey/response/count', {
-                params: { respondent_id: respondentId, belong_to_group: role },
-            });
-            setSurveyCounts(response.data);
+            const [countResponse, reviewResponse] = await Promise.all([
+                axios.get('/api/survey/response/count', {
+                    params: { respondent_id: respondentId, belong_to_group: role },
+                }),
+                fetchReviewData(respondentId),
+            ]);
+
+            const { surveys, totalQuestions, answeredCount } = countResponse.data;
+            setSurveyCounts(surveys);
+            setTotalQuestions(totalQuestions);
+            setAnsweredCount(answeredCount);
+
+            if (reviewResponse) {
+                setReviewData(reviewResponse);
+                const { answers } = await fetchUserAnswers(respondentId);
+                setAnswers(answers || {});
+            }
+            setShowReview(true);
         } catch (error) {
-            console.error('Error fetching survey counts:', error);
+            console.error('Error preparing review data:', error);
+            alert('Có lỗi khi tải dữ liệu xem lại, vui lòng thử lại!');
+        } finally {
+            setIsReviewLoading(false);
         }
     };
     const handleSubmitSurvey = async () => {
@@ -250,7 +268,23 @@ const Body = ({ scrollToTop }) => {
             </div>
         );
     }
-    if (showReview && reviewData) {
+    if (showReview) {
+        if (isReviewLoading) {
+            return (
+                <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
+                    <p className="text-teal-600">Đang tải dữ liệu xem lại...</p>
+                </div>
+            );
+        }
+
+        if (!reviewData || !surveyCounts.length) {
+            return (
+                <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
+                    <p className="text-red-600">Không thể tải dữ liệu xem lại.</p>
+                </div>
+            );
+        }
+
         return (
             <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-teal-900 mb-6 text-center">
@@ -258,7 +292,6 @@ const Body = ({ scrollToTop }) => {
                 </h2>
 
                 {surveyCounts.map((survey) => {
-                    // Tìm khảo sát tương ứng trong reviewData.surveys dựa vào survey_id
                     const matchingSurvey = reviewData.surveys.find(
                         (s) => s.id === survey.survey_id
                     );
@@ -266,13 +299,10 @@ const Body = ({ scrollToTop }) => {
                     return (
                         <div key={survey.survey_id} className="mb-8">
                             <h3 className="text-xl font-semibold text-teal-700">
-                                {matchingSurvey
-                                    ? matchingSurvey.survey_title
-                                    : `Khảo sát ${survey.survey_id}`}
+                                {matchingSurvey ? matchingSurvey.survey_title : `Khảo sát ${survey.survey_id}`}
                             </h3>
                             <p className="text-gray-800">
-                                Số câu đã trả lời: {survey.answered} /{' '}
-                                {survey.total}
+                                Số câu đã trả lời: {survey.answered} / {survey.total}
                             </p>
                         </div>
                     );
@@ -280,8 +310,7 @@ const Body = ({ scrollToTop }) => {
 
                 <p className="text-red-900 font-semibold">
                     Đã trả lời: {answeredCount} / {totalQuestions} (
-                    {Math.round((answeredCount / totalQuestions) * 100)}% tổng
-                    số câu hỏi)
+                    {totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0}% tổng số câu hỏi)
                 </p>
                 {answeredCount / totalQuestions < 0.7 && totalQuestions > 0 && (
                     <p className="text-red-600 text-sm mt-2">
@@ -291,7 +320,7 @@ const Body = ({ scrollToTop }) => {
 
                 <div className="flex justify-between mt-8">
                     <button
-                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
                         onClick={() => setShowReview(false)}
                     >
                         Quay lại

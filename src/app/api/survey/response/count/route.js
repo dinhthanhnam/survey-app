@@ -65,7 +65,7 @@ export async function GET(req) {
         // Lấy `surveyData` theo vai trò
         const roleSurveyData = surveyConfig[role] || [];
         if (roleSurveyData.length === 0) {
-            return NextResponse.json([], { status: 200 });
+            return NextResponse.json({ surveys: [], totalQuestions: 0, answeredCount: 0 }, { status: 200 });
         }
 
         // Xác định phạm vi `question_id` của từng khảo sát (dựa trên surveyData gốc)
@@ -100,7 +100,7 @@ export async function GET(req) {
 
             if (!originalSurvey) {
                 return {
-                    surveyId: survey.surveyId,
+                    survey_id: survey.surveyId,
                     answered: 0,
                     total: survey.numQuestions,
                 };
@@ -118,7 +118,19 @@ export async function GET(req) {
             };
         });
 
-        return NextResponse.json(roleSurveyRanges, { status: 200 });
+        // Tính tổng số câu hỏi và câu đã trả lời
+        const totalQuestions = roleSurveyData.reduce((sum, survey) => sum + survey.numQuestions, 0);
+        const answeredCount = roleSurveyRanges.reduce((sum, survey) => sum + survey.answered, 0);
+
+        // Trả về dữ liệu với cả thông tin từng khảo sát và tổng cộng
+        return NextResponse.json(
+            {
+                surveys: roleSurveyRanges,
+                totalQuestions,
+                answeredCount,
+            },
+            { status: 200 }
+        );
     } catch (error) {
         console.error('Error fetching response counts:', error);
         return NextResponse.json(
