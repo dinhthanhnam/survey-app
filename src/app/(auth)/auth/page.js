@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import Header from "@/app/components/Header";
 import axios from "axios";
 
@@ -13,6 +13,8 @@ export default function AuthPage() {
     const [successMessage, setSuccessMessage] = useState(""); // Hiển thị ô OTP
     const [errorMessage, setErrorMessage] = useState(""); // Thông báo lỗi
     const [unAuthedRespondent, setUnAuthedRespondent] = useState({});
+    const [requireLogin, setRequireLogin]= useState(false);
+    const loginLinkRef = useRef(null);
     // Hàm gửi request lấy OTP
     const handleRequestOTP = async () => {
         setErrorMessage("");
@@ -36,6 +38,8 @@ export default function AuthPage() {
                 setUnAuthedRespondent(response.data.respondent);
             } else {
                 setErrorMessage(response.data.message);
+                if (response.data.require_login)
+                setRequireLogin(true);
             }
         } catch (error) {
             setErrorMessage("Kiểm tra lại thông tin mã quỹ.");
@@ -61,6 +65,16 @@ export default function AuthPage() {
         }
     };
 
+    useEffect(() => {
+        console.log("Require Login:", requireLogin);
+        if (requireLogin && loginLinkRef.current) {
+            console.log("Focusing link...");
+            loginLinkRef.current.focus();
+        }
+        setRequireLogin(false);
+    }, [requireLogin]);
+
+
 
     return (
         <div>
@@ -71,11 +85,22 @@ export default function AuthPage() {
                     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
                         <div className="w-full flex flex-col gap-2">
                             <h2 className="text-2xl font-bold text-teal-700">NHẬP THÔNG TIN ĐỂ THỰC HIỆN KHẢO SÁT</h2>
-                            <a className="underline text-teal-600 self-end" href="/refresh">Không phải lần đầu?</a>
+                            <a
+                                ref={loginLinkRef}
+                                className="underline text-teal-600 focus:ring-2 focus:ring-teal-400 p-2 self-end"
+                                href="/refresh"
+                                tabIndex="0" // Giúp đảm bảo nó có thể focus
+                            >
+                                Tiếp tục khảo sát với Email đã xác thực
+                            </a>
                         </div>
 
                         {errorMessage && (
-                            <p className="text-red-500 text-sm font-semibold">{errorMessage}</p>
+                            <div className={`py-4`}>
+                                <p className="text-red-700 bg-red-200 border border-red-500 rounded-md px-4 py-2 text-sm font-semibold transition-all">
+                                    {errorMessage}
+                                </p>
+                            </div>
                         )}
                         {/* Mã Quỹ Tín Dụng */}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
@@ -155,8 +180,12 @@ export default function AuthPage() {
                         </div>
 
                         {/* OTP Input (chỉ hiển thị khi thành công) */}
-                        {successMessage !== "" && (
-                            <p className="text-green-600 text-sm font-semibold">OTP đã được gửi, kiểm tra email của bạn.</p>
+                        {successMessage && (
+                            <div className={`pb-4`}>
+                                <p className="text-green-700 bg-green-200 border border-green-500 rounded-md px-4 py-2 text-sm font-semibold transition-all">
+                                    {successMessage}
+                                </p>
+                            </div>
                         )}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">

@@ -7,18 +7,10 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
     try {
-        const {phone, name, email, creditCode, role} = await req.json();
+        const {email, creditCode, role} = await req.json();
 
-        if (!email || !creditCode || !role) {
+        if (!email) {
             return Response.json({success: false, message: "Vui lòng nhập đầy đủ thông tin!"}, {status: 400});
-        }
-
-        const institution = await prisma.institutions.findUnique({
-            where: { identity_code: creditCode },
-        });
-
-        if (!institution) {
-            return Response.json({ success: false, message: "Mã quỹ sai!" }, { status: 400 });
         }
 
         let parsedRole;
@@ -37,24 +29,22 @@ export async function POST(req) {
                 console.error("Invalid role:", role);
         }
 
-        const respondentExisted = await prisma.respondents.findFirst({
+        const respondent = await prisma.respondents.findFirst({
             where: {
                 email: email,
                 belong_to_group: parsedRole,
+                institutions: {
+                    identity_code: creditCode
+                }
             },
         });
 
-        if (respondentExisted) {
-            const authedRespondent = JSON.stringify(respondentExisted);
-
+        if (!respondent) {
             return Response.json({
                 success: false,
-                message: "Email này đã xác thực trong nhóm này, chuyển qua giao diện đăng nhập lại!",
-                respondent: authedRespondent,
-                require_login: true
-            }, {status: 200});
+                message: "Kiểm tra lại thông tin!",
+            });
         }
-
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const otpHash = await bcrypt.hash(otp, 8);
@@ -69,20 +59,11 @@ export async function POST(req) {
             },
         });
 
-        const unAuthedRespondent = {
-            name: name,
-            email: email,
-            phone: phone,
-            auth_status: "unauthorized",
-            institution_id: institution.id,
-            belong_to_group: parsedRole
-        }
-
         const mailResponse = await sendOtpEmail(email, otp);
         if (!mailResponse.success) {
             return Response.json({success: false, message: "Gửi OTP thất bại"}, {status: 500});
         }
-        return Response.json({success: true, message: "OTP đã được gửi!", respondent: unAuthedRespondent});
+        return Response.json({success: true, message: "OTP đã được gửi!", respondent: respondent});
     } catch (error) {
         console.error(error);
         return Response.json({ success: false, message: "Lỗi server", error }, { status: 500 });

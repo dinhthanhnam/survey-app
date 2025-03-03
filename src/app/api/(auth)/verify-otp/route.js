@@ -37,30 +37,45 @@ export async function POST(req) {
         if (!isMatch) {
             return NextResponse.json({ success: false, message: "OTP không chính xác!" }, { status: 400 });
         }
+
         // Xoá OTP sau khi dùng
         await prisma.otptoken.delete({ where: { id: otpRecord.id } });
 
-        // Tạo người dùng đã xác thực
-        const authedRespondent = await prisma.respondents.create({
-            data: { ...respondent, auth_status: "authorized" }
+        // Kiểm tra xem respondent đã tồn tại trong group chưa
+        const existedRespondentInGroup = await prisma.respondents.findFirst({
+            where: {
+                email: respondent.email,
+                belong_to_group: respondent.belong_to_group
+            }
         });
 
-        if(!authedRespondent) {
-            return NextResponse.json({ success: false, message: "Không tạo được Respondent!" });
+        let authedRespondent;
+        if (!existedRespondentInGroup) {
+            authedRespondent = await prisma.respondents.create({
+                data: { ...respondent, auth_status: "authorized" }
+            });
+
+            if (!authedRespondent) {
+                return NextResponse.json({ success: false, message: "Không tạo được Respondent!" });
+            }
+        } else {
+            authedRespondent = existedRespondentInGroup;
         }
 
         // Tạo JWT token
         const token = await createToken(authedRespondent);
 
-        if(!token) {
+        if (!token) {
             return NextResponse.json({ success: false, message: "Không tạo được Token!" });
         }
+
         const returnedRespondent = {
             ...authedRespondent,
-            belong_to_group: belongToGroupMapping[respondent.belong_to_group]
+            belong_to_group: belongToGroupMapping[authedRespondent.belong_to_group]
         };
+
         // Tạo response và đặt token vào cookie
-        const response = NextResponse.json({ success: true, message: "Xác thực thành công!", respondent: JSON.stringify(returnedRespondent)});
+        const response = NextResponse.json({ success: true, message: "Xác thực thành công!", respondent: JSON.stringify(returnedRespondent) });
 
         response.cookies.set("token", token, {
             httpOnly: true,

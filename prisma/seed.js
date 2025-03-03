@@ -830,7 +830,7 @@ async function main() {
                     option_text:
                         'Ứng dụng Mobile Banking dành cho QTDND (CFeBiz)',
                 },
-                { option_text: 'Ứng dụng giao dịch tài chính Co-opSmart' },
+                { option_text: 'Ứng dụng giáo dục tài chính Co-opSmart' },
                 { option_text: 'Hệ thống trục thanh toán Payment Hub' },
                 { option_text: 'Hệ thống quản lý tài khoản định danh CfeAM' },
                 { option_text: 'Không sử dụng bất kỳ hệ thống nào' },
