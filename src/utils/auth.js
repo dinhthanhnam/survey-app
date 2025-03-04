@@ -12,7 +12,7 @@ export async function createToken(user) {
         id: user.id,
         email: user.email,
         auth_status: user.auth_status,
-        belong_to_group: user.belong_to_group ?? "admin"
+        belong_to_group: user.belong_to_group
     })
         .setProtectedHeader({ alg: "HS256", typ: "JWT" })
         .setIssuedAt(iat)

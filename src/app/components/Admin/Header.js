@@ -1,10 +1,22 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
+import axios from "axios";
+
 
 const AdminHeader = () => {
     const pathname = usePathname();
+    const router = useRouter();
+    const handleLogout = async () => {
+        try {
+            await axios.post("/api/logout", {}, { withCredentials: true });
+            localStorage.removeItem("respondent");
+            router.push("/auth");
+        } catch (error) {
+            console.error("Lỗi khi đăng xuất:", error);
+        }
+    };
 
     return (
         <>
@@ -43,16 +55,24 @@ const AdminHeader = () => {
             </div>
 
             {/* Thanh điều hướng */}
-            <div className="w-full flex justify-center gap-6 border-b">
+            <div className="w-full flex justify-center gap-6 border-b relative">
                 <NavLink href="/admin" active={pathname === '/admin'}>
                     Bộ câu hỏi
                 </NavLink>
                 <NavLink
-                    href="/admin/dashboard"
-                    active={pathname === '/admin/dashboard'}
+                    href="/admin/responses"
+                    active={pathname === '/admin/responses'}
                 >
-                    Dashboard
+                    Câu trả lời
                 </NavLink>
+                <div className="absolute bottom-4 right-4">
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm sm:text-base font-semibold shadow-md hover:bg-red-600 transition"
+                    >
+                        Đăng xuất
+                    </button>
+                </div>
             </div>
         </>
     );
