@@ -86,7 +86,7 @@ const Body = ({ scrollToTop }) => {
                 const { answers } = await fetchUserAnswers(respondentId);
                 setAnswers(answers || {});
             }
-            setShowReview(true);
+            setStep(totalSurveys + 1);
         } catch (error) {
             console.error('Error preparing review data:', error);
             alert('Có lỗi khi tải dữ liệu xem lại, vui lòng thử lại!');
@@ -133,11 +133,15 @@ const Body = ({ scrollToTop }) => {
             const data = await fetchReviewData(respondentId);
             if (data) {
                 setReviewData(data);
-                setAnswers(await fetchUserAnswers(respondentId));
+                const { answers, textInputs } = await fetchUserAnswers(respondentId); // Lấy cả textInputs nếu cần
+                setAnswers(answers || {});
+                if (textInputs) setTextInputs(textInputs);
             }
         };
-        if (showReview) loadReviewData();
-    }, [showReview]);
+        if (step === totalSurveys + 1) { // Kiểm tra bước Review
+            loadReviewData();
+        }
+    }, [step, totalSurveys, respondentId]); // Thêm dependencies cần thiết
 
     useEffect(() => {
         const getGroupQuestionIds = async () => {
@@ -268,7 +272,7 @@ const Body = ({ scrollToTop }) => {
             </div>
         );
     }
-    if (showReview) {
+    if (step === totalSurveys + 1) {
         if (isReviewLoading) {
             return (
                 <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
@@ -291,14 +295,24 @@ const Body = ({ scrollToTop }) => {
                     Xác nhận trước khi gửi khảo sát
                 </h2>
 
-                {surveyCounts.map((survey) => {
+                {surveyCounts.map((survey, index) => {
                     const matchingSurvey = reviewData.surveys.find(
                         (s) => s.id === survey.survey_id
                     );
+                    const surveyStep = index + 1; 
+
+                    const handleTitleClick = () => {
+                        setStep(surveyStep); 
+                        setShowReview(false); 
+                        scrollToTop(); 
+                    };
 
                     return (
                         <div key={survey.survey_id} className="mb-8">
-                            <h3 className="text-xl font-semibold text-teal-700">
+                            <h3
+                                className="text-xl font-semibold text-teal-700 cursor-pointer hover:underline"
+                                onClick={handleTitleClick}
+                            >
                                 {matchingSurvey ? matchingSurvey.survey_title : `Khảo sát ${survey.survey_id}`}
                             </h3>
                             <p className="text-gray-800">
@@ -321,8 +335,9 @@ const Body = ({ scrollToTop }) => {
                 <div className="flex justify-between mt-8">
                     <button
                         className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
-                        onClick={() => {setShowReview(false);
-                            setStep(8)
+                        onClick={() => {
+                            setStep(step - 1); // Quay lại bước trước đó
+                            scrollToTop(); // Cuộn lên đầu nếu cần
                         }}
                     >
                         Quay lại
