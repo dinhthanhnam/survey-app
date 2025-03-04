@@ -40,7 +40,7 @@ export async function POST(req) {
         const respondentExisted = await prisma.respondents.findFirst({
             where: {
                 email: email,
-                belong_to_group: parsedRole,
+                // belong_to_group: parsedRole,
             },
         });
 

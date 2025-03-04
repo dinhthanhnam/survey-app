@@ -19,17 +19,17 @@ const surveyData = [
 const surveyConfig = {
     'Lãnh đạo & Quản lý': [
         { surveyId: 1, numQuestions: 10 },
-        { surveyId: 2, numQuestions: 18 },
+        { surveyId: 2, numQuestions: 17 },
         { surveyId: 3, numQuestions: 8 },
-        { surveyId: 4, numQuestions: 17 },
-        { surveyId: 5, numQuestions: 12 },
+        { surveyId: 4, numQuestions: 16 },
+        { surveyId: 5, numQuestions: 11 },
         { surveyId: 6, numQuestions: 11 },
         { surveyId: 7, numQuestions: 8 },
         { surveyId: 8, numQuestions: 8 },
     ],
     'Cán bộ nghiệp vụ': [
         { surveyId: 1, numQuestions: 11 },
-        { surveyId: 2, numQuestions: 17 },
+        { surveyId: 2, numQuestions: 16 },
         { surveyId: 3, numQuestions: 5 },
         { surveyId: 4, numQuestions: 4 },
         { surveyId: 5, numQuestions: 6 },
@@ -39,7 +39,7 @@ const surveyConfig = {
     ],
     'Nhân viên CNTT & Hỗ trợ kỹ thuật': [
         { surveyId: 1, numQuestions: 11 },
-        { surveyId: 2, numQuestions: 12 },
+        { surveyId: 2, numQuestions: 11 },
         { surveyId: 3, numQuestions: 4 },
         { surveyId: 4, numQuestions: 4 },
         { surveyId: 5, numQuestions: 7 },
