@@ -2,19 +2,20 @@ import nodemailer from "nodemailer";
 
 export const sendOtpEmail = async (email, otp) => {
     const transporter = nodemailer.createTransport({
-        service: "gmail",
-        // host: process.env.SMTP_HOST, // Sử dụng SMTP_HOST thay vì service
-        // port: process.env.SMTP_PORT, // SMTP_PORT từ .env
-        // secure: process.env.SMTP_SECURE === "true", // Chuyển đổi string "true"/"false" thành boolean
+        // service: "gmail",
+        host: process.env.SMTP_HOST, // Sử dụng SMTP_HOST thay vì service
+        port: process.env.SMTP_PORT, // SMTP_PORT từ .env
+        secure: process.env.SMTP_SECURE === "true", // Chuyển đổi string "true"/"false" thành boolean
         auth: {
             user: process.env.SMTP_EMAIL,
             pass: process.env.SMTP_PASSWORD,
         },
-        // tls: {
-        //     rejectUnauthorized: false, // Nếu gặp lỗi certificate
-        // },
-        // logger: true,
-        // debug: true,
+        tls: {
+            rejectUnauthorized: false
+        },
+        connectionTimeout: 30000,
+        logger: true,
+        debug: true,
     });
 
     const mailOptions = {
