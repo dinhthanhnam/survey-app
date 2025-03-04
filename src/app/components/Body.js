@@ -321,7 +321,9 @@ const Body = ({ scrollToTop }) => {
                 <div className="flex justify-between mt-8">
                     <button
                         className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
-                        onClick={() => setShowReview(false)}
+                        onClick={() => {setShowReview(false);
+                            setStep(8)
+                        }}
                     >
                         Quay lại
                         <FaArrowLeft size={18} />
