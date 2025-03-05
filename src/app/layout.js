@@ -1,8 +1,8 @@
 import './globals.css'; // Đường dẫn tới file CSS của bạn
 
 export const metadata = {
-    title: 'Survey App',
-    description: 'Survey Application',
+    title: 'Khảo sát chuyển đổi số - Ngân hàng Hợp tác',
+    description: 'Khảo sát chuyển đổi số - Ngân hàng Hợp tác',
 };
 
 export default function RootLayout({ children }) {
