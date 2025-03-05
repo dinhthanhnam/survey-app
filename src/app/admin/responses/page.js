@@ -8,7 +8,7 @@ export default function AdminResponsePage() {
     const [selectedRespondent, setSelectedRespondent] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [respondents, setRespondents] = useState([]);
-    const [activeSurvey, setActiveSurvey] = useState(1); // Mặc định là khảo sát 1
+    const [activeSurvey, setActiveSurvey] = useState(1);
     const [surveyData, setSurveyData] = useState(null);
     const [userAnswers, setUserAnswers] = useState({});
     const [userReasons, setUserReasons] = useState({});
@@ -31,22 +31,26 @@ export default function AdminResponsePage() {
     };
 
     // Hàm lấy dữ liệu khảo sát và câu trả lời của người dùng
-    const fetchSurveyAndAnswers = async (surveyId, respondentId) => {
+    const fetchSurveyAndAnswers = async (surveyId, respondentId, belongToGroup) => {
         if (!surveyId || !respondentId) return;
         setLoading(true);
-        setSurveyData(null); 
+        setSurveyData(null);
         setUserAnswers({});
         setUserReasons({});
         try {
-            localStorage.setItem("respondent", JSON.stringify({ id: respondentId }));
-            const survey = await fetchSurveyByStep(surveyId); 
+            localStorage.setItem("respondent", JSON.stringify({ 
+                id: respondentId,
+                belong_to_group: belongToGroup
+            }));
+            
+            const survey = await fetchSurveyByStep(surveyId);
             if (survey) {
                 setSurveyData(survey);
             } else {
                 console.error(`No survey data found for surveyId: ${surveyId}`);
             }
 
-            const { answers, textInputs } = await fetchUserAnswers(respondentId); 
+            const { answers, textInputs } = await fetchUserAnswers(respondentId);
             setUserAnswers(answers || {});
             setUserReasons(textInputs || {});
         } catch (error) {
@@ -58,13 +62,14 @@ export default function AdminResponsePage() {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         fetchRespondents(searchQuery);
     }, [searchQuery]);
 
     useEffect(() => {
         if (selectedRespondent && activeSurvey) {
-            fetchSurveyAndAnswers(activeSurvey, selectedRespondent.id);
+            fetchSurveyAndAnswers(activeSurvey, selectedRespondent.id, selectedRespondent.belong_to_group);
         }
     }, [selectedRespondent, activeSurvey]);
 
@@ -143,8 +148,9 @@ export default function AdminResponsePage() {
     };
 
     return (
-        <div className="flex h-full gap-4">
-            <div className="md:w-1/4 w-full bg-gray-50 p-4 rounded-lg shadow-md h-full overflow-y-auto">
+        <div className="flex h-screen gap-4">
+            {/* Sidebar chứa danh sách người trả lời */}
+            <div className="md:w-1/4 w-full bg-gray-50 p-4 rounded-lg shadow-md h-full">
                 <h2 className="text-xl font-semibold mb-4">Danh sách người trả lời</h2>
                 <input
                     type="text"
@@ -170,7 +176,8 @@ export default function AdminResponsePage() {
                 </ul>
             </div>
 
-            <div className="md:w-3/4 w-full bg-white p-6 rounded-lg shadow-md h-full overflow-y-auto">
+            {/* Phần hiển thị câu hỏi và câu trả lời */}
+            <div className="md:w-3/4 w-full bg-white p-6 rounded-lg shadow-md overflow-y-auto">
                 {selectedRespondent ? (
                     <>
                         <h2 className="text-xl font-semibold mb-4">
