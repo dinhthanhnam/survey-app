@@ -33,8 +33,7 @@ export async function POST(req) {
                 parsedRole = respondents_belong_to_group.ITSup;
                 break;
             default:
-                parsedRole = null; // Hoặc xử lý lỗi nếu role không hợp lệ
-                console.error("Invalid role:", role);
+                return Response.json({ success: false, message: "Vai trò sai!" }, { status: 400 });
         }
 
         const respondentExisted = await prisma.respondents.findFirst({
@@ -49,7 +48,7 @@ export async function POST(req) {
 
             return Response.json({
                 success: false,
-                message: "Email này đã xác thực trong nhóm này, chuyển qua giao diện đăng nhập lại!",
+                message: "Email này đã tồn tại trong hệ thống, chuyển qua giao diện đăng nhập!",
                 respondent: authedRespondent,
                 require_login: true
             }, {status: 200});

@@ -42,15 +42,15 @@ export async function POST(req) {
         await prisma.otptoken.delete({ where: { id: otpRecord.id } });
 
         // Kiểm tra xem respondent đã tồn tại trong group chưa
-        const existedRespondentInGroup = await prisma.respondents.findFirst({
+        const existedRespondent = await prisma.respondents.findFirst({
             where: {
                 email: respondent.email,
-                belong_to_group: respondent.belong_to_group
+                // belong_to_group: respondent.belong_to_group
             }
         });
 
         let authedRespondent;
-        if (!existedRespondentInGroup) {
+        if (!existedRespondent) {
             authedRespondent = await prisma.respondents.create({
                 data: { ...respondent, auth_status: "authorized" }
             });
@@ -59,7 +59,7 @@ export async function POST(req) {
                 return NextResponse.json({ success: false, message: "Không tạo được Respondent!" });
             }
         } else {
-            authedRespondent = existedRespondentInGroup;
+            authedRespondent = existedRespondent;
         }
 
         // Tạo JWT token
@@ -69,9 +69,11 @@ export async function POST(req) {
             return NextResponse.json({ success: false, message: "Không tạo được Token!" });
         }
 
+        const groupKey = authedRespondent.belong_to_group?.toString();
+
         const returnedRespondent = {
             ...authedRespondent,
-            belong_to_group: belongToGroupMapping[authedRespondent.belong_to_group]
+            belong_to_group: belongToGroupMapping[groupKey]
         };
 
         // Tạo response và đặt token vào cookie
