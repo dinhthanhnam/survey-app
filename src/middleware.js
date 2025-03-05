@@ -11,7 +11,7 @@ export async function middleware(req) {
     console.log("🔍 Debug Middleware:");
     console.log("🍪 Token from Cookie:", token);
 
-    const user = await verifyToken(token) ?? null;
+    const user = token ? await verifyToken(token) : null;
     const url = req.nextUrl.pathname;
     if (!user) {
         console.log("❌ Không có token hợp lệ! Chặn vào route:", url);
