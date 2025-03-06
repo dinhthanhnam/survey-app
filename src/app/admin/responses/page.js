@@ -86,7 +86,7 @@ export default function AdminResponsePage() {
             const selectedOption = options.find((opt) => opt.id === answers);
             return selectedOption ? (
                 <p className="text-gray-700">
-                    - Đã chọn: <span className="font-medium">{selectedOption.option_text}</span>
+                    <span className="font-medium">{selectedOption.option_text}</span>
                     {selectedOption.option_note && (
                         <span className="text-gray-500 italic text-sm ml-2">
                             ({selectedOption.option_note})
@@ -94,103 +94,104 @@ export default function AdminResponsePage() {
                     )}
                 </p>
             ) : (
-                <p className="text-gray-500">Chưa trả lời</p>
+                <p className="text-gray-400 italic">Chưa trả lời</p>
             );
         } else if (question.question_type === "checkbox") {
             const answerArray = Array.isArray(answers) ? answers : [];
             const selectedOptions = options.filter((opt) => answerArray.includes(opt.id));
             if (selectedOptions.length > 0) {
                 return (
-                    <div>
+                    <ul className="list-disc ml-4 space-y-1">
                         {selectedOptions.map((opt) => (
-                            <div key={opt.id} className="text-gray-700 mb-2">
-                                - Đã chọn: <span className="font-medium">{opt.option_text}</span>
+                            <li key={opt.id} className="text-gray-700">
+                                <span className="font-medium">{opt.option_text}</span>
                                 {opt.option_note && (
                                     <span className="text-gray-500 italic text-sm ml-2">
                                         ({opt.option_note})
                                     </span>
                                 )}
                                 {reasons[`${question.id}-${opt.id}`] && (
-                                    <p className="ml-4 text-gray-600">
+                                    <p className="text-gray-600 text-sm mt-1">
                                         Lý do: {reasons[`${question.id}-${opt.id}`]}
                                     </p>
                                 )}
-                            </div>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 );
             } else {
-                return <p className="text-gray-500">Chưa trả lời</p>;
+                return <p className="text-gray-400 italic">Chưa trả lời</p>;
             }
         } else if (question.question_type === "group") {
             const childQuestions = surveyData?.question_survey.filter((qs) =>
                 qs.questions.question_name.startsWith(question.question_name + ".")
             );
             return (
-                <div>
-                    <p className="text-gray-500 font-semibold">Nhóm câu hỏi:</p>
-                    <ul className="ml-4 space-y-2">
-                        {childQuestions?.map((childQs, childIndex) => (
-                            <li key={childQs.questions.id}>
-                                <p className="font-medium">
-                                    Câu hỏi {childIndex + 1}: {childQs.questions.question_text}
-                                </p>
-                                <div className="ml-4">
-                                    {renderAnswer(childQs.questions, childQs.questions.question_options)}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                <ul className="ml-4 space-y-4">
+                    {childQuestions?.map((childQs, childIndex) => (
+                        <li key={childQs.questions.id}>
+                            <p className="font-medium text-gray-800">
+                                {childIndex + 1}. {childQs.questions.question_text}
+                            </p>
+                            <div className="ml-4 mt-1">
+                                {renderAnswer(childQs.questions, childQs.questions.question_options)}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
             );
         }
-        return <p className="text-gray-500">Không xác định loại câu hỏi</p>;
+        return <p className="text-gray-400 italic">Loại câu hỏi không xác định</p>;
     };
 
     return (
-        <div className="flex h-screen gap-4">
+        <div className="flex flex-col md:flex-row gap-6 h-full pb-8">
             {/* Sidebar chứa danh sách người trả lời */}
-            <div className="md:w-1/4 w-full bg-gray-50 p-4 rounded-lg shadow-md h-full">
-                <h2 className="text-xl font-semibold mb-4">Danh sách người trả lời</h2>
+            <aside className="md:w-1/3 w-full bg-white p-6 rounded-xl shadow-md flex flex-col">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Danh sách người trả lời</h2>
                 <input
                     type="text"
                     placeholder="Tìm kiếm theo tên hoặc email..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition"
                 />
-                <ul className="space-y-2">
-                    {respondents?.map((respondent) => (
-                        <li
-                            key={respondent.id}
-                            onClick={() => setSelectedRespondent(respondent)}
-                            className={`p-2 rounded-lg cursor-pointer hover:bg-blue-100 ${
-                                selectedRespondent?.id === respondent.id ? "bg-blue-200" : ""
-                            }`}
-                        >
-                            <p className="font-medium">{respondent.name}</p>
-                            <p className="text-sm text-gray-600">{respondent.email}</p>
-                            <p className="text-sm text-gray-600">{respondent.belong_to_group}</p>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+                <div className="flex-1 overflow-y-auto max-h-[calc(100vh-16rem)] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    <ul className="space-y-3">
+                        {respondents?.map((respondent) => (
+                            <li
+                                key={respondent.id}
+                                onClick={() => setSelectedRespondent(respondent)}
+                                className={`p-4 rounded-lg cursor-pointer transition-colors ${
+                                    selectedRespondent?.id === respondent.id
+                                        ? "bg-teal-100 border-teal-500 border"
+                                        : "bg-gray-50 hover:bg-gray-100"
+                                }`}
+                            >
+                                <p className="font-semibold text-gray-800">{respondent.name}</p>
+                                <p className="text-sm text-gray-600">{respondent.email}</p>
+                                <p className="text-sm text-gray-500">{respondent.belong_to_group}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </aside>
 
             {/* Phần hiển thị câu hỏi và câu trả lời */}
-            <div className="md:w-3/4 w-full bg-white p-6 rounded-lg shadow-md overflow-y-auto">
+            <section className="md:w-2/3 w-full bg-white p-6 rounded-xl shadow-md flex flex-col">
                 {selectedRespondent ? (
                     <>
-                        <h2 className="text-xl font-semibold mb-4">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
                             Câu trả lời của: {selectedRespondent.name}
                         </h2>
-                        <div className="flex space-x-2 mb-4 overflow-x-auto">
+                        <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto">
                             {surveys.map((survey) => (
                                 <button
                                     key={survey.id}
                                     onClick={() => setActiveSurvey(survey.id)}
-                                    className={`px-4 py-2 rounded-lg ${
+                                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                                         activeSurvey === survey.id
-                                            ? "bg-blue-500 text-white"
+                                            ? "bg-teal-600 text-white"
                                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                                     }`}
                                 >
@@ -198,61 +199,67 @@ export default function AdminResponsePage() {
                                 </button>
                             ))}
                         </div>
-                        <div className="border p-4 rounded-lg">
+                        {/* Phần chứa câu trả lời với chiều cao cố định */}
+                        <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                             {loading ? (
-                                <p className="text-gray-500">Đang tải dữ liệu...</p>
+                                <p className="text-gray-500 text-center py-8">Đang tải dữ liệu...</p>
                             ) : surveyData ? (
                                 <>
-                                    <h3 className="text-lg font-medium mb-2">{surveyData.survey_title}</h3>
-                                    <ul className="space-y-4">
-                                        {surveyData.question_survey.map((qs, index) => {
-                                            const question = qs.questions;
-                                            return (
-                                                <li
-                                                    key={question.id}
-                                                    className="border-b pb-4 last:border-b-0"
-                                                >
-                                                    <p className="font-medium text-lg">
-                                                        Câu hỏi {index + 1}: {question.question_text}
-                                                    </p>
-                                                    <div className="ml-4 mt-2">
-                                                        <p className="font-semibold">Tùy chọn:</p>
-                                                        <ul className="ml-4 space-y-1">
-                                                            {question.question_options.map((option) => (
-                                                                <li
-                                                                    key={option.id}
-                                                                    className="text-gray-700"
-                                                                >
-                                                                    - {option.option_text}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                        <p className="font-semibold mt-2">
-                                                            Câu trả lời:
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-4 sticky top-0 bg-white z-10 py-2">
+                                        {surveyData.survey_title}
+                                    </h3>
+                                    <ul className="space-y-6">
+                                        {surveyData.question_survey
+                                            .filter((qs) => {
+                                                return !surveyData.question_survey.some(
+                                                    (parentQs) =>
+                                                        parentQs.questions.question_type === "group" &&
+                                                        qs.questions.question_name.startsWith(
+                                                            parentQs.questions.question_name + "."
+                                                        )
+                                                );
+                                            })
+                                            .map((qs, index) => {
+                                                const question = qs.questions;
+                                                return (
+                                                    <li key={question.id} className="pb-6 border-b last:border-b-0">
+                                                        <p className="font-semibold text-lg text-gray-800">
+                                                            Câu {index + 1}: {question.question_text}
                                                         </p>
-                                                        <div className="ml-4">
-                                                            {renderAnswer(
-                                                                question,
-                                                                question.question_options
-                                                            )}
+                                                        <div className="mt-2 ml-4">
+                                                            <p className="text-sm font-medium text-gray-600">
+                                                                Tùy chọn:
+                                                            </p>
+                                                            <ul className="list-disc ml-4 text-gray-700">
+                                                                {question.question_options.map((option) => (
+                                                                    <li key={option.id}>{option.option_text}</li>
+                                                                ))}
+                                                            </ul>
+                                                            <p className="text-sm font-medium text-gray-600 mt-2">
+                                                                Câu trả lời:
+                                                            </p>
+                                                            <div className="ml-4 mt-1">
+                                                                {renderAnswer(question, question.question_options)}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </li>
-                                            );
-                                        })}
+                                                    </li>
+                                                );
+                                            })}
                                     </ul>
                                 </>
                             ) : (
-                                <p className="text-gray-500">Không có dữ liệu khảo sát cho {`Khảo sát ${activeSurvey}`}.</p>
+                                <p className="text-gray-500 text-center py-8">
+                                    Không có dữ liệu khảo sát cho {`Khảo sát ${activeSurvey}`}.
+                                </p>
                             )}
                         </div>
                     </>
                 ) : (
-                    <p className="text-gray-500 text-center">
+                    <p className="text-gray-500 text-center flex-1 flex items-center justify-center">
                         Vui lòng chọn một người trả lời để xem chi tiết.
                     </p>
                 )}
-            </div>
+            </section>
         </div>
     );
 }
