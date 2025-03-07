@@ -60,6 +60,9 @@ const AdminHeader = () => {
                         <NavLink href="/admin/responses" active={pathname === "/admin/responses"}>
                             Câu trả lời
                         </NavLink>
+                        <NavLink href="/admin/unresponsive-funds" active={pathname === "/admin/unresponsive-funds"}>
+                            Quỹ chưa trả lời
+                        </NavLink>
                     </div>
                     <div className="flex justify-center sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2">
                         <button
