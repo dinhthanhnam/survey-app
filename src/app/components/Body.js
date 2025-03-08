@@ -56,6 +56,8 @@ const Body = ({ scrollToTop }) => {
 
     const [respondentId, setRespondentId] = useState(null);
     const [role, setRole] = useState(null);
+    const [surveyProgress, setSurveyProgress] = useState([]);
+    
 
     useEffect(() => {
         const respondentData = localStorage.getItem('respondent');
@@ -65,7 +67,27 @@ const Body = ({ scrollToTop }) => {
             setRole(respondent.belong_to_group);
         }
     }, []);
+    const fetchSurveyProgress = async (respondentId, role) => {
+        try {
+            const countResponse = await axios.get("/api/survey/response/count", {
+                params: { respondent_id: respondentId, belong_to_group: role },
+            });
+            const { surveys, totalQuestions, answeredCount } = countResponse.data;
+            setTotalQuestions(totalQuestions);
+            setAnsweredCount(answeredCount);
+            setSurveyProgress(countResponse.data?.surveys || []);
+    
+        } catch (error) {
+            console.error('Error preparing review data:', error);
+            alert('Có lỗi khi tải dữ liệu xem lại, vui lòng thử lại!');
+        }
+    };
 
+    useEffect(() => {
+        if (respondentId && role) {
+            fetchSurveyProgress(respondentId, role);
+        }
+    }, [respondentId, role]); 
     const handleReviewSurvey = async () => {
         setIsReviewLoading(true);
         try {
@@ -187,6 +209,9 @@ const Body = ({ scrollToTop }) => {
     const handleRadioChange = async (questionId, optionId) => {
         setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
         await saveUserResponse(questionId, respondentId, optionId, false);
+        
+        fetchSurveyProgress(respondentId, role);
+
     };
 
     const handleCheckboxChange = async (questionId, optionId, requireReason) => {
@@ -220,6 +245,9 @@ const Body = ({ scrollToTop }) => {
         });
 
         await saveUserResponse(questionId, respondentId, optionId, true);
+    
+        fetchSurveyProgress(respondentId, role);
+
     };
 
     if (step === 0) {
@@ -358,6 +386,7 @@ const Body = ({ scrollToTop }) => {
             </div>
         );
     }
+    const currentSurveyProgress = surveyProgress.find(s => s.survey_id === step);
 
     return (
         <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
@@ -369,6 +398,15 @@ const Body = ({ scrollToTop }) => {
                     <p className="text-gray-600 mb-6 text-justify">
                         {surveyData.survey_description}
                     </p>
+                    {currentSurveyProgress && (
+                    <p className="sticky top-0 bg-white z-10 p-4 shadow text-gray-700 font-semibold mb-6">
+                        Đã trả lời {currentSurveyProgress.answered} / {currentSurveyProgress.total} câu của trang này
+                        <br></br>
+                        Tổng trả lời {answeredCount} / {totalQuestions} (
+                            {totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0}% tổng số câu hỏi)
+                    </p>
+                
+                    )}
                     {surveyData.question_survey.map((questionSurvey, index) => {
                         const question = questionSurvey.questions;
                         const childQuestions =
