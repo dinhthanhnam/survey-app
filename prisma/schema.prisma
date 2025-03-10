@@ -32,17 +32,18 @@ model questions {
 }
 
 model respondents {
-  id              Int                          @id @default(autoincrement())
-  name            String                       @db.VarChar(255)
-  email           String                       @db.VarChar(255)
-  phone           String                       @db.VarChar(255)
-  auth_status     String                       @db.VarChar(255)
-  institution_id  Int
-  belong_to_group respondents_belong_to_group?
-  institutions    institutions                 @relation(fields: [institution_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "respondents_ibfk_1")
-  responses       responses[]
+  id                  Int                          @id @default(autoincrement())
+  name                String                       @db.VarChar(255)
+  email               String                       @db.VarChar(255)
+  phone               String                       @db.VarChar(255)
+  auth_status         String                       @db.VarChar(255)
+  institution_id      Int
+  belong_to_group     respondents_belong_to_group?
+  institutions        institutions                 @relation(fields: [institution_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "respondents_ibfk_1")
+  responses           responses[]
+  respondent_duration respondent_duration[]
 
-  @@index([institution_id], map: "credit_fund_id")
+  @@index([institution_id], map: "institution_id")
 }
 
 model surveys {
@@ -76,6 +77,7 @@ model responses {
   question_option_id     Int
   question_option_answer String?                    @db.Text
   response_status        responses_response_status?
+  updated_at             DateTime                   @default(now())
   question_options       question_options           @relation(fields: [question_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_response_question_option")
   questions              questions                  @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_1")
   respondents            respondents                @relation(fields: [respondent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "responses_ibfk_2")
@@ -106,6 +108,16 @@ model otptoken {
   email     String
   otpHash   String
   expiresAt DateTime
+}
+
+model respondent_duration {
+  id             Int @id @default(autoincrement())
+  respondent_id  Int
+  total_duration Int
+
+  respondents respondents @relation(fields: [respondent_id], references: [id])
+
+  @@index([respondent_id])
 }
 
 enum questions_question_type {
