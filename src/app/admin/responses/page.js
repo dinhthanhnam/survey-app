@@ -171,6 +171,7 @@ export default function AdminResponsePage() {
                                 <p className="font-semibold text-gray-800">{respondent.name}</p>
                                 <p className="text-sm text-gray-600">{respondent.email}</p>
                                 <p className="text-sm text-gray-500">{respondent.belong_to_group}</p>
+                                <p className="text-sm text-gray-600">Thời gian trả lời: {respondent.total_duration} giây </p>
                             </li>
                         ))}
                     </ul>

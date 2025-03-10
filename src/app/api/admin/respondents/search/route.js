@@ -1,10 +1,8 @@
-// /app/api/admin/respondents/search/route.js
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Ánh xạ từ enum name sang giá trị gốc trong database
 const groupMapping = {
     Leader: "Lãnh đạo & Quản lý",
     Officer: "Cán bộ nghiệp vụ",
@@ -23,7 +21,6 @@ export async function GET(request) {
             );
         }
 
-        // Truy vấn Prisma với giới hạn 10 kết quả
         const respondents = await prisma.respondents.findMany({
             where: {
                 OR: [
@@ -37,14 +34,28 @@ export async function GET(request) {
                 email: true,
                 belong_to_group: true,
             },
-            take: 10, // Giới hạn tối đa 10 respondents
+            take: 10,
         });
 
         if (!respondents) {
             throw new Error("Prisma returned null or undefined");
         }
 
-        // Chuyển đổi belong_to_group sang giá trị gốc
+        const respondentIds = respondents.map(r => r.id);
+
+        const durations = await prisma.respondent_duration.groupBy({
+            by: ["respondent_id"],
+            _sum: { total_duration: true },
+            where: {
+                respondent_id: { in: respondentIds },
+            },
+        });
+
+        const durationMap = durations.reduce((acc, cur) => {
+            acc[cur.respondent_id] = cur._sum.total_duration || 0;
+            return acc;
+        }, {});
+
         const formattedRespondents = respondents.map((respondent) => ({
             id: respondent.id,
             name: respondent.name,
@@ -52,6 +63,7 @@ export async function GET(request) {
             belong_to_group: respondent.belong_to_group
                 ? groupMapping[respondent.belong_to_group]
                 : null,
+            total_duration: durationMap[respondent.id] || 0,
         }));
 
         return NextResponse.json({ success: true, data: formattedRespondents }, { status: 200 });
