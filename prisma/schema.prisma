@@ -66,6 +66,7 @@ model question_options {
   option_note    String?     @db.VarChar(255)
   questions      questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
   responses      responses[]
+  score          Int?
 
   @@index([question_id], map: "question_id")
 }
