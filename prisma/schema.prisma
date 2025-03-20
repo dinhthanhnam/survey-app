@@ -19,17 +19,18 @@ model question_survey {
 }
 
 model questions {
-  id               Int                     @id @default(autoincrement())
-  question_name    String                  @db.VarChar(255)
-  question_text    String                  @db.Text
-  question_note    String?                 @db.Text
-  question_type    questions_question_type
-  question_target  Json?
-  question_group   question_group[]
-  question_options question_options[]
-  question_survey  question_survey[]
-  responses        responses[]
-  parent_id        Int?
+  id                  Int                     @id @default(autoincrement())
+  question_name       String                  @db.VarChar(255)
+  question_text       String                  @db.Text
+  question_note       String?                 @db.Text
+  question_type       questions_question_type
+  question_target     Json?
+  question_group      question_group[]
+  question_options    question_options[]
+  question_survey     question_survey[]
+  responses           responses[]
+  parent_id           Int?
+  weighted_percentage Float?
 }
 
 model respondents {
@@ -67,7 +68,7 @@ model question_options {
   option_note    String?     @db.VarChar(255)
   questions      questions   @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "question_options_ibfk_1")
   responses      responses[]
-  score          Int?
+  weighted_value Float?
 
   @@index([question_id], map: "question_id")
 }
