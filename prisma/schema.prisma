@@ -29,6 +29,7 @@ model questions {
   question_options question_options[]
   question_survey  question_survey[]
   responses        responses[]
+  parent_id        Int?
 }
 
 model respondents {
