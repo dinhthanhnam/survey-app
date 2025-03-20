@@ -3,16 +3,30 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { fetchSurveyByStep, fetchUserAnswers, fetchReviewData } from "@/utils/survey";
+import * as XLSX from "xlsx";
 
 export default function AdminResponsePage() {
     const [selectedRespondent, setSelectedRespondent] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [respondents, setRespondents] = useState([]);
-    const [activeSurvey, setActiveSurvey] = useState(1);
+    const [activeSurvey, setActiveSurvey] = useState(null);
     const [surveyData, setSurveyData] = useState(null);
     const [userAnswers, setUserAnswers] = useState({});
     const [userReasons, setUserReasons] = useState({});
+    const [surveys, setSurveys] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    // Hàm lấy danh sách khảo sát từ API
+    const fetchSurveyList = async () => {
+        try {
+            const response = await axios.get("/api/survey");
+            const surveyList = Array.isArray(response.data) ? response.data : [];
+            setSurveys(surveyList);
+            setActiveSurvey(surveyList[0]?.id || null); // Chọn khảo sát đầu tiên nếu có
+        } catch (err) {
+            console.error("Lỗi khi lấy danh sách khảo sát:", err.response?.data || err.message);
+        }
+    };
 
     // Hàm lấy danh sách respondent từ API
     const fetchRespondents = async (query) => {
@@ -64,6 +78,10 @@ export default function AdminResponsePage() {
     };
 
     useEffect(() => {
+        fetchSurveyList(); 
+    }, []);
+
+    useEffect(() => {
         fetchRespondents(searchQuery);
     }, [searchQuery]);
 
@@ -73,17 +91,12 @@ export default function AdminResponsePage() {
         }
     }, [selectedRespondent, activeSurvey]);
 
-    const surveys = Array.from({ length: 9 }, (_, i) => ({
-        id: i + 1,
-        title: `Khảo sát ${i + 1}`,
-    }));
-
     const renderAnswer = (question, options) => {
-        const answers = userAnswers[question.id];
+        const answers = userAnswers; // Truy cập toàn bộ userAnswers
         const reasons = userReasons;
-
+    
         if (question.question_type === "radiogroup") {
-            const selectedOption = options.find((opt) => opt.id === answers);
+            const selectedOption = options.find((opt) => opt.id === answers[question.id]);
             return selectedOption ? (
                 <p className="text-gray-700">
                     <span className="font-medium">{selectedOption.option_text}</span>
@@ -97,7 +110,7 @@ export default function AdminResponsePage() {
                 <p className="text-gray-400 italic">Chưa trả lời</p>
             );
         } else if (question.question_type === "checkbox") {
-            const answerArray = Array.isArray(answers) ? answers : [];
+            const answerArray = Array.isArray(answers[question.id]) ? answers[question.id] : [];
             const selectedOptions = options.filter((opt) => answerArray.includes(opt.id));
             if (selectedOptions.length > 0) {
                 return (
@@ -126,27 +139,142 @@ export default function AdminResponsePage() {
             const childQuestions = surveyData?.question_survey.filter((qs) =>
                 qs.questions.question_name.startsWith(question.question_name + ".")
             );
+            if (!childQuestions || childQuestions.length === 0) {
+                return <p className="text-gray-400 italic">Không có câu hỏi con</p>;
+            }
             return (
                 <ul className="ml-4 space-y-4">
-                    {childQuestions?.map((childQs, childIndex) => (
-                        <li key={childQs.questions.id}>
-                            <p className="font-medium text-gray-800">
-                                {childIndex + 1}. {childQs.questions.question_text}
-                            </p>
-                            <div className="ml-4 mt-1">
-                                {renderAnswer(childQs.questions, childQs.questions.question_options)}
-                            </div>
-                        </li>
-                    ))}
+                    {childQuestions.map((childQs, childIndex) => {
+                        const childAnswer = renderAnswer(childQs.questions, childQs.questions.question_options);
+                        return (
+                            <li key={childQs.questions.id}>
+                                <p className="font-medium text-gray-800">
+                                    {childIndex + 1}. {childQs.questions.question_text}
+                                </p>
+                                <div className="ml-4 mt-1">
+                                    {childAnswer}
+                                </div>
+                            </li>
+                        );
+                    })}
                 </ul>
             );
         }
         return <p className="text-gray-400 italic">Loại câu hỏi không xác định</p>;
     };
 
+    const renderAnswerForExcel = (question, options, answers, reasons) => {
+        const userAnswer = answers[question.id];
+    
+        if (question.question_type === "radiogroup") {
+            const selectedOption = options.find((opt) => opt.id === userAnswer);
+            return selectedOption ? `${selectedOption.option_text}${selectedOption.option_note ? ` (${selectedOption.option_note})` : ""}` : "Chưa trả lời";
+        } else if (question.question_type === "checkbox") {
+            const answerArray = Array.isArray(userAnswer) ? userAnswer : [];
+            const selectedOptions = options.filter((opt) => answerArray.includes(opt.id));
+            if (selectedOptions.length > 0) {
+                return selectedOptions.map(opt => 
+                    `${opt.option_text}${opt.option_note ? ` (${opt.option_note})` : ""}${reasons[`${question.id}-${opt.id}`] ? ` - Lý do: ${reasons[`${question.id}-${opt.id}`]}` : ""}`
+                ).join("\n"); // Dùng \n để xuống dòng trong Excel
+            }
+            return "Chưa trả lời";
+        } else if (question.question_type === "group") {
+            const childQuestions = surveyData?.question_survey.filter((qs) =>
+                qs.questions.question_name.startsWith(question.question_name + ".")
+            );
+            return childQuestions?.map((childQs, childIndex) => 
+                `${childIndex + 1}. ${childQs.questions.question_text}: ${renderAnswerForExcel(childQs.questions, childQs.questions.question_options, answers, reasons)}`
+            ).join("\n") || "Không có dữ liệu";
+        }
+        return "Loại câu hỏi không xác định";
+    };
+
+    const exportAllToExcel = async () => {
+        if (!selectedRespondent) {
+            alert("Vui lòng chọn một người trả lời để xuất dữ liệu!");
+            return;
+        }
+    
+        const workbook = XLSX.utils.book_new();
+        const respondentId = selectedRespondent.id;
+        const belongToGroup = selectedRespondent.belong_to_group;
+    
+        for (const survey of surveys) {
+            try {
+                const surveyData = await fetchSurveyByStep(survey.id);
+                const { answers, textInputs } = await fetchUserAnswers(respondentId);
+    
+                if (surveyData) {
+                    const header = [`Khảo sát: ${survey.survey_title}`];
+                    const data = [];
+    
+                    surveyData.question_survey.forEach((qs, index) => {
+                        const question = qs.questions;
+                        const options = qs.questions.question_options;
+    
+                        if (question.question_type === "group") {
+                            // Thêm câu hỏi cha (group)
+                            data.push({
+                                "Câu hỏi": `Câu ${index + 1}: ${question.question_text}`,
+                                "Tùy chọn": "",
+                                "Câu trả lời": ""
+                            });
+    
+                            // Thêm các câu hỏi con
+                            const childQuestions = surveyData.question_survey.filter((childQs) =>
+                                childQs.questions.question_name.startsWith(question.question_name + ".")
+                            );
+                            childQuestions.forEach((childQs, childIndex) => {
+                                const childQuestion = childQs.questions;
+                                const childOptions = childQs.questions.question_options;
+                                data.push({
+                                    "Câu hỏi": `   ${childIndex + 1}. ${childQuestion.question_text}`,
+                                    "Tùy chọn": childOptions.map(opt => opt.option_text).join(", "),
+                                    "Câu trả lời": renderAnswerForExcel(childQuestion, childOptions, answers || {}, textInputs || {})
+                                });
+                            });
+                        } else if (!surveyData.question_survey.some(parentQs => 
+                            parentQs.questions.question_type === "group" && 
+                            question.question_name.startsWith(parentQs.questions.question_name + ".")
+                        )) {
+                            // Thêm câu hỏi không thuộc nhóm
+                            data.push({
+                                "Câu hỏi": `Câu ${index + 1}: ${question.question_text}`,
+                                "Tùy chọn": options.map(opt => opt.option_text).join(", "),
+                                "Câu trả lời": renderAnswerForExcel(question, options, answers || {}, textInputs || {})
+                            });
+                        }
+                    });
+    
+                    const worksheet = XLSX.utils.json_to_sheet(data);
+                    XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: "A1" });
+                    XLSX.utils.sheet_add_json(worksheet, data, { origin: "A2", skipHeader: true });
+    
+                    worksheet["!cols"] = [
+                        { wch: Math.max(...data.map(row => row["Câu hỏi"]?.length || 10), 20) },
+                        { wch: Math.max(...data.map(row => row["Tùy chọn"]?.length || 10), 20) },
+                        { wch: Math.max(...data.map(row => row["Câu trả lời"]?.length || 10), 20) }
+                    ];
+    
+                    XLSX.utils.book_append_sheet(workbook, worksheet, survey.survey_title.slice(0, 31));
+                } else {
+                    const worksheet = XLSX.utils.json_to_sheet([{ "Thông báo": `Không có dữ liệu cho ${survey.survey_title}` }]);
+                    worksheet["!cols"] = [{ wch: 50 }];
+                    XLSX.utils.book_append_sheet(workbook, worksheet, survey.survey_title.slice(0, 31));
+                }
+            } catch (error) {
+                console.error(`Error exporting ${survey.survey_title}:`, error);
+                const worksheet = XLSX.utils.json_to_sheet([{ "Thông báo": `Lỗi khi tải dữ liệu ${survey.survey_title}` }]);
+                worksheet["!cols"] = [{ wch: 50 }];
+                XLSX.utils.book_append_sheet(workbook, worksheet, survey.survey_title.slice(0, 31));
+            }
+        }
+    
+        XLSX.writeFile(workbook, `TatCaCauTraLoi_${selectedRespondent.name}.xlsx`);
+    };
+
     return (
         <div className="flex flex-col md:flex-row gap-6 h-full pb-8">
-            {/* Sidebar chứa danh sách người trả lời */}
             <aside className="md:w-1/3 w-full bg-white p-6 rounded-xl shadow-md flex flex-col">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Danh sách người trả lời</h2>
                 <input
@@ -178,13 +306,20 @@ export default function AdminResponsePage() {
                 </div>
             </aside>
 
-            {/* Phần hiển thị câu hỏi và câu trả lời */}
             <section className="md:w-2/3 w-full bg-white p-6 rounded-xl shadow-md flex flex-col">
                 {selectedRespondent ? (
                     <>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                            Câu trả lời của: {selectedRespondent.name}
-                        </h2>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                Câu trả lời của: {selectedRespondent.name}
+                            </h2>
+                            <button
+                                onClick={exportAllToExcel}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                            >
+                                Xuất Excel
+                            </button>
+                        </div>
                         <div className="flex flex-wrap gap-2 mb-6 overflow-x-auto">
                             {surveys.map((survey) => (
                                 <button
@@ -196,11 +331,10 @@ export default function AdminResponsePage() {
                                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                                     }`}
                                 >
-                                    {survey.title}
+                                    Khảo sát {survey.id}
                                 </button>
                             ))}
                         </div>
-                        {/* Phần chứa câu trả lời với chiều cao cố định */}
                         <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                             {loading ? (
                                 <p className="text-gray-500 text-center py-8">Đang tải dữ liệu...</p>
@@ -240,7 +374,7 @@ export default function AdminResponsePage() {
                                                                 Câu trả lời:
                                                             </p>
                                                             <div className="ml-4 mt-1">
-                                                                {renderAnswer(question, question.question_options)}
+                                                                {renderAnswer(question, question.question_options, userAnswers, userReasons)}
                                                             </div>
                                                         </div>
                                                     </li>
@@ -250,7 +384,7 @@ export default function AdminResponsePage() {
                                 </>
                             ) : (
                                 <p className="text-gray-500 text-center py-8">
-                                    Không có dữ liệu khảo sát cho {`Khảo sát ${activeSurvey}`}.
+                                    Không có dữ liệu khảo sát cho {surveys.find(s => s.id === activeSurvey)?.survey_title || "khảo sát đã chọn"}.
                                 </p>
                             )}
                         </div>
