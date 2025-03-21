@@ -146,6 +146,12 @@ const reincludeOptions = [
     { question_name: 'Câu 8.4', option_value: 3, new_weighted_value: 3 },
     { question_name: 'Câu 8.4', option_value: 4, new_weighted_value: 3 },
     { question_name: 'Câu 8.4', option_value: 5, new_weighted_value: 2 },
+    { question_name: 'Câu 5.4', option_value: 1, new_weighted_value: 1 },
+    { question_name: 'Câu 5.4', option_value: 2, new_weighted_value: 2 },
+    { question_name: 'Câu 5.4', option_value: 3, new_weighted_value: 2 },
+    { question_name: 'Câu 5.4', option_value: 4, new_weighted_value: 2 },
+    { question_name: 'Câu 5.4', option_value: 5, new_weighted_value: 2 },
+    { question_name: 'Câu 5.4', option_value: 6, new_weighted_value: 2 },
 ];
 
 async function updateWeightedValuesForQuestion(questionId, questionName) {
