@@ -40,29 +40,33 @@ const GroupQuestion = ({
                             <td className="border border-gray-300 px-4 py-2">
                                 {question.questions.question_text}
                             </td>
-                            {options.map((option) => (
-                                <td
-                                    key={option.id}
-                                    className="border border-gray-300 px-4 py-2 text-center"
-                                >
-                                    <input
-                                        type="radio"
-                                        name={`question-${question.question_id}`}
-                                        value={option.option_value}
-                                        checked={
-                                            answers[question.id] === option.id
-                                        }
-                                        onChange={() =>
-                                            handleRadioChange(
-                                                question.question_id,
-                                                option.id
-                                            )
-                                        }
-                                        disabled={isReviewMode}
-                                        className="w-5 h-5 text-teal-600 focus:ring-teal-500"
-                                    />
-                                </td>
-                            ))}
+                            {question.questions.question_options.map(
+                                (option) => (
+                                    <td
+                                        key={option.id}
+                                        className="border border-gray-300 px-4 py-2 text-center"
+                                    >
+                                        <input
+                                            type="radio"
+                                            name={`question-${question.question_id}`}
+                                            value={option.option_value}
+                                            checked={
+                                                answers[
+                                                    question.question_id
+                                                ] === option.id
+                                            }
+                                            onChange={() =>
+                                                handleRadioChange(
+                                                    question.question_id,
+                                                    option.id
+                                                )
+                                            }
+                                            disabled={isReviewMode}
+                                            className="w-5 h-5 text-teal-600 focus:ring-teal-500"
+                                        />
+                                    </td>
+                                )
+                            )}
                         </tr>
                     ))}
                 </tbody>
