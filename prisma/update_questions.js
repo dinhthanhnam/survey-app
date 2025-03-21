@@ -2,6 +2,104 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+async function addNewQuestion() {
+    try {
+        // 🔹 1. Thêm câu hỏi mới
+        const newQuestion = await prisma.questions.create({
+            data: {
+                question_name: 'Câu 5.14',
+                question_text:
+                    'Theo anh/chị, đơn vị có gặp khó khăn gì trong việc số hóa và khai thác dữ liệu?',
+                question_type: 'checkbox', // Thay bằng loại câu hỏi phù hợp
+                question_note: 'Chọn nhiều đáp án',
+            },
+        });
+
+        console.log(
+            `✅ Đã thêm câu hỏi mới: ${newQuestion.question_name} (ID: ${newQuestion.id})`
+        );
+        await prisma.question_survey.create({
+            data: {
+                survey_id: 5, // 🔥 Thêm vào khảo sát có ID 5
+                question_id: newQuestion.id,
+            },
+        });
+
+        // 🔹 2. Thêm các option cho câu hỏi
+        const options = [
+            {
+                option_text: 'Thiếu cơ sở hạ tầng công nghệ',
+                option_value: 1,
+                option_note:
+                    'Chưa có hệ thống phần mềm quản lý tập trung, thiếu máy chủ, hệ thống lưu trữ chưa tối ưu...',
+                require_reason: 0,
+            },
+            {
+                option_text:
+                    'Thiếu nhân sự có chuyên môn về phân tích & khai thác dữ liệu',
+                option_value: 2,
+                option_note:
+                    'Nhân sự chưa được đào tạo chuyên sâu về quản trị dữ liệu, chưa có bộ phận chuyên trách...',
+                require_reason: 0,
+            },
+            {
+                option_text: 'Thiếu công cụ hỗ trợ phân tích dữ liệu',
+                option_value: 3,
+                option_note:
+                    'Chưa có phần mềm phân tích chuyên sâu, chủ yếu dùng Excel hoặc báo cáo thủ công...',
+                require_reason: 0,
+            },
+            {
+                option_text: 'Lo ngại về bảo mật & an toàn dữ liệu',
+                option_value: 4,
+                option_note:
+                    'Dữ liệu có nguy cơ rò rỉ, chưa có hệ thống kiểm soát truy cập chặt chẽ...',
+                require_reason: 0,
+            },
+            {
+                option_text: 'Chi phí đầu tư cao, ngân sách hạn chế ',
+                option_value: 5,
+                option_note:
+                    'Chưa có nguồn vốn đủ để triển khai hệ thống số hóa đồng bộ...',
+                require_reason: 0,
+            },
+            {
+                option_text: 'Khó khăn trong việc thu thập dữ liệu',
+                option_value: 6,
+                option_note:
+                    'Ngại thay đổi, chưa sẵn sàng áp dụng công nghệ mới...',
+                require_reason: 0,
+            },
+            {
+                option_text: 'Khác',
+                option_value: 7,
+                option_note: 'Vui lòng mô tả thêm',
+                require_reason: 1,
+            },
+        ];
+
+        for (const opt of options) {
+            await prisma.question_options.create({
+                data: {
+                    question_id: newQuestion.id,
+                    option_text: opt.option_text,
+                    option_value: opt.option_value,
+                    require_reason: opt.require_reason,
+                    option_note: opt.option_note,
+                },
+            });
+        }
+
+        console.log('✅ Đã thêm các option cho câu hỏi mới!');
+    } catch (error) {
+        console.error('❌ Lỗi khi thêm câu hỏi mới:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+// 🏃‍♂️ Chạy hàm để thêm câu hỏi mới
+addNewQuestion();
 // 🟢 Tìm question_id từ question_name
 async function getQuestionIdByName(questionName) {
     const question = await prisma.questions.findFirst({
@@ -105,20 +203,10 @@ async function updateQuestionAndOptions(
 
 // 🏃‍♂️ Chạy thử cập nhật dữ liệu
 async function main() {
-    // 1️⃣ Cập nhật câu hỏi với question_name = "Câu 1.1"
-    await updateQuestionByName('Câu 1.1', {
-        question_text: 'Nội dung mới cho Câu 1.1',
-        question_note: 'Ghi chú mới cho Câu 1.1',
-    });
-
     // 2️⃣ Cập nhật một lựa chọn dựa trên question_name và option_value
     await updateOptionByQuestionName('Câu 1.11', 6, {
         option_text: 'Đã triển khai các chương trình khác',
         option_note: 'ngoài các chương trình trên',
-    });
-
-    await updateOptionByQuestionName('Câu 1.1', 2, {
-        option_note: null, // Xóa ghi chú
     });
 
     // 3️⃣ Cập nhật toàn bộ lựa chọn của một câu hỏi theo question_name
