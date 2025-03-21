@@ -22,7 +22,7 @@ export default function AdminResponsePage() {
             const response = await axios.get("/api/survey");
             const surveyList = Array.isArray(response.data) ? response.data : [];
             setSurveys(surveyList);
-            setActiveSurvey(surveyList[0]?.id || null); // Chọn khảo sát đầu tiên nếu có
+            setActiveSurvey(surveyList[0]?.id || null);
         } catch (err) {
             console.error("Lỗi khi lấy danh sách khảo sát:", err.response?.data || err.message);
         }
@@ -65,6 +65,7 @@ export default function AdminResponsePage() {
             }
 
             const { answers, textInputs } = await fetchUserAnswers(respondentId);
+            console.log("userAnswers:", answers);
             setUserAnswers(answers || {});
             setUserReasons(textInputs || {});
         } catch (error) {
@@ -92,9 +93,9 @@ export default function AdminResponsePage() {
     }, [selectedRespondent, activeSurvey]);
 
     const renderAnswer = (question, options) => {
-        const answers = userAnswers; // Truy cập toàn bộ userAnswers
+        const answers = userAnswers;
         const reasons = userReasons;
-    
+
         if (question.question_type === "radiogroup") {
             const selectedOption = options.find((opt) => opt.id === answers[question.id]);
             return selectedOption ? (
@@ -137,26 +138,23 @@ export default function AdminResponsePage() {
             }
         } else if (question.question_type === "group") {
             const childQuestions = surveyData?.question_survey.filter((qs) =>
-                qs.questions.question_name.startsWith(question.question_name + ".")
+                qs.questions.parent_id === question.id // Dùng parent_id thay vì question_name
             );
             if (!childQuestions || childQuestions.length === 0) {
                 return <p className="text-gray-400 italic">Không có câu hỏi con</p>;
             }
             return (
                 <ul className="ml-4 space-y-4">
-                    {childQuestions.map((childQs, childIndex) => {
-                        const childAnswer = renderAnswer(childQs.questions, childQs.questions.question_options);
-                        return (
-                            <li key={childQs.questions.id}>
-                                <p className="font-medium text-gray-800">
-                                    {childIndex + 1}. {childQs.questions.question_text}
-                                </p>
-                                <div className="ml-4 mt-1">
-                                    {childAnswer}
-                                </div>
-                            </li>
-                        );
-                    })}
+                    {childQuestions.map((childQs, childIndex) => (
+                        <li key={childQs.questions.id}>
+                            <p className="font-medium text-gray-800">
+                                {childIndex + 1}. {childQs.questions.question_text}
+                            </p>
+                            <div className="ml-4 mt-1">
+                                {renderAnswer(childQs.questions, childQs.questions.question_options)}
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             );
         }
@@ -165,7 +163,7 @@ export default function AdminResponsePage() {
 
     const renderAnswerForExcel = (question, options, answers, reasons) => {
         const userAnswer = answers[question.id];
-    
+
         if (question.question_type === "radiogroup") {
             const selectedOption = options.find((opt) => opt.id === userAnswer);
             return selectedOption ? `${selectedOption.option_text}${selectedOption.option_note ? ` (${selectedOption.option_note})` : ""}` : "Chưa trả lời";
@@ -175,16 +173,19 @@ export default function AdminResponsePage() {
             if (selectedOptions.length > 0) {
                 return selectedOptions.map(opt => 
                     `${opt.option_text}${opt.option_note ? ` (${opt.option_note})` : ""}${reasons[`${question.id}-${opt.id}`] ? ` - Lý do: ${reasons[`${question.id}-${opt.id}`]}` : ""}`
-                ).join("\n"); // Dùng \n để xuống dòng trong Excel
+                ).join("\n");
             }
             return "Chưa trả lời";
         } else if (question.question_type === "group") {
             const childQuestions = surveyData?.question_survey.filter((qs) =>
-                qs.questions.question_name.startsWith(question.question_name + ".")
+                qs.questions.parent_id === question.id // Dùng parent_id
             );
-            return childQuestions?.map((childQs, childIndex) => 
+            if (!childQuestions || childQuestions.length === 0) {
+                return "Không có câu hỏi con";
+            }
+            return childQuestions.map((childQs, childIndex) => 
                 `${childIndex + 1}. ${childQs.questions.question_text}: ${renderAnswerForExcel(childQs.questions, childQs.questions.question_options, answers, reasons)}`
-            ).join("\n") || "Không có dữ liệu";
+            ).join("\n");
         }
         return "Loại câu hỏi không xác định";
     };
@@ -194,35 +195,33 @@ export default function AdminResponsePage() {
             alert("Vui lòng chọn một người trả lời để xuất dữ liệu!");
             return;
         }
-    
+
         const workbook = XLSX.utils.book_new();
         const respondentId = selectedRespondent.id;
         const belongToGroup = selectedRespondent.belong_to_group;
-    
+
         for (const survey of surveys) {
             try {
                 const surveyData = await fetchSurveyByStep(survey.id);
                 const { answers, textInputs } = await fetchUserAnswers(respondentId);
-    
+
                 if (surveyData) {
                     const header = [`Khảo sát: ${survey.survey_title}`];
                     const data = [];
-    
+
                     surveyData.question_survey.forEach((qs, index) => {
                         const question = qs.questions;
                         const options = qs.questions.question_options;
-    
+
                         if (question.question_type === "group") {
-                            // Thêm câu hỏi cha (group)
                             data.push({
                                 "Câu hỏi": `Câu ${index + 1}: ${question.question_text}`,
                                 "Tùy chọn": "",
                                 "Câu trả lời": ""
                             });
-    
-                            // Thêm các câu hỏi con
+
                             const childQuestions = surveyData.question_survey.filter((childQs) =>
-                                childQs.questions.question_name.startsWith(question.question_name + ".")
+                                childQs.questions.parent_id === question.id // Dùng parent_id
                             );
                             childQuestions.forEach((childQs, childIndex) => {
                                 const childQuestion = childQs.questions;
@@ -235,9 +234,8 @@ export default function AdminResponsePage() {
                             });
                         } else if (!surveyData.question_survey.some(parentQs => 
                             parentQs.questions.question_type === "group" && 
-                            question.question_name.startsWith(parentQs.questions.question_name + ".")
+                            qs.questions.parent_id === parentQs.questions.id
                         )) {
-                            // Thêm câu hỏi không thuộc nhóm
                             data.push({
                                 "Câu hỏi": `Câu ${index + 1}: ${question.question_text}`,
                                 "Tùy chọn": options.map(opt => opt.option_text).join(", "),
@@ -245,17 +243,17 @@ export default function AdminResponsePage() {
                             });
                         }
                     });
-    
+
                     const worksheet = XLSX.utils.json_to_sheet(data);
                     XLSX.utils.sheet_add_aoa(worksheet, [header], { origin: "A1" });
                     XLSX.utils.sheet_add_json(worksheet, data, { origin: "A2", skipHeader: true });
-    
+
                     worksheet["!cols"] = [
                         { wch: Math.max(...data.map(row => row["Câu hỏi"]?.length || 10), 20) },
                         { wch: Math.max(...data.map(row => row["Tùy chọn"]?.length || 10), 20) },
                         { wch: Math.max(...data.map(row => row["Câu trả lời"]?.length || 10), 20) }
                     ];
-    
+
                     XLSX.utils.book_append_sheet(workbook, worksheet, survey.survey_title.slice(0, 31));
                 } else {
                     const worksheet = XLSX.utils.json_to_sheet([{ "Thông báo": `Không có dữ liệu cho ${survey.survey_title}` }]);
@@ -269,8 +267,8 @@ export default function AdminResponsePage() {
                 XLSX.utils.book_append_sheet(workbook, worksheet, survey.survey_title.slice(0, 31));
             }
         }
-    
-        XLSX.writeFile(workbook, `TatCaCauTraLoi_${selectedRespondent.name}.xlsx`);
+
+        XLSX.writeFile(workbook, `CauTraLoi_${selectedRespondent.name}.xlsx`);
     };
 
     return (
@@ -345,15 +343,9 @@ export default function AdminResponsePage() {
                                     </h3>
                                     <ul className="space-y-6">
                                         {surveyData.question_survey
-                                            .filter((qs) => {
-                                                return !surveyData.question_survey.some(
-                                                    (parentQs) =>
-                                                        parentQs.questions.question_type === "group" &&
-                                                        qs.questions.question_name.startsWith(
-                                                            parentQs.questions.question_name + "."
-                                                        )
-                                                );
-                                            })
+                                            .filter((qs) => !surveyData.question_survey.some(
+                                                (parentQs) => parentQs.questions.question_type === "group" && qs.questions.parent_id === parentQs.questions.id
+                                            ))
                                             .map((qs, index) => {
                                                 const question = qs.questions;
                                                 return (
@@ -374,7 +366,7 @@ export default function AdminResponsePage() {
                                                                 Câu trả lời:
                                                             </p>
                                                             <div className="ml-4 mt-1">
-                                                                {renderAnswer(question, question.question_options, userAnswers, userReasons)}
+                                                                {renderAnswer(question, question.question_options)}
                                                             </div>
                                                         </div>
                                                     </li>
