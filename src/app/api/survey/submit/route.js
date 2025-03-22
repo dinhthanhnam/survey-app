@@ -38,6 +38,11 @@ export async function POST(req) {
             data: { response_status: 'submitted' }
         });
 
+        await prisma.respondents.update({
+            where: { id: respondent_id },
+            data: { submission_status: 'submitted' }
+        });
+
         // Bước 3: Lấy thời điểm hiện tại làm thời điểm submit
         const submitTime = new Date();
 

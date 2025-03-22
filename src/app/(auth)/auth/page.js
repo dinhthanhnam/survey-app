@@ -154,7 +154,7 @@ export default function AuthPage() {
                                 <option value="">Chọn vai trò</option>
                                 <option value="Leader">Lãnh đạo & Quản lý</option>
                                 <option value="Officer">Cán bộ nghiệp vụ</option>
-                                <option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>
+                                {/*<option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>*/}
                             </select>
                         </div>
                         {/* Email */}

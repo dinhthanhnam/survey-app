@@ -8,7 +8,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node prisma/seed.js"
+    "update": "node prisma/update_questions.js & node prisma/update_parent_id.js & node prisma/update_weighted_percentage.js & node prisma/update_weighted_value.js"
   },
   "dependencies": {
     "@prisma/client": "^6.3.1",
