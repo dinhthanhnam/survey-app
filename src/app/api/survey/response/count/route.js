@@ -18,35 +18,35 @@ const surveyData = [
 // Cấu hình số câu hỏi theo từng vai trò
 const surveyConfig = {
     'Lãnh đạo & Quản lý': [
-        { surveyId: 1, numQuestions: 10 },
-        { surveyId: 2, numQuestions: 17 },
+        { surveyId: 1, numQuestions: 11 },
+        { surveyId: 2, numQuestions: 7 },
         { surveyId: 3, numQuestions: 8 },
-        { surveyId: 4, numQuestions: 16 },
-        { surveyId: 5, numQuestions: 11 },
-        { surveyId: 6, numQuestions: 11 },
-        { surveyId: 7, numQuestions: 8 },
+        { surveyId: 4, numQuestions: 18 },
+        { surveyId: 5, numQuestions: 8 },
+        { surveyId: 6, numQuestions: 8 },
+        { surveyId: 7, numQuestions: 7 },
         { surveyId: 8, numQuestions: 8 },
     ],
     'Cán bộ nghiệp vụ': [
         { surveyId: 1, numQuestions: 11 },
         { surveyId: 2, numQuestions: 16 },
         { surveyId: 3, numQuestions: 5 },
-        { surveyId: 4, numQuestions: 4 },
-        { surveyId: 5, numQuestions: 6 },
+        { surveyId: 4, numQuestions: 23 },
+        { surveyId: 5, numQuestions: 15 },
         { surveyId: 6, numQuestions: 6 },
-        { surveyId: 7, numQuestions: 7 },
-        { surveyId: 8, numQuestions: 5 },
+        { surveyId: 7, numQuestions: 3 },
+        { surveyId: 8, numQuestions: 0 },
     ],
-    'Nhân viên CNTT & Hỗ trợ kỹ thuật': [
-        { surveyId: 1, numQuestions: 11 },
-        { surveyId: 2, numQuestions: 11 },
-        { surveyId: 3, numQuestions: 4 },
-        { surveyId: 4, numQuestions: 4 },
-        { surveyId: 5, numQuestions: 7 },
-        { surveyId: 6, numQuestions: 3 },
-        { surveyId: 7, numQuestions: 1 },
-        { surveyId: 8, numQuestions: 3 },
-    ],
+    // 'Nhân viên CNTT & Hỗ trợ kỹ thuật': [
+    //     { surveyId: 1, numQuestions: 11 },
+    //     { surveyId: 2, numQuestions: 11 },
+    //     { surveyId: 3, numQuestions: 4 },
+    //     { surveyId: 4, numQuestions: 4 },
+    //     { surveyId: 5, numQuestions: 7 },
+    //     { surveyId: 6, numQuestions: 3 },
+    //     { surveyId: 7, numQuestions: 1 },
+    //     { surveyId: 8, numQuestions: 3 },
+    // ],
 };
 
 export async function GET(req) {
@@ -65,7 +65,10 @@ export async function GET(req) {
         // Lấy `surveyData` theo vai trò
         const roleSurveyData = surveyConfig[role] || [];
         if (roleSurveyData.length === 0) {
-            return NextResponse.json({ surveys: [], totalQuestions: 0, answeredCount: 0 }, { status: 200 });
+            return NextResponse.json(
+                { surveys: [], totalQuestions: 0, answeredCount: 0 },
+                { status: 200 }
+            );
         }
 
         // Xác định phạm vi `question_id` của từng khảo sát (dựa trên surveyData gốc)
@@ -119,8 +122,14 @@ export async function GET(req) {
         });
 
         // Tính tổng số câu hỏi và câu đã trả lời
-        const totalQuestions = roleSurveyData.reduce((sum, survey) => sum + survey.numQuestions, 0);
-        const answeredCount = roleSurveyRanges.reduce((sum, survey) => sum + survey.answered, 0);
+        const totalQuestions = roleSurveyData.reduce(
+            (sum, survey) => sum + survey.numQuestions,
+            0
+        );
+        const answeredCount = roleSurveyRanges.reduce(
+            (sum, survey) => sum + survey.answered,
+            0
+        );
 
         // Trả về dữ liệu với cả thông tin từng khảo sát và tổng cộng
         return NextResponse.json(
