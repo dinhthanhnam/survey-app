@@ -1,3 +1,4 @@
+// body.js
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FaQuestionCircle, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
@@ -15,19 +16,7 @@ import Navigation from './Navigation';
 import RadioQuestion from './questions/RadioQuestion';
 import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
-import { Radar } from "react-chartjs-2";
-import {
-    Chart as ChartJS,
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend,
-} from "chart.js";
-
-// Đăng ký các thành phần cần thiết cho Chart.js
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+import Visualize from './visualize/visualize'; // Import component Visualize
 
 const Body = ({ scrollToTop }) => {
     let questionCounter = 0;
@@ -50,8 +39,6 @@ const Body = ({ scrollToTop }) => {
     const [role, setRole] = useState(null);
     const [surveyProgress, setSurveyProgress] = useState([]);
     const [showChart, setShowChart] = useState(false); // Trạng thái để hiển thị biểu đồ
-    const [chartData, setChartData] = useState(null); // Dữ liệu biểu đồ
-    const [chartLoading, setChartLoading] = useState(false); // Trạng thái loading cho biểu đồ
 
     useEffect(() => {
         const respondentData = localStorage.getItem('respondent');
@@ -122,170 +109,10 @@ const Body = ({ scrollToTop }) => {
 
             // Sau khi gửi thành công, hiển thị biểu đồ
             setShowChart(true);
-            fetchChartData();
         } catch (error) {
             console.error('Lỗi khi gửi khảo sát:', error);
             alert('Đã xảy ra lỗi, vui lòng thử lại!');
         }
-    };
-
-    // Hàm lấy dữ liệu và tạo biểu đồ (tương tự visualize.js)
-    const fetchChartData = async () => {
-        try {
-            setChartLoading(true);
-            const response = await axios.post(
-                "/api/survey/review",
-                { respondent_id: respondentId },
-                { withCredentials: true }
-            );
-
-            const data = response.data;
-            console.log("Survey Data for Chart:", data);
-
-            if (!data.surveys || !data.responses) {
-                throw new Error("Dữ liệu từ API không đầy đủ: Thiếu surveys hoặc responses");
-            }
-
-            const surveys = [...new Set(data.surveys.map(survey => survey.id))];
-
-            const surveyScores = surveys.map(surveyId => {
-                const surveyQuestions = data.surveys
-                    .filter(survey => survey.id === surveyId)
-                    .flatMap(survey => survey.question_survey);
-
-                let totalScore = 0;
-
-                surveyQuestions.forEach(questionSurvey => {
-                    const question = questionSurvey.questions;
-                    const weightedPercentage = question.weighted_percentage || 0;
-
-                    const maxWeightedValue = Math.max(
-                        ...question.question_options.map(opt => opt.weighted_value || 0)
-                    );
-
-                    const userAnswer = data.responses?.find(
-                        response => response.question_id === question.id
-                    );
-
-                    if (userAnswer && maxWeightedValue > 0) {
-                        const selectedOption = question.question_options.find(
-                            opt => opt.id === userAnswer.question_option_id
-                        );
-                        const weightedValue = selectedOption?.weighted_value || 0;
-
-                        if (weightedPercentage && weightedValue !== undefined) {
-                            const questionScore = (weightedValue * weightedPercentage) / maxWeightedValue;
-                            totalScore += questionScore;
-                        }
-                    }
-                });
-
-                const maxPossibleScore = surveyQuestions.reduce((sum, qs) => {
-                    return sum + (qs.questions.weighted_percentage || 0);
-                }, 0);
-
-                const finalScore = maxPossibleScore > 0
-                    ? Math.round((totalScore / maxPossibleScore) * 100)
-                    : 0;
-
-                console.log(`Survey ${surveyId} Score:`, finalScore);
-                return finalScore;
-            });
-
-            setChartData({
-                labels: surveys.map(surveyId => {
-                    const survey = data.surveys.find(s => s.id === surveyId);
-                    return survey ? survey.survey_title : `Survey ${surveyId}`;
-                }),
-                datasets: [
-                    {
-                        label: "Kết quả khảo sát",
-                        data: surveyScores,
-                        backgroundColor: "rgba(45, 178, 171, 0.2)", // Màu teal nhạt
-                        borderColor: "rgba(45, 178, 171, 1)", // Màu teal đậm
-                        borderWidth: 2,
-                        pointBackgroundColor: "rgba(45, 178, 171, 1)",
-                        pointBorderColor: "#fff",
-                        pointHoverBackgroundColor: "#fff",
-                        pointHoverBorderColor: "rgba(45, 178, 171, 1)",
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                    },
-                ],
-            });
-
-        } catch (error) {
-            console.error("Error fetching chart data:", error);
-            setChartData(null);
-        } finally {
-            setChartLoading(false);
-        }
-    };
-
-    const chartOptions = {
-        scales: {
-            r: {
-                angleLines: {
-                    display: true,
-                    color: "rgba(0, 0, 0, 0.1)",
-                    lineWidth: 1,
-                },
-                grid: {
-                    color: "rgba(0, 0, 0, 0.1)",
-                },
-                ticks: {
-                    display: true,
-                    stepSize: 20,
-                    callback: (value) => `${value}%`,
-                    font: {
-                        size: 12,
-                    },
-                    color: "#333",
-                },
-                pointLabels: {
-                    font: {
-                        size: 14,
-                        weight: "bold",
-                    },
-                    color: "#333",
-                },
-                suggestedMin: 0,
-                suggestedMax: 100,
-            },
-        },
-        plugins: {
-            legend: {
-                display: true,
-                position: "top",
-                labels: {
-                    font: {
-                        size: 14,
-                    },
-                    color: "#333",
-                    padding: 20,
-                },
-            },
-            tooltip: {
-                enabled: true,
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                titleFont: {
-                    size: 14,
-                },
-                bodyFont: {
-                    size: 12,
-                },
-                titleColor: "#fff",
-                bodyColor: "#fff",
-                padding: 10,
-                cornerRadius: 5,
-                callbacks: {
-                    label: (context) => {
-                        return `${context.dataset.label}: ${context.raw}%`;
-                    },
-                },
-            },
-        },
-        maintainAspectRatio: false,
     };
 
     useEffect(() => {
@@ -534,33 +361,7 @@ const Body = ({ scrollToTop }) => {
     }
 
     if (showChart) {
-        return (
-            <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
-                <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
-                    Kết quả khảo sát
-                </h2>
-
-                {chartLoading ? (
-                    <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
-                ) : chartData ? (
-                    <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
-                        <div style={{ height: "500px" }}>
-                            <Radar data={chartData} options={chartOptions} />
-                        </div>
-                        
-                    </div>
-                    
-                ) : (
-                    <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
-                )}
-                <a
-                    href="/"
-                    className="mt-4 inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
-                >
-                    Quay về trang chủ
-                </a>
-            </div>
-        );
+        return <Visualize respondentId={respondentId} />;
     }
 
     const currentSurveyProgress = surveyProgress.find(s => s.survey_id === step);
