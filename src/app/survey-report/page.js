@@ -17,10 +17,19 @@ import {
 // Register Chart.js components
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export default function Visualize({ respondentId }) {
+export default function SurveyReport({ }) {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [pillarAverages, setPillarAverages] = useState([]); // To store average scores for each pillar
+    const [pillarAverages, setPillarAverages] = useState([]);
+    const [respondentId, setRespondentId] = useState(null);
+
+    useEffect(() => {
+        const respondentData = localStorage.getItem('respondent');
+        if (respondentData) {
+            const respondent = JSON.parse(respondentData);
+            setRespondentId(respondent.id);
+        }
+    }, []);
 
     // Define the structure of surveys (pillars) and their sub-labels
     const pillars = [
