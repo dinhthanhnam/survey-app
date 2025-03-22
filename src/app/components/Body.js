@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { FaQuestionCircle } from 'react-icons/fa';
-import { FaArrowRight } from 'react-icons/fa';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaQuestionCircle, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import {
     fetchSurveyCount,
@@ -17,20 +15,28 @@ import Navigation from './Navigation';
 import RadioQuestion from './questions/RadioQuestion';
 import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
-import { respondents_belong_to_group } from '@prisma/client';
-import { useRouter } from 'next/navigation';
+import { Radar } from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    Legend,
+} from "chart.js";
+
+// Đăng ký các thành phần cần thiết cho Chart.js
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 const Body = ({ scrollToTop }) => {
     let questionCounter = 0;
-    const router = useRouter();
     const [step, setStep] = useState(0);
     const [surveyData, setSurveyData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [answers, setAnswers] = useState({});
     const [totalSurveys, setTotalSurveys] = useState(0);
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
-    // const [validCodes, setValidCodes] = useState([]); // Danh sách mã hợp lệ
-    // const [isValid, setIsValid] = useState(false);
     const [tooltipId, setTooltipId] = useState(null);
     const [showReview, setShowReview] = useState(false);
     const [reviewData, setReviewData] = useState(null);
@@ -40,24 +46,12 @@ const Body = ({ scrollToTop }) => {
     const [textInputs, setTextInputs] = useState({});
     const [surveyCounts, setSurveyCounts] = useState([]);
     const [isReviewLoading, setIsReviewLoading] = useState(false);
-
-    // useEffect(() => {
-    //     if (surveyData) {
-    //         let total = 0;
-    //         surveyCounts.forEach((survey) => {
-    //             total += survey.total;
-    //         });
-    //
-    //         const answered = Object.keys(answers).length;
-    //         setTotalQuestions(total);
-    //         setAnsweredCount(answered);
-    //     }
-    // }, [surveyData, answers]);
-
     const [respondentId, setRespondentId] = useState(null);
     const [role, setRole] = useState(null);
     const [surveyProgress, setSurveyProgress] = useState([]);
-    
+    const [showChart, setShowChart] = useState(false); // Trạng thái để hiển thị biểu đồ
+    const [chartData, setChartData] = useState(null); // Dữ liệu biểu đồ
+    const [chartLoading, setChartLoading] = useState(false); // Trạng thái loading cho biểu đồ
 
     useEffect(() => {
         const respondentData = localStorage.getItem('respondent');
@@ -67,6 +61,7 @@ const Body = ({ scrollToTop }) => {
             setRole(respondent.belong_to_group);
         }
     }, []);
+
     const fetchSurveyProgress = async (respondentId, role) => {
         try {
             const countResponse = await axios.get("/api/survey/response/count", {
@@ -76,7 +71,6 @@ const Body = ({ scrollToTop }) => {
             setTotalQuestions(totalQuestions);
             setAnsweredCount(answeredCount);
             setSurveyProgress(countResponse.data?.surveys || []);
-    
         } catch (error) {
             console.error('Error preparing review data:', error);
             alert('Có lỗi khi tải dữ liệu xem lại, vui lòng thử lại!');
@@ -87,7 +81,8 @@ const Body = ({ scrollToTop }) => {
         if (respondentId && role) {
             fetchSurveyProgress(respondentId, role);
         }
-    }, [respondentId, role]); 
+    }, [respondentId, role]);
+
     const handleReviewSurvey = async () => {
         setIsReviewLoading(true);
         try {
@@ -116,17 +111,181 @@ const Body = ({ scrollToTop }) => {
             setIsReviewLoading(false);
         }
     };
+
+    // Hàm xử lý gửi khảo sát và hiển thị biểu đồ
     const handleSubmitSurvey = async () => {
         try {
-            const response = await axios.post('/api/survey/submit', {
+            // Gửi khảo sát
+            await axios.post('/api/survey/submit', {
                 respondent_id: respondentId,
             });
 
-            router.push('/thank-you');
+            // Sau khi gửi thành công, hiển thị biểu đồ
+            setShowChart(true);
+            fetchChartData();
         } catch (error) {
             console.error('Lỗi khi gửi khảo sát:', error);
             alert('Đã xảy ra lỗi, vui lòng thử lại!');
         }
+    };
+
+    // Hàm lấy dữ liệu và tạo biểu đồ (tương tự visualize.js)
+    const fetchChartData = async () => {
+        try {
+            setChartLoading(true);
+            const response = await axios.post(
+                "/api/survey/review",
+                { respondent_id: respondentId },
+                { withCredentials: true }
+            );
+
+            const data = response.data;
+            console.log("Survey Data for Chart:", data);
+
+            if (!data.surveys || !data.responses) {
+                throw new Error("Dữ liệu từ API không đầy đủ: Thiếu surveys hoặc responses");
+            }
+
+            const surveys = [...new Set(data.surveys.map(survey => survey.id))];
+
+            const surveyScores = surveys.map(surveyId => {
+                const surveyQuestions = data.surveys
+                    .filter(survey => survey.id === surveyId)
+                    .flatMap(survey => survey.question_survey);
+
+                let totalScore = 0;
+
+                surveyQuestions.forEach(questionSurvey => {
+                    const question = questionSurvey.questions;
+                    const weightedPercentage = question.weighted_percentage || 0;
+
+                    const maxWeightedValue = Math.max(
+                        ...question.question_options.map(opt => opt.weighted_value || 0)
+                    );
+
+                    const userAnswer = data.responses?.find(
+                        response => response.question_id === question.id
+                    );
+
+                    if (userAnswer && maxWeightedValue > 0) {
+                        const selectedOption = question.question_options.find(
+                            opt => opt.id === userAnswer.question_option_id
+                        );
+                        const weightedValue = selectedOption?.weighted_value || 0;
+
+                        if (weightedPercentage && weightedValue !== undefined) {
+                            const questionScore = (weightedValue * weightedPercentage) / maxWeightedValue;
+                            totalScore += questionScore;
+                        }
+                    }
+                });
+
+                const maxPossibleScore = surveyQuestions.reduce((sum, qs) => {
+                    return sum + (qs.questions.weighted_percentage || 0);
+                }, 0);
+
+                const finalScore = maxPossibleScore > 0
+                    ? Math.round((totalScore / maxPossibleScore) * 100)
+                    : 0;
+
+                console.log(`Survey ${surveyId} Score:`, finalScore);
+                return finalScore;
+            });
+
+            setChartData({
+                labels: surveys.map(surveyId => {
+                    const survey = data.surveys.find(s => s.id === surveyId);
+                    return survey ? survey.survey_title : `Survey ${surveyId}`;
+                }),
+                datasets: [
+                    {
+                        label: "Kết quả khảo sát",
+                        data: surveyScores,
+                        backgroundColor: "rgba(45, 178, 171, 0.2)", // Màu teal nhạt
+                        borderColor: "rgba(45, 178, 171, 1)", // Màu teal đậm
+                        borderWidth: 2,
+                        pointBackgroundColor: "rgba(45, 178, 171, 1)",
+                        pointBorderColor: "#fff",
+                        pointHoverBackgroundColor: "#fff",
+                        pointHoverBorderColor: "rgba(45, 178, 171, 1)",
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                ],
+            });
+
+        } catch (error) {
+            console.error("Error fetching chart data:", error);
+            setChartData(null);
+        } finally {
+            setChartLoading(false);
+        }
+    };
+
+    const chartOptions = {
+        scales: {
+            r: {
+                angleLines: {
+                    display: true,
+                    color: "rgba(0, 0, 0, 0.1)",
+                    lineWidth: 1,
+                },
+                grid: {
+                    color: "rgba(0, 0, 0, 0.1)",
+                },
+                ticks: {
+                    display: true,
+                    stepSize: 20,
+                    callback: (value) => `${value}%`,
+                    font: {
+                        size: 12,
+                    },
+                    color: "#333",
+                },
+                pointLabels: {
+                    font: {
+                        size: 14,
+                        weight: "bold",
+                    },
+                    color: "#333",
+                },
+                suggestedMin: 0,
+                suggestedMax: 100,
+            },
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: "top",
+                labels: {
+                    font: {
+                        size: 14,
+                    },
+                    color: "#333",
+                    padding: 20,
+                },
+            },
+            tooltip: {
+                enabled: true,
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                titleFont: {
+                    size: 14,
+                },
+                bodyFont: {
+                    size: 12,
+                },
+                titleColor: "#fff",
+                bodyColor: "#fff",
+                padding: 10,
+                cornerRadius: 5,
+                callbacks: {
+                    label: (context) => {
+                        return `${context.dataset.label}: ${context.raw}%`;
+                    },
+                },
+            },
+        },
+        maintainAspectRatio: false,
     };
 
     useEffect(() => {
@@ -141,29 +300,21 @@ const Body = ({ scrollToTop }) => {
         };
         if (step > 0) loadUserAnswers();
     }, [step, respondentId]);
-    // useEffect(() => {
-    //     // Gọi API để lấy danh sách Identity_code từ institutions
-    //     fetch("/api/institutions")
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             setValidCodes(data.map((inst) => inst.identity_code));
-    //         })
-    //         .catch((error) => console.error("Error fetching institutions:", error));
-    // }, []);
+
     useEffect(() => {
         const loadReviewData = async () => {
             const data = await fetchReviewData(respondentId);
             if (data) {
                 setReviewData(data);
-                const { answers, textInputs } = await fetchUserAnswers(respondentId); // Lấy cả textInputs nếu cần
+                const { answers, textInputs } = await fetchUserAnswers(respondentId);
                 setAnswers(answers || {});
                 if (textInputs) setTextInputs(textInputs);
             }
         };
-        if (step === totalSurveys + 1) { // Kiểm tra bước Review
+        if (step === totalSurveys + 1) {
             loadReviewData();
         }
-    }, [step, totalSurveys, respondentId]); // Thêm dependencies cần thiết
+    }, [step, totalSurveys, respondentId]);
 
     useEffect(() => {
         const getGroupQuestionIds = async () => {
@@ -198,20 +349,20 @@ const Body = ({ scrollToTop }) => {
         };
         if (step > 0) getSurvey();
     }, [step]);
+
     const handleChange = (questionId, value) => {
         setAnswers((prev) => ({ ...prev, [questionId]: value }));
     };
+
     const handleNextStep = () => {
         setStep((prev) => prev + 1);
-        scrollToTop(); // Cuộn lên đầu container
+        scrollToTop();
     };
 
     const handleRadioChange = async (questionId, optionId) => {
         setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
         await saveUserResponse(questionId, respondentId, optionId, false);
-        
         fetchSurveyProgress(respondentId, role);
-
     };
 
     const handleCheckboxChange = async (questionId, optionId, requireReason) => {
@@ -224,36 +375,31 @@ const Body = ({ scrollToTop }) => {
             }
 
             const newValues = currentValues.includes(optionId)
-                ? currentValues.filter((v) => v !== optionId) // Bỏ chọn
-                : [...currentValues, optionId]; // Chọn mới
+                ? currentValues.filter((v) => v !== optionId)
+                : [...currentValues, optionId];
 
             setShowTextBox((prev) => ({
                 ...prev,
                 [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
             }));
 
-            // Reset text input nếu bỏ chọn
             if (!newValues.includes(optionId)) {
                 setTextInputs((prev) => ({
                     ...prev,
                     [`${questionId}-${optionId}`]: '',
                 }));
-
             }
 
             return { ...prev, [questionId]: newValues };
         });
 
         await saveUserResponse(questionId, respondentId, optionId, true);
-    
         fetchSurveyProgress(respondentId, role);
-
     };
 
     if (step === 0) {
         return (
             <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
-                {/* Video hướng dẫn thực hiện khảo sát */}
                 <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
                     HƯỚNG DẪN THỰC HIỆN KHẢO SÁT
                 </h2>
@@ -270,7 +416,6 @@ const Body = ({ scrollToTop }) => {
                     </div>
                 </div>
 
-                {/* Thanh tiến trình và nút bấm */}
                 <div className="flex flex-wrap items-center justify-between mt-8 gap-4">
                     <div className="flex items-center space-x-2 w-full sm:w-auto">
                         <span className="text-teal-600 font-semibold">
@@ -300,7 +445,8 @@ const Body = ({ scrollToTop }) => {
             </div>
         );
     }
-    if (step === totalSurveys + 1) {
+
+    if (step === totalSurveys + 1 && !showChart) {
         if (isReviewLoading) {
             return (
                 <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
@@ -327,12 +473,12 @@ const Body = ({ scrollToTop }) => {
                     const matchingSurvey = reviewData.surveys.find(
                         (s) => s.id === survey.survey_id
                     );
-                    const surveyStep = index + 1; 
+                    const surveyStep = index + 1;
 
                     const handleTitleClick = () => {
-                        setStep(surveyStep); 
-                        setShowReview(false); 
-                        scrollToTop(); 
+                        setStep(surveyStep);
+                        setShowReview(false);
+                        scrollToTop();
                     };
 
                     return (
@@ -364,8 +510,8 @@ const Body = ({ scrollToTop }) => {
                     <button
                         className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center gap-2"
                         onClick={() => {
-                            setStep(step - 1); // Quay lại bước trước đó
-                            scrollToTop(); // Cuộn lên đầu nếu cần
+                            setStep(step - 1);
+                            scrollToTop();
                         }}
                     >
                         Quay lại
@@ -386,6 +532,37 @@ const Body = ({ scrollToTop }) => {
             </div>
         );
     }
+
+    if (showChart) {
+        return (
+            <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
+                <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
+                    Kết quả khảo sát
+                </h2>
+
+                {chartLoading ? (
+                    <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
+                ) : chartData ? (
+                    <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
+                        <div style={{ height: "500px" }}>
+                            <Radar data={chartData} options={chartOptions} />
+                        </div>
+                        
+                    </div>
+                    
+                ) : (
+                    <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
+                )}
+                <a
+                    href="/"
+                    className="mt-4 inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
+                >
+                    Quay về trang chủ
+                </a>
+            </div>
+        );
+    }
+
     const currentSurveyProgress = surveyProgress.find(s => s.survey_id === step);
 
     return (
@@ -399,22 +576,18 @@ const Body = ({ scrollToTop }) => {
                         {surveyData.survey_description}
                     </p>
                     {currentSurveyProgress && (
-                    <p className="sticky top-0 bg-white z-10 p-4 shadow text-gray-700 font-semibold mb-6">
-                        Đã trả lời {currentSurveyProgress.answered} / {currentSurveyProgress.total} câu của trang này
-                        <br></br>
-                        Tổng trả lời {answeredCount} / {totalQuestions} (
+                        <p className="sticky top-0 bg-white z-10 p-4 shadow text-gray-700 font-semibold mb-6">
+                            Đã trả lời {currentSurveyProgress.answered} / {currentSurveyProgress.total} câu của trang này
+                            <br />
+                            Tổng trả lời {answeredCount} / {totalQuestions} (
                             {totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0}% tổng số câu hỏi)
-                    </p>
-                
+                        </p>
                     )}
                     {surveyData.question_survey.map((questionSurvey, index) => {
                         const question = questionSurvey.questions;
-                        const childQuestions =
-                            surveyData.question_survey.filter((q) =>
-                                q.questions.question_name.startsWith(
-                                    question.question_name + '.'
-                                )
-                            );
+                        const childQuestions = surveyData.question_survey.filter((q) =>
+                            q.questions.question_name.startsWith(question.question_name + '.')
+                        );
                         if (groupQuestionIds.includes(question.id)) return null;
                         questionCounter++;
                         return (
@@ -424,24 +597,16 @@ const Body = ({ scrollToTop }) => {
                             >
                                 <label className="block text-black font-medium text-lg text-justify flex items-center justify-between">
                                     <span>
-                                        Câu {questionCounter}.{' '}
-                                        {question.question_text}
+                                        Câu {questionCounter}. {question.question_text}
                                     </span>
                                     {question.question_note && (
                                         <div
                                             className="relative ml-2"
-                                            onMouseEnter={() =>
-                                                setTooltipId(
-                                                    question.question_id
-                                                )
-                                            } // Chỉ mở tooltip cho đúng câu hỏi
-                                            onMouseLeave={() =>
-                                                setTooltipId(null)
-                                            } // Đóng tooltip khi rời chuột
+                                            onMouseEnter={() => setTooltipId(question.question_id)}
+                                            onMouseLeave={() => setTooltipId(null)}
                                         >
                                             <FaQuestionCircle className="text-teal-500 cursor-pointer" />
-                                            {tooltipId ===
-                                                question.question_id && ( // Kiểm tra ID câu hỏi
+                                            {tooltipId === question.question_id && (
                                                 <div className="absolute top-full right-0 mt-1 p-2 bg-gray-200 text-gray-800 rounded-md text-sm shadow-md w-60">
                                                     {question.question_note}
                                                 </div>
@@ -451,8 +616,7 @@ const Body = ({ scrollToTop }) => {
                                 </label>
 
                                 <div className="mt-3 text-base text-justify">
-                                    {question.question_type ===
-                                        'radiogroup' && (
+                                    {question.question_type === 'radiogroup' && (
                                         <RadioQuestion
                                             question={question}
                                             answers={answers}
@@ -483,12 +647,12 @@ const Body = ({ scrollToTop }) => {
                                                     <div className="flex-1">
                                                         <div className="inline-flex items-center space-x-2">
                                                             <span className="text-gray-800 font-medium">
-                                                              {option.option_text}
+                                                                {option.option_text}
                                                             </span>
                                                             {option.option_note && (
                                                                 <span className="text-gray-500 italic text-sm font-semibold">
-                                                                {option.option_note}
-                                                              </span>
+                                                                    {option.option_note}
+                                                                </span>
                                                             )}
                                                         </div>
 
@@ -503,9 +667,9 @@ const Body = ({ scrollToTop }) => {
                                                                     setTextInputs((prev) => ({
                                                                         ...prev,
                                                                         [`${question.id}-${option.id}`]: newText,
-                                                                    }))}
-                                                                }
-                                                                onBlur={ async () => {
+                                                                    }));
+                                                                }}
+                                                                onBlur={async () => {
                                                                     await saveReasonResponse(question.id, respondentId, option.id, textInputs[`${question.id}-${option.id}`] || null);
                                                                 }}
                                                                 onClick={(e) => e.stopPropagation()}
@@ -523,9 +687,7 @@ const Body = ({ scrollToTop }) => {
                                             groupQuestion={questionSurvey}
                                             childQuestions={childQuestions}
                                             answers={answers}
-                                            handleRadioChange={
-                                                handleRadioChange
-                                            }
+                                            handleRadioChange={handleRadioChange}
                                             isReviewMode={false}
                                         />
                                     )}
