@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createToken } from "@/utils/auth";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +13,7 @@ export async function POST(req) {
             ITSup: "Nhân viên CNTT & Hỗ trợ kỹ thuật"
         };
 
-        const { email, creditCode } = await req.json();
+        const { email, creditCode, otp } = await req.json();
 
         const respondent = await prisma.respondents.findFirst({
             where: {
@@ -27,6 +28,27 @@ export async function POST(req) {
         if(!respondent) {
             return NextResponse.json({ success: false, message: "Email không đúng với dữ liệu hệ thống!" }, { status: 400 });
         }
+
+        const otpRecord = await prisma.otptoken.findFirst({
+            where: {
+                email: email,
+                expiresAt: { gte: new Date() } // Lấy OTP chưa hết hạn
+            },
+            orderBy: { id: "desc" } // Lấy OTP gần nhất
+        });
+
+        if (!otpRecord) {
+            return NextResponse.json({ success: false, message: "OTP đã hết hạn!" }, { status: 400 });
+        }
+
+        // Kiểm tra OTP có đúng không
+        const isMatch = await bcrypt.compare(otp, otpRecord.otpHash);
+        if (!isMatch) {
+            return NextResponse.json({ success: false, message: "OTP không chính xác!" }, { status: 400 });
+        }
+
+        // Xoá OTP sau khi dùng
+        await prisma.otptoken.delete({ where: { id: otpRecord.id } });
 
         const token = await createToken(respondent);
 

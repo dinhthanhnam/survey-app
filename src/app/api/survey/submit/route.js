@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import {createToken} from "@/utils/auth.js";
 
 const prisma = new PrismaClient();
 
@@ -8,27 +10,21 @@ export async function POST(req) {
         const { respondent_id } = body;
 
         if (!respondent_id) {
-            return new Response(
-                JSON.stringify({ message: 'Missing respondent_id' }),
-                { status: 400 }
-            );
+            return new NextResponse.json({ message: 'Missing respondent_id' }, { status: 400 });
         }
 
         // Bước 1: Lấy câu trả lời sớm nhất (dựa vào trường updated_at)
-        const earliestResponse = await prisma.responses.findFirst({
+        const earliestNextResponse = await prisma.responses.findFirst({
             where: { respondent_id },
             orderBy: { updated_at: 'asc' }
         });
 
-        if (!earliestResponse) {
-            return new Response(
-                JSON.stringify({ message: 'No responses found for respondent' }),
-                { status: 404 }
-            );
+        if (!earliestNextResponse) {
+            return new NextResponse.json({ message: 'No responses found for respondent' }, { status: 404 });
         }
 
         // Lưu thời điểm của câu trả lời sớm nhất
-        const startTime = new Date(earliestResponse.updated_at);
+        const startTime = new Date(earliestNextResponse.updated_at);
 
         // Bước 2: Cập nhật trạng thái các câu trả lời thành 'submitted'
         // Vì trigger MySQL chỉ cập nhật updated_at khi question_option_id thay đổi,
@@ -64,16 +60,28 @@ export async function POST(req) {
             }
         });
 
-        return new Response(
-            JSON.stringify({ message: 'Survey submitted successfully', duration: durationSeconds }),
-            { status: 200 }
-        );
+        const respondent = await prisma.respondents.findFirst(
+            {
+                where: {
+                    id: respondent_id,
+                }
+            }
+        )
+        const token = await createToken(respondent);
+
+        const response = NextResponse.json({ message: 'Survey submitted successfully', duration: durationSeconds } ,{ status: 200 });
+
+        response.cookies.set("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            path: "/"
+        });
+        return response
+
     } catch (error) {
         console.error('Error submitting survey:', error);
-        return new Response(
-            JSON.stringify({ message: 'Internal Server Error' }),
-            { status: 500 }
-        );
+        return new NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     } finally {
         await prisma.$disconnect();
     }

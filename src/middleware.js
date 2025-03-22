@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyToken } from "@/utils/auth";
 
 export const config = {
-    matcher: ["/", "/admin/:path*", "/auth", "/admin-auth"], // Thêm /admin-auth vào
+    matcher: ["/", "/admin/:path*", "/auth", "/admin-auth", "/survey-report"], // Thêm /admin-auth vào
 }
 
 export async function middleware(req) {
@@ -38,21 +38,21 @@ export async function middleware(req) {
         }
     }
 
-    // 🔥 Gọi API để lấy trạng thái submission từ server
-    const response = await fetch(new URL("/api/user/user-submission-status", req.url), {
-        method: "GET",
-        headers: { Cookie: req.headers.get("cookie") || "" },
-    });
-
-    if (!response.ok) {
-        console.log("❌ Lỗi khi lấy trạng thái người dùng!");
-        return NextResponse.redirect(new URL("/auth", req.url));
-    }
-
-    const { submission_status } = await response.json();
+    // // 🔥 Gọi API để lấy trạng thái submission từ server
+    // const response = await fetch(new URL("/api/user/user-submission-status", req.url), {
+    //     method: "GET",
+    //     headers: { Cookie: req.headers.get("cookie") || "" },
+    // });
+    //
+    // if (!response.ok) {
+    //     console.log("❌ Lỗi khi lấy trạng thái người dùng!");
+    //     return NextResponse.redirect(new URL("/auth", req.url));
+    // }
+    //
+    // const { submission_status } = await response.json();
 
     // Nếu người dùng đã submit, chặn họ vào "/"
-    if (submission_status !== null && url === "/") {
+    if (user.submission_status !== null && url === "/") {
         console.log("🚫 Người dùng đã submit, chuyển hướng đến /survey-report");
         return NextResponse.redirect(new URL("/survey-report", req.url));
     }
