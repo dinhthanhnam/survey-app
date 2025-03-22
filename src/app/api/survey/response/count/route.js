@@ -18,23 +18,23 @@ const surveyData = [
 // Cấu hình số câu hỏi theo từng vai trò
 const surveyConfig = {
     'Lãnh đạo & Quản lý': [
-        { surveyId: 1, numQuestions: 11 },
+        { surveyId: 1, numQuestions: 9 },
         { surveyId: 2, numQuestions: 7 },
         { surveyId: 3, numQuestions: 8 },
         { surveyId: 4, numQuestions: 18 },
         { surveyId: 5, numQuestions: 8 },
-        { surveyId: 6, numQuestions: 8 },
-        { surveyId: 7, numQuestions: 7 },
+        { surveyId: 6, numQuestions: 6 },
+        { surveyId: 7, numQuestions: 6 },
         { surveyId: 8, numQuestions: 8 },
     ],
     'Cán bộ nghiệp vụ': [
-        { surveyId: 1, numQuestions: 11 },
+        { surveyId: 1, numQuestions: 9 },
         { surveyId: 2, numQuestions: 16 },
         { surveyId: 3, numQuestions: 5 },
         { surveyId: 4, numQuestions: 23 },
         { surveyId: 5, numQuestions: 15 },
-        { surveyId: 6, numQuestions: 6 },
-        { surveyId: 7, numQuestions: 3 },
+        { surveyId: 6, numQuestions: 4 },
+        { surveyId: 7, numQuestions: 2 },
         { surveyId: 8, numQuestions: 0 },
     ],
     // 'Nhân viên CNTT & Hỗ trợ kỹ thuật': [
