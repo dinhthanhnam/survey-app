@@ -403,56 +403,64 @@ export default function SurveyReport({ }) {
     };
 
     return (
-        <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
-                Báo cáo khảo sát chuyển đổi số
-            </h2>
+        <div className="min-h-screen bg-custom-wave bg-cover bg-repeat flex items-center justify-center p-4 sm:pt-8 sm:pb-8">
+            <div
+                ref={surveyContainerRef}
+                className="w-full sm:w-[90%] md:w-[80%] lg:w-3/5 mx-auto bg-white shadow-lg rounded-lg sm:p-6 md:p-8 max-h-screen overflow-y-auto pb-32"
+            >
+                <Header />
+                <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-8">
+                    <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
+                        Báo cáo khảo sát chuyển đổi số
+                    </h2>
 
-            {loading ? (
-                <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
-            ) : chartData ? (
-                <div className="flex flex-col sm:flex-row gap-6">
-                    {/* Sidebar for Pillars */}
-                    <div className="w-full sm:w-1/4 bg-gray-100 p-4 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                            Trụ cột
-                        </h3>
-                        {pillarAverages.map((pillar, index) => (
-                            <div key={index} className="mb-4">
-                                <div className="flex items-center">
-                                    <div
-                                        className="w-4 h-4 rounded-full mr-2"
-                                        style={{ backgroundColor: pillar.color }}
-                                    ></div>
-                                    <span className="text-sm font-medium text-gray-600">
-                                        {pillar.name}
-                                    </span>
-                                </div>
-                                <div className="ml-6 mt-1">
-                                    <span className="text-lg font-bold text-gray-800">
-                                        {pillar.average}%
-                                    </span>
+                    {loading ? (
+                        <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
+                    ) : chartData ? (
+                        <div className="flex flex-col sm:flex-row gap-6">
+                            {/* Sidebar for Pillars */}
+                            <div className="w-full sm:w-1/4 bg-gray-100 p-4 rounded-lg">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                                    Trụ cột
+                                </h3>
+                                {pillarAverages.map((pillar, index) => (
+                                    <div key={index} className="mb-4">
+                                        <div className="flex items-center">
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: pillar.color }}
+                                            ></div>
+                                            <span className="text-sm font-medium text-gray-600">
+                                                {pillar.name}
+                                            </span>
+                                        </div>
+                                        <div className="ml-6 mt-1">
+                                            <span className="text-lg font-bold text-gray-800">
+                                                {pillar.average}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Radar Chart */}
+                            <div className="w-full sm:w-3/4 border border-gray-300 rounded-lg shadow-md p-4 bg-gray-50">
+                                <div style={{ height: "600px" }}>
+                                    <Radar data={chartData} options={chartOptions} />
                                 </div>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Radar Chart */}
-                    <div className="w-full sm:w-3/4 border border-gray-300 rounded-lg shadow-md p-4 bg-gray-50">
-                        <div style={{ height: "600px" }}>
-                            <Radar data={chartData} options={chartOptions} />
                         </div>
-                    </div>
+                    ) : (
+                        <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
+                    )}
+                    <a
+                        href="/"
+                        className="mt-4 inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
+                    >
+                        Quay về trang chủ
+                    </a>
                 </div>
-            ) : (
-                <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
-            )}
-            <a
-                href="/"
-                className="mt-4 inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
-            >
-                Quay về trang chủ
-            </a>
+            </div>
         </div>
     );
 }
