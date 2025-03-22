@@ -19,12 +19,22 @@ export async function middleware(req) {
         return NextResponse.redirect(new URL("/auth", req.url));
     }
 
+    // Nếu là admin, chỉ cho phép truy cập vào admin route
     if (user.auth_status === "admin") {
         if (!url.startsWith("/admin")) {
             console.log("❌ Admin không thể vào:", url);
-            return NextResponse.redirect(new URL("/admin/dashboard", req.url)); // Điều hướng về trang chính của admin
+            return NextResponse.redirect(new URL("/admin", req.url));
         }
     } else {
+        // Người dùng không phải admin, kiểm tra trạng thái submission
+        if (user.submission_status !== null) {
+            console.log("🚫 Người dùng đã submit, chặn vào '/'");
+            if (url === "/") {
+                return NextResponse.redirect(new URL("/survey-report", req.url));
+            }
+        }
+
+        // Chặn người dùng không phải admin truy cập vào admin route
         if (url.startsWith("/admin")) {
             console.log("❌ Người dùng không phải admin!");
             return NextResponse.redirect(new URL("/", req.url));

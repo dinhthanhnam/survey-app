@@ -108,7 +108,7 @@ export default function RefreshPage() {
                                     <option value="">Chọn vai trò</option>
                                     <option value="Leader">Lãnh đạo & Quản lý</option>
                                     <option value="Officer">Cán bộ nghiệp vụ</option>
-                                    <option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>
+                                    {/*<option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>*/}
                                 </select>
                             </div>
                             <label className="block text-gray-700 font-semibold text-lg">
