@@ -14,6 +14,7 @@ import {
 } from '@/utils/survey';
 import Navigation from './Navigation';
 import RadioQuestion from './questions/RadioQuestion';
+import { useRouter } from 'next/navigation';
 import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
 import Visualize from './visualize/visualize'; // Import component Visualize
@@ -23,6 +24,7 @@ const Body = ({ scrollToTop }) => {
     const [step, setStep] = useState(0);
     const [surveyData, setSurveyData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     const [answers, setAnswers] = useState({});
     const [totalSurveys, setTotalSurveys] = useState(0);
     const [groupQuestionIds, setGroupQuestionIds] = useState([]);
@@ -108,7 +110,7 @@ const Body = ({ scrollToTop }) => {
             });
 
             // Sau khi gửi thành công, hiển thị biểu đồ
-            setShowChart(true);
+            router.push(`/survey-report`);
         } catch (error) {
             console.error('Lỗi khi gửi khảo sát:', error);
             alert('Đã xảy ra lỗi, vui lòng thử lại!');
