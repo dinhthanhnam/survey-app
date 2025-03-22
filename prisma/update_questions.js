@@ -529,3 +529,43 @@ async function main() {
 main()
     .catch(console.error)
     .finally(() => prisma.$disconnect());
+
+async function removeSurveyIdForSpecificQuestions() {
+    try {
+        const questionNames = [
+            'Câu 1.13',
+            'Câu 1.14',
+            'Câu 6.5',
+            'Câu 6.6',
+            'Câu 7.8',
+        ];
+
+        // Tìm `id` của các câu hỏi có `question_name` trùng khớp
+        const questions = await prisma.questions.findMany({
+            where: { question_name: { in: questionNames } },
+            select: { id: true },
+        });
+
+        const questionIds = questions.map((q) => q.id);
+
+        if (questionIds.length === 0) {
+            console.log('Không tìm thấy câu hỏi phù hợp.');
+            return;
+        }
+
+        // Xóa các bản ghi trong `question_survey` có `question_id` tương ứng
+        await prisma.question_survey.deleteMany({
+            where: { question_id: { in: questionIds } },
+        });
+
+        console.log(
+            `Đã xóa survey_id của các câu hỏi: ${questionNames.join(', ')}`
+        );
+    } catch (error) {
+        console.error('Lỗi khi xóa survey_id:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+removeSurveyIdForSpecificQuestions();
