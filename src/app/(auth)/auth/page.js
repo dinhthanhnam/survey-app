@@ -1,31 +1,31 @@
-"use client";
-import {useEffect, useRef, useState} from "react";
-import Header from "@/app/components/Header";
-import axios from "axios";
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import Header from '@/app/components/Header';
+import axios from 'axios';
 
 export default function AuthPage() {
-    const [creditCode, setCreditCode] = useState(""); // Mã quỹ tín dụng
-    const [name, setName] = useState(""); // Name
-    const [email, setEmail] = useState(""); // Email
-    const [phone, setPhone] = useState(""); // Phone
-    const [role, setRole] = useState(""); // Vai trò
-    const [otp, setOtp] = useState("");
-    const [successMessage, setSuccessMessage] = useState(""); // Hiển thị ô OTP
-    const [errorMessage, setErrorMessage] = useState(""); // Thông báo lỗi
+    const [creditCode, setCreditCode] = useState(''); // Mã quỹ tín dụng
+    const [name, setName] = useState(''); // Name
+    const [email, setEmail] = useState(''); // Email
+    const [phone, setPhone] = useState(''); // Phone
+    const [role, setRole] = useState(''); // Vai trò
+    const [otp, setOtp] = useState('');
+    const [successMessage, setSuccessMessage] = useState(''); // Hiển thị ô OTP
+    const [errorMessage, setErrorMessage] = useState(''); // Thông báo lỗi
     const [unAuthedRespondent, setUnAuthedRespondent] = useState({});
-    const [requireLogin, setRequireLogin]= useState(false);
+    const [requireLogin, setRequireLogin] = useState(false);
     const loginLinkRef = useRef(null);
     // Hàm gửi request lấy OTP
     const handleRequestOTP = async () => {
-        setErrorMessage("");
-        setSuccessMessage("");
+        setErrorMessage('');
+        setSuccessMessage('');
         if (!name || !creditCode || !email || !role) {
-            setErrorMessage("Vui lòng nhập và chọn đầy đủ thông tin.");
+            setErrorMessage('Vui lòng nhập và chọn đầy đủ thông tin.');
             return;
         }
         console.log({ name, creditCode, email, role });
         try {
-            const response = await axios.post("/api/generate-otp", {
+            const response = await axios.post('/api/generate-otp', {
                 name,
                 phone,
                 email,
@@ -38,43 +38,41 @@ export default function AuthPage() {
                 setUnAuthedRespondent(response.data.respondent);
             } else {
                 setErrorMessage(response.data.message);
-                if (response.data.require_login)
-                setRequireLogin(true);
+                if (response.data.require_login) setRequireLogin(true);
             }
         } catch (error) {
-            setErrorMessage("Kiểm tra lại thông tin mã quỹ.");
+            setErrorMessage('Kiểm tra lại thông tin mã quỹ.');
         }
     };
 
     const handleVerifyOTP = async () => {
         try {
-            const response = await axios.post("/api/verify-otp",
+            const response = await axios.post(
+                '/api/verify-otp',
                 { otp, respondent: unAuthedRespondent },
                 { withCredentials: true }
             );
 
             if (response.data.success) {
                 setSuccessMessage(response.data.message);
-                localStorage.setItem("respondent", response.data.respondent);
-                window.location.href = "/"; // Chuyển hướng về trang chủ
+                localStorage.setItem('respondent', response.data.respondent);
+                window.location.href = '/'; // Chuyển hướng về trang chủ
             } else {
                 setErrorMessage(response.data.message);
             }
         } catch (error) {
-            setErrorMessage("Xác thực OTP thất bại!");
+            setErrorMessage('Xác thực OTP thất bại!');
         }
     };
 
     useEffect(() => {
-        console.log("Require Login:", requireLogin);
+        console.log('Require Login:', requireLogin);
         if (requireLogin && loginLinkRef.current) {
-            console.log("Focusing link...");
+            console.log('Focusing link...');
             loginLinkRef.current.focus();
         }
         setRequireLogin(false);
     }, [requireLogin]);
-
-
 
     return (
         <div>
@@ -84,7 +82,9 @@ export default function AuthPage() {
 
                     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
                         <div className="w-full flex flex-col gap-2">
-                            <h2 className="text-2xl font-bold text-teal-700">NHẬP THÔNG TIN ĐỂ THỰC HIỆN KHẢO SÁT</h2>
+                            <h2 className="text-2xl font-bold text-teal-700">
+                                NHẬP THÔNG TIN ĐỂ THỰC HIỆN KHẢO SÁT
+                            </h2>
                             <a
                                 ref={loginLinkRef}
                                 className="underline text-teal-600 focus:ring-2 focus:ring-teal-400 p-2 self-end"
@@ -152,9 +152,12 @@ export default function AuthPage() {
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
                             >
                                 <option value="">Chọn vai trò</option>
-                                <option value="Leader">Lãnh đạo & Quản lý</option>
-                                <option value="Officer">Cán bộ nghiệp vụ</option>
-                                <option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>
+                                <option value="Leader">
+                                    Lãnh đạo & Quản lý
+                                </option>
+                                <option value="Officer">
+                                    Cán bộ nghiệp vụ
+                                </option>
                             </select>
                         </div>
                         {/* Email */}
