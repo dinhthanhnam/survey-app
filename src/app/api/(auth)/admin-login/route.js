@@ -29,6 +29,7 @@ export async function POST(req) {
         email: ADMIN_EMAIL,
         auth_status: "admin",
         belong_to_group: "admin",
+        submission_status: "admin"
     };
 
     const token = await createToken(admin);
@@ -37,7 +38,7 @@ export async function POST(req) {
 
     response.cookies.set("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         sameSite: "strict",
         path: "/",
     });
