@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { verifyToken } from "@/utils/auth";
 
 export const config = {
-    matcher: ["/", "/admin/:path*", "/auth"],
-};
+    matcher: ["/", "/admin/:path*", "/auth", "/admin-auth"], // Thêm /admin-auth vào
+}
 
 export async function middleware(req) {
     const token = req.cookies.get("token")?.value;
@@ -14,10 +14,28 @@ export async function middleware(req) {
 
     const user = token ? await verifyToken(token) : null;
 
+    // Nếu không có user (chưa xác thực)
     if (!user) {
         console.log("❌ Không có token hợp lệ! Chặn vào route:", url);
-        if (url.startsWith("/auth")) return NextResponse.next();
-        return NextResponse.redirect(new URL("/auth", req.url));
+        if (url.startsWith("/auth") || url.startsWith("/admin-auth")) {
+            return NextResponse.next(); // Cho phép vào /auth hoặc /admin-auth nếu chưa đăng nhập
+        }
+        return NextResponse.redirect(new URL("/auth", req.url)); // Chuyển hướng đến /auth nếu chưa đăng nhập
+    }
+
+    // Nếu đã xác thực (có user)
+    if (user) {
+        // Người dùng đã xác thực không được vào /auth
+        if (url.startsWith("/auth")) {
+            console.log("🚫 Người dùng đã xác thực, không cho phép vào /auth");
+            return NextResponse.redirect(new URL("/", req.url));
+        }
+
+        // Admin đã xác thực không được vào /admin-auth
+        if (user.auth_status === "admin" && url.startsWith("/admin-auth")) {
+            console.log("🚫 Admin đã xác thực, không cho phép vào /admin-auth");
+            return NextResponse.redirect(new URL("/admin", req.url));
+        }
     }
 
     // 🔥 Gọi API để lấy trạng thái submission từ server
