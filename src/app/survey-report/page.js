@@ -13,7 +13,7 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import Header from "@/app/components/Header.js";
+import { useRouter, usePathname } from "next/navigation";
 
 // Register Chart.js components
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -23,6 +23,7 @@ export default function SurveyReport({ }) {
     const [loading, setLoading] = useState(false);
     const [pillarAverages, setPillarAverages] = useState([]);
     const [respondentId, setRespondentId] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         const respondentData = localStorage.getItem('respondent');
@@ -175,7 +176,6 @@ export default function SurveyReport({ }) {
                     console.log(`Calculating score for sub-label "${subLabel.label}" in survey ${pillar.surveyId}`);
 
                     questions.forEach(questionNum => {
-                        // Construct the expected question_name (e.g., "Câu 1.2" for survey 1, question 2)
                         const expectedQuestionName = `Câu ${pillar.surveyId}.${questionNum}`;
 
                         const questionSurvey = data.surveys
@@ -195,7 +195,6 @@ export default function SurveyReport({ }) {
                             ...question.question_options.map(opt => opt.weighted_value || 0)
                         );
 
-                        // Find user responses for this question
                         const userAnswers = data.responses?.filter(
                             response => response.question_id === question.id
                         );
@@ -208,7 +207,6 @@ export default function SurveyReport({ }) {
                         let weightedValue = 0;
 
                         if (questionType === "radiogroup") {
-                            // For radiogroup, there should be only one answer
                             const userAnswer = userAnswers[0];
                             const selectedOption = question.question_options.find(
                                 opt => opt.id === userAnswer.question_option_id
@@ -216,7 +214,6 @@ export default function SurveyReport({ }) {
                             weightedValue = selectedOption?.weighted_value || 0;
                             console.log(`Radiogroup question "${expectedQuestionName}": weightedValue = ${weightedValue}`);
                         } else if (questionType === "checkbox") {
-                            // For checkbox, calculate the average weighted_value of selected options
                             const selectedOptions = userAnswers.map(answer =>
                                 question.question_options.find(
                                     opt => opt.id === answer.question_option_id
@@ -258,8 +255,7 @@ export default function SurveyReport({ }) {
                     return finalScore;
                 });
 
-                // Calculate the average score for this pillar (before filtering)
-                const pillarScores = scores.filter(score => score > 0); // Only non-zero scores
+                const pillarScores = scores.filter(score => score > 0);
                 const average = pillarScores.length > 0
                     ? Math.round(pillarScores.reduce((sum, score) => sum + score, 0) / pillarScores.length)
                     : 0;
@@ -276,11 +272,10 @@ export default function SurveyReport({ }) {
                     pointHoverBorderColor: pillar.borderColor,
                     pointRadius: 4,
                     pointHoverRadius: 6,
-                    average: average, // Store the average for the sidebar
+                    average: average,
                 };
             });
 
-            // Identify labels with non-zero scores across all datasets
             const labelScores = allLabels.map((label, labelIndex) => {
                 const scoresForLabel = datasetsWithAllScores.map(dataset => dataset.data[labelIndex]);
                 const maxScore = Math.max(...scoresForLabel);
@@ -291,13 +286,11 @@ export default function SurveyReport({ }) {
                 .filter(item => item.maxScore > 0)
                 .map(item => item.label);
 
-            // Log excluded labels
             const excludedLabels = labelScores
                 .filter(item => item.maxScore === 0)
                 .map(item => item.label);
             console.log("Excluded labels (score 0 across all datasets):", excludedLabels);
 
-            // If no labels have non-zero scores, set chartData to null
             if (nonZeroLabels.length === 0) {
                 console.log("No labels have non-zero scores. Chart will not be rendered.");
                 setChartData(null);
@@ -305,7 +298,6 @@ export default function SurveyReport({ }) {
                 return;
             }
 
-            // Filter the datasets to only include data for non-zero labels
             const filteredDatasets = datasetsWithAllScores.map(dataset => {
                 const filteredData = allLabels
                     .map((label, index) => ({ label, score: dataset.data[index] }))
@@ -317,13 +309,11 @@ export default function SurveyReport({ }) {
                 };
             });
 
-            // Set the chart data with filtered labels and datasets
             setChartData({
                 labels: nonZeroLabels,
                 datasets: filteredDatasets,
             });
 
-            // Set the pillar averages for the sidebar
             setPillarAverages(datasetsWithAllScores.map(dataset => ({
                 name: dataset.label,
                 average: dataset.average,
@@ -367,10 +357,14 @@ export default function SurveyReport({ }) {
                 },
                 pointLabels: {
                     font: {
-                        size: 10, // Smaller font size to fit more labels
+                        size: 8,
                         weight: "bold",
                     },
-                    color: "#333",
+                    color: (context) => {
+                        const label = context.label;
+                        const pillar = pillars.find(p => p.subLabels.some(sub => sub.label === label));
+                        return pillar ? pillar.borderColor : "#333";
+                    },
                 },
                 suggestedMin: 0,
                 suggestedMax: 100,
@@ -378,7 +372,7 @@ export default function SurveyReport({ }) {
         },
         plugins: {
             legend: {
-                display: false, // Hide the legend since pillars are in the sidebar
+                display: false,
             },
             tooltip: {
                 enabled: true,
@@ -403,64 +397,103 @@ export default function SurveyReport({ }) {
         maintainAspectRatio: false,
     };
 
-    return (
-        <div className="min-h-screen bg-custom-wave bg-cover bg-repeat flex items-center justify-center p-4 sm:pt-8 sm:pb-8">
-            <div
-                className="w-full sm:w-[90%] md:w-[80%] lg:w-3/5 mx-auto bg-white shadow-lg rounded-lg sm:p-6 md:p-8 max-h-screen overflow-y-auto pb-32"
-            >
-                <Header />
-                <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-8">
-                    <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center sm:text-left">
+    const handleLogout = async () => {
+        try {
+          await axios.post("/api/logout", {}, { withCredentials: true });
+          localStorage.removeItem("respondent");
+          router.push("/auth");
+        } catch (error) {
+          console.error("Lỗi khi đăng xuất:", error);
+        }
+      };
+
+      return (
+        <>
+            <style jsx>{`
+                @media (max-width: 2048px) {
+                    .container-report {
+                        padding: 8px;
+                        max-height: 100vh;
+                        overflow-y: auto;
+                        scroll-padding-top: 8px;
+                    }
+                    .report-content {
+                        margin-top: 0;
+                        max-height: 100%;
+                        overflow-y: auto;
+                    }
+                }
+                @media (max-width: 768px) {
+                    .container-report {
+                        padding: 8px;
+                        max-height: 100vh;
+                        overflow-y: auto;
+                    }
+                    .report-content {
+                        min-height: 0;
+                    }
+                    .pillars-container {
+                        max-height: 200px;
+                        overflow-y: auto;
+                    }
+                }
+            `}</style>
+            <div className="bg-custom-wave bg-cover bg-repeat flex items-start justify-center p-4 container-report">
+                <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg p-6 md:p-8 report-content">
+                    <h2 className="text-xl md:text-2xl font-bold text-teal-700 mb-6 text-center">
                         Báo cáo khảo sát chuyển đổi số
                     </h2>
-
+    
                     {loading ? (
                         <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
                     ) : chartData ? (
-                        <div className="flex flex-col sm:flex-row gap-6">
-                            {/* Sidebar for Pillars */}
-                            <div className="w-full sm:w-1/4 bg-gray-100 p-4 rounded-lg">
-                                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                        <div className="flex flex-col gap-6">
+                            {/* Radar Chart */}
+                            <div className="w-full border border-gray-300 rounded-lg shadow-md p-4 bg-gray-50 chart-container">
+                                <div className="h-[400px] md:h-[700px]">
+                                    <Radar data={chartData} options={chartOptions} />
+                                </div>
+                            </div>
+    
+                            {/* Pillars Section */}
+                            <div className="w-full bg-gray-100 p-4 rounded-lg pillars-container">
+                                <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-4 text-center md:text-left">
                                     Trụ cột
                                 </h3>
-                                {pillarAverages.map((pillar, index) => (
-                                    <div key={index} className="mb-4">
-                                        <div className="flex items-center">
-                                            <div
-                                                className="w-4 h-4 rounded-full mr-2"
-                                                style={{ backgroundColor: pillar.color }}
-                                            ></div>
-                                            <span className="text-sm font-medium text-gray-600">
-                                                {pillar.name}
-                                            </span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    {pillarAverages.map((pillar, index) => (
+                                        <div key={index} className="mb-4">
+                                            <div className="flex items-center">
+                                                <div
+                                                    className="w-4 h-4 rounded-full mr-2"
+                                                    style={{ backgroundColor: pillar.color }}
+                                                ></div>
+                                                <span className="text-xs md:text-sm font-medium text-gray-600">
+                                                    {pillar.name}
+                                                </span>
+                                            </div>
+                                            <div className="ml-6 mt-1">
+                                                <span className="text-lg font-bold text-gray-800">
+                                                    {pillar.average}%
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="ml-6 mt-1">
-                                            <span className="text-lg font-bold text-gray-800">
-                                                {pillar.average}%
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Radar Chart */}
-                            <div className="w-full sm:w-3/4 border border-gray-300 rounded-lg shadow-md p-4 bg-gray-50">
-                                <div style={{ height: "600px" }}>
-                                    <Radar data={chartData} options={chartOptions} />
+                                    ))}
                                 </div>
                             </div>
                         </div>
                     ) : (
                         <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
                     )}
-                    <a
-                        href="/"
-                        className="mt-4 inline-block bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
+    
+                    <button
+                        onClick={handleLogout}
+                        className="mt-6 w-full md:w-auto inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 print-button"
                     >
-                        Quay về trang chủ
-                    </a>
+                        Đăng xuất
+                    </button>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
