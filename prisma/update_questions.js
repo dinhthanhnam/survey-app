@@ -167,6 +167,10 @@ async function main() {
             option_note: null,
         },
     ]);
+    await updateQuestionByName('Câu 1.4', {
+        question_text:
+            'Anh/Chị có sẵn sàng tham gia các chương trình đào tạo nâng cao kỹ năng CNTT do đơn vị hoặc NHNN/NHHTX tổ chức  trong thời gian tới không?',
+    });
     await updateAllOptionsForQuestionName('Câu 1.6', [
         {
             option_value: 1,
@@ -301,32 +305,45 @@ async function main() {
             },
         ]
     );
+    await updateAllOptionsForQuestionName('Câu 2.7', [
+        {
+            option_value: 1,
+            option_text: 'Chưa có kế hoạch',
+            option_note: null,
+        },
+        {
+            option_value: 2,
+            option_text: 'Chưa có kế hoạch nhưng có nhu cầu',
+            option_note: null,
+        },
+    ]);
+
     await updateQuestionAndOptions(
         'Câu 3.5',
         {
             question_text:
-                'Nguồn tài chính hiện tại dành cho việc nâng cấp cơ sở hạ tầng CNTT có đáp ứng được yêu cầu thực tế của tổ chức hay không?',
+                'Quỹ của anh/chị sẵn sàng đầu tư  chi phí cơ sở hạ tầng CNTT phục vụ cho chuyển đổi số ở mức nào',
         },
         [
             {
                 option_value: 1,
-                option_text: 'Hoàn toàn không đáp ứng được',
+                option_text: '0% chi phí hoạt động',
             },
             {
                 option_value: 2,
-                option_text: 'Ít đáp ứng được',
+                option_text: 'Khoảng 0% - 2% chi phí hoạt động',
             },
             {
                 option_value: 3,
-                option_text: 'Đáp ứng được một phần',
+                option_text: 'Khoảng 2% - 4% chi phí hoạt động',
             },
             {
                 option_value: 4,
-                option_text: 'Phần lớn đáp ứng được',
+                option_text: 'Khoảng 2% - 4% chi phí hoạt động',
             },
             {
                 option_value: 5,
-                option_text: 'Đáp ứng được hoàn toàn',
+                option_text: 'Khoảng 5% - 6% chi phí hoạt động',
             },
         ]
     );

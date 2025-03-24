@@ -18,7 +18,7 @@ const surveyData = [
 // Cấu hình số câu hỏi theo từng vai trò
 const surveyConfig = {
     'Lãnh đạo & Quản lý': [
-        { surveyId: 1, numQuestions: 9 },
+        { surveyId: 1, numQuestions: 11 },
         { surveyId: 2, numQuestions: 7 },
         { surveyId: 3, numQuestions: 8 },
         { surveyId: 4, numQuestions: 18 },
@@ -28,7 +28,7 @@ const surveyConfig = {
         { surveyId: 8, numQuestions: 8 },
     ],
     'Cán bộ nghiệp vụ': [
-        { surveyId: 1, numQuestions: 9 },
+        { surveyId: 1, numQuestions: 8 },
         { surveyId: 2, numQuestions: 16 },
         { surveyId: 3, numQuestions: 5 },
         { surveyId: 4, numQuestions: 23 },
