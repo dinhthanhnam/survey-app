@@ -313,7 +313,7 @@ export default function AdminResponsePage() {
                             </h2>
                             <button
                                 onClick={exportAllToExcel}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-green-700 transition"
                             >
                                 Xuất Excel
                             </button>
@@ -333,7 +333,7 @@ export default function AdminResponsePage() {
                                 </button>
                             ))}
                         </div>
-                        <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                        <div className="scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                             {loading ? (
                                 <p className="text-gray-500 text-center py-8">Đang tải dữ liệu...</p>
                             ) : surveyData ? (

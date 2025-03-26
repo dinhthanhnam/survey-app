@@ -22,14 +22,14 @@ export default function SurveyReport({ }) {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [pillarAverages, setPillarAverages] = useState([]);
-    const [respondentId, setRespondentId] = useState(null);
+    const [respondent_Institution_Id, setRespondent_Institution_Id] = useState(null); 
     const router = useRouter();
 
     useEffect(() => {
         const respondentData = localStorage.getItem('respondent');
         if (respondentData) {
             const respondent = JSON.parse(respondentData);
-            setRespondentId(respondent.id);
+            setRespondent_Institution_Id(respondent.institution_id);
         }
     }, []);
 
@@ -97,7 +97,7 @@ export default function SurveyReport({ }) {
             borderColor: "rgba(153, 102, 255, 1)",
             subLabels: [
                 { label: "Mức độ số hóa dữ liệu", questions: [1] },
-                { label: "Hệ thống \nlưu trữ dữ liệu", questions: [2] },
+                { label: "Hệ thống lưu trữ dữ liệu", questions: [2] },
                 { label: "Ứng dụng công cụ phân tích dữ liệu", questions: [3, 4] },
                 { label: "Khai thác dữ liệu khách hàng", questions: [5, 6, 7] },
                 { label: "Mức độ liên thông dữ liệu", questions: [8, 9] },
@@ -115,7 +115,6 @@ export default function SurveyReport({ }) {
                 { label: "Kế hoạch triển khai các dịch vụ ngân hàng số", questions: [2, 3, 4] },
                 { label: "Mức độ hài lòng của khách hàng", questions: [5, 9] },
                 { label: "Kế hoạch hợp tác và mở rộng hệ sinh thái số", questions: [6, 7, 8] },
-                { label: "Mức độ hợp tác với các tổ chức công nghệ", questions: [10] },
             ],
         },
         {
@@ -127,7 +126,6 @@ export default function SurveyReport({ }) {
                 { label: "Ngân sách & Đầu tư CNTT", questions: [1, 2, 4] },
                 { label: "Sẵn sàng đầu tư & mở rộng tài chính", questions: [3, 5] },
                 { label: "Hợp tác tài chính với NHNN/NHHTX & TCTD", questions: [6, 7] },
-                { label: "Lộ trình & Hiệu quả đầu tư", questions: [8] },
             ],
         },
         {
@@ -144,125 +142,142 @@ export default function SurveyReport({ }) {
             ],
         },
     ];
-
     const fetchChartData = async () => {
         try {
             setLoading(true);
             const response = await axios.post(
-                "/api/survey/review",
-                { respondent_id: respondentId },
+                "/api/survey/response/institution-response",
+                { institution_id: respondent_Institution_Id },
                 { withCredentials: true }
             );
 
             const data = response.data;
-            console.log("Survey Data for Chart:", data);
-
+            console.log("Raw API Response:", data);
+    
             if (!data.surveys || !data.responses) {
                 throw new Error("Dữ liệu từ API không đầy đủ: Thiếu surveys hoặc responses");
             }
-
-            // Flatten all sub-labels for the radar chart
+    
             const allLabels = pillars.flatMap(pillar => pillar.subLabels.map(sub => sub.label));
-
-            // Calculate scores for each sub-label
+    
+            // Hàm tính điểm phần trăm cho một câu hỏi (0-100%)
+            const calculateQuestionPercentage = (question, responses) => {
+                const questionType = question.question_type;
+                const userAnswers = responses.filter(response => response.question_id === question.id);
+    
+                if (!userAnswers.length) {
+                    console.log(`No responses for question "${question.question_name}"`);
+                    return 0;
+                }
+    
+                if (questionType === "radiogroup") {
+                    const maxWeightedValue = Math.max(
+                        ...question.question_options.map(opt => opt.weighted_value || 0)
+                    );
+                    let totalWeightedValue = 0;
+                    let responseCount = 0;
+    
+                    userAnswers.forEach(answer => {
+                        const selectedOption = question.question_options.find(
+                            opt => opt.id === answer.question_option_id
+                        );
+                        totalWeightedValue += selectedOption?.weighted_value || 0;
+                        responseCount++;
+                    });
+    
+                    const avgWeightedValue = responseCount > 0 ? totalWeightedValue / responseCount : 0;
+                    return maxWeightedValue > 0
+                        ? (avgWeightedValue / maxWeightedValue) * 100
+                        : 0;
+                } else if (questionType === "checkbox") {
+                    const totalPossibleWeightedValue = question.question_options.reduce(
+                        (sum, opt) => sum + (opt.weighted_value || 0),
+                        0
+                    );
+                    let totalSelectedWeightedValue = 0;
+    
+                    userAnswers.forEach(answer => {
+                        const selectedOption = question.question_options.find(
+                            opt => opt.id === answer.question_option_id
+                        );
+                        totalSelectedWeightedValue += selectedOption?.weighted_value || 0;
+                    });
+    
+                    return totalPossibleWeightedValue > 0
+                        ? Math.min((totalSelectedWeightedValue / totalPossibleWeightedValue) * 100, 100)
+                        : 0;
+                } else if (questionType === "group") {
+                    const childQuestions = data.surveys
+                        .flatMap(survey => survey.question_survey)
+                        .map(qs => qs.questions)
+                        .filter(q => q.parent_id === question.id);
+    
+                    if (!childQuestions.length) {
+                        console.log(`No child questions for group "${question.question_name}"`);
+                        return 0;
+                    }
+    
+                    const childScores = childQuestions.map(child => calculateQuestionPercentage(child, responses));
+                    return childScores.length
+                        ? childScores.reduce((sum, score) => sum + score, 0) / childScores.length
+                        : 0;
+                }
+    
+                return 0; // Trường hợp không xác định
+            };
+    
             const datasetsWithAllScores = pillars.map(pillar => {
                 const scores = allLabels.map(label => {
                     const subLabel = pillar.subLabels.find(sub => sub.label === label);
-                    if (!subLabel) return 0; // If the label doesn't belong to this pillar, score is 0
-
-                    let totalScore = 0;
+                    if (!subLabel) return 0;
+    
+                    let totalPercentage = 0;
                     const questions = subLabel.questions;
-
-                    console.log(`Calculating score for sub-label "${subLabel.label}" in survey ${pillar.surveyId}`);
-
+    
+                    // Tính trung bình điểm phần trăm của các câu hỏi trong label
                     questions.forEach(questionNum => {
                         const expectedQuestionName = `Câu ${pillar.surveyId}.${questionNum}`;
-
                         const questionSurvey = data.surveys
                             .find(survey => survey.id === pillar.surveyId)
                             ?.question_survey.find(qs => qs.questions.question_name === expectedQuestionName);
-
+    
                         if (!questionSurvey) {
-                            console.log(`Question "${expectedQuestionName}" not found in survey ${pillar.surveyId}`);
+                            console.log(`Question "${expectedQuestionName}" not found`);
                             return;
                         }
-
+    
                         const question = questionSurvey.questions;
-                        const weightedPercentage = question.weighted_percentage || 0;
-                        const questionType = question.question_type;
-
-                        const maxWeightedValue = Math.max(
-                            ...question.question_options.map(opt => opt.weighted_value || 0)
-                        );
-
-                        const userAnswers = data.responses?.filter(
-                            response => response.question_id === question.id
-                        );
-
-                        if (!userAnswers || userAnswers.length === 0 || maxWeightedValue === 0) {
-                            console.log(`No responses or maxWeightedValue is 0 for question "${expectedQuestionName}"`);
-                            return;
-                        }
-
-                        let weightedValue = 0;
-
-                        if (questionType === "radiogroup") {
-                            const userAnswer = userAnswers[0];
-                            const selectedOption = question.question_options.find(
-                                opt => opt.id === userAnswer.question_option_id
-                            );
-                            weightedValue = selectedOption?.weighted_value || 0;
-                            console.log(`Radiogroup question "${expectedQuestionName}": weightedValue = ${weightedValue}`);
-                        } else if (questionType === "checkbox") {
-                            const selectedOptions = userAnswers.map(answer =>
-                                question.question_options.find(
-                                    opt => opt.id === answer.question_option_id
-                                )
-                            );
-                            const totalWeightedValue = selectedOptions.reduce(
-                                (sum, opt) => sum + (opt?.weighted_value || 0),
-                                0
-                            );
-                            weightedValue = selectedOptions.length > 0
-                                ? totalWeightedValue / selectedOptions.length
-                                : 0;
-                            console.log(`Checkbox question "${expectedQuestionName}": weightedValue = ${weightedValue} (average of ${selectedOptions.length} options)`);
-                        }
-
-                        if (weightedPercentage && weightedValue !== undefined) {
-                            const questionScore = (weightedValue * weightedPercentage) / maxWeightedValue;
-                            totalScore += questionScore;
-                            console.log(`Question "${expectedQuestionName}": score = ${questionScore}, totalScore = ${totalScore}`);
-                        }
+                        const percentageScore = calculateQuestionPercentage(question, data.responses);
+                        totalPercentage += percentageScore;
                     });
-
-                    const maxPossibleScore = questions.reduce((sum, questionNum) => {
-                        const expectedQuestionName = `Câu ${pillar.surveyId}.${questionNum}`;
-                        const questionSurvey = data.surveys
-                            .find(survey => survey.id === pillar.surveyId)
-                            ?.question_survey.find(qs => qs.questions.question_name === expectedQuestionName);
-                        const percentage = questionSurvey?.questions.weighted_percentage || 0;
-                        console.log(`Max possible score for "${expectedQuestionName}": weighted_percentage = ${percentage}`);
-                        return sum + percentage;
-                    }, 0);
-
-                    const finalScore = maxPossibleScore > 0
-                        ? Math.round((totalScore / maxPossibleScore) * 100)
-                        : 0;
-
-                    console.log(`Final score for sub-label "${subLabel.label}" in survey ${pillar.surveyId}: ${finalScore}%`);
-
-                    return finalScore;
+    
+                    const questionCount = questions.length;
+                    return questionCount > 0 ? Math.round(totalPercentage / questionCount) : 0;
                 });
-
-                const pillarScores = scores.filter(score => score > 0);
-                const average = pillarScores.length > 0
-                    ? Math.round(pillarScores.reduce((sum, score) => sum + score, 0) / pillarScores.length)
-                    : 0;
-
+    
+                // Tính điểm trung bình của trụ cột dựa trên weighted_percentage
+                let totalPillarScore = 0;
+                let totalWeight = 0;
+    
+                allLabels.forEach((label, index) => {
+                    const subLabel = pillar.subLabels.find(sub => sub.label === label);
+                    if (!subLabel || scores[index] === 0) return;
+    
+                    const firstQuestionName = `Câu ${pillar.surveyId}.${subLabel.questions[0]}`;
+                    const firstQuestionSurvey = data.surveys
+                        .find(survey => survey.id === pillar.surveyId)
+                        ?.question_survey.find(qs => qs.questions.question_name === firstQuestionName);
+                    const weight = firstQuestionSurvey?.questions.weighted_percentage || 0;
+    
+                    totalPillarScore += scores[index] * weight;
+                    totalWeight += weight;
+                });
+    
+                const average = totalWeight > 0 ? Math.round(totalPillarScore / totalWeight) : 0;
+    
                 return {
                     label: pillar.name,
-                    data: scores,
+                    data: scores, // Điểm của sub-label (0-100%)
                     backgroundColor: pillar.color,
                     borderColor: pillar.borderColor,
                     borderWidth: 2,
@@ -272,56 +287,47 @@ export default function SurveyReport({ }) {
                     pointHoverBorderColor: pillar.borderColor,
                     pointRadius: 4,
                     pointHoverRadius: 6,
-                    average: average,
+                    average: average, // Điểm trung bình của trụ cột
                 };
             });
-
+    
             const labelScores = allLabels.map((label, labelIndex) => {
                 const scoresForLabel = datasetsWithAllScores.map(dataset => dataset.data[labelIndex]);
                 const maxScore = Math.max(...scoresForLabel);
                 return { label, maxScore };
             });
-
+    
             const nonZeroLabels = labelScores
                 .filter(item => item.maxScore > 0)
                 .map(item => item.label);
-
-            const excludedLabels = labelScores
-                .filter(item => item.maxScore === 0)
-                .map(item => item.label);
-            console.log("Excluded labels (score 0 across all datasets):", excludedLabels);
-
+    
             if (nonZeroLabels.length === 0) {
-                console.log("No labels have non-zero scores. Chart will not be rendered.");
+                console.log("No non-zero scores found.");
                 setChartData(null);
                 setPillarAverages([]);
                 return;
             }
-
-            const filteredDatasets = datasetsWithAllScores.map(dataset => {
-                const filteredData = allLabels
+    
+            const filteredDatasets = datasetsWithAllScores.map(dataset => ({
+                ...dataset,
+                data: allLabels
                     .map((label, index) => ({ label, score: dataset.data[index] }))
                     .filter(item => nonZeroLabels.includes(item.label))
-                    .map(item => item.score);
-                return {
-                    ...dataset,
-                    data: filteredData,
-                };
-            });
-
+                    .map(item => item.score),
+            }));
+    
             setChartData({
                 labels: nonZeroLabels,
                 datasets: filteredDatasets,
             });
-
+    
             setPillarAverages(datasetsWithAllScores.map(dataset => ({
                 name: dataset.label,
                 average: dataset.average,
                 color: dataset.borderColor,
             })));
-
         } catch (error) {
-            console.error("Error fetching chart data:", error);
+            console.error("Error fetching chart data:", error.response?.status, error.message);
             setChartData(null);
             setPillarAverages([]);
         } finally {
@@ -330,10 +336,10 @@ export default function SurveyReport({ }) {
     };
 
     useEffect(() => {
-        if (respondentId) {
+        if (respondent_Institution_Id) {
             fetchChartData();
         }
-    }, [respondentId]);
+    }, [respondent_Institution_Id]);
 
     const chartOptions = {
         scales: {
