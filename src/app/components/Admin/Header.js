@@ -55,7 +55,7 @@ const AdminHeader = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t pt-2 relative">
                     <div className="flex justify-center gap-4">
                         <NavLink href="/admin" active={pathname === "/admin"}>
-                            Bộ câu hỏi
+                            Biểu đồ
                         </NavLink>
                         <NavLink href="/admin/responses" active={pathname === "/admin/responses"}>
                             Câu trả lời

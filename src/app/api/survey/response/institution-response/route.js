@@ -15,6 +15,13 @@ export async function POST(req) {
             );
         }
 
+        const institution = await prisma.institutions.findMany({
+            where: {
+                id: institution_id 
+            },
+        });
+
+
         const surveys = await prisma.surveys.findMany({
             include: {
                 question_survey: {
@@ -55,6 +62,8 @@ export async function POST(req) {
         });
 
         return NextResponse.json({
+            institution,
+            respondents,
             surveys,
             responses
         });

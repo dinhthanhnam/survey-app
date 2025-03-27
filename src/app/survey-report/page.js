@@ -22,7 +22,9 @@ export default function SurveyReport({ }) {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [pillarAverages, setPillarAverages] = useState([]);
-    const [respondent_Institution_Id, setRespondent_Institution_Id] = useState(null); 
+    const [respondent_Institution_Id, setRespondent_Institution_Id] = useState(null);
+    const [institutionName, setInstitutionName] = useState("");
+    const [respondents, setRespondents] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -335,9 +337,40 @@ export default function SurveyReport({ }) {
         }
     };
 
+    const fetchInstitutionAndRespondents = async (institutionId) => {
+        try {
+            const response = await axios.post(
+                "/api/survey/response/institution-response",
+                { institution_id: institutionId },
+                { withCredentials: true }
+            );
+            const data = response.data;
+
+            if (!data.institution || !data.respondents) {
+                throw new Error("Dữ liệu từ API không đầy đủ");
+            }
+
+            setInstitutionName(data.institution[0]?.name || "Không xác định");
+            setRespondents(data.respondents.map(respondent => ({
+                id: respondent.id,
+                name: respondent.name,
+                email: respondent.email,
+                phone: respondent.phone,
+                group: respondent.belong_to_group,
+                submissionStatus: respondent.submission_status
+            })));
+        } catch (error) {
+            setLoading(false);
+            console.error("Error fetching institution and respondents:", error);
+            setInstitutionName("Không xác định");
+            setRespondents([]);
+        }
+    };
+
     useEffect(() => {
         if (respondent_Institution_Id) {
             fetchChartData();
+            fetchInstitutionAndRespondents(respondent_Institution_Id);
         }
     }, [respondent_Institution_Id]);
 
@@ -438,7 +471,7 @@ export default function SurveyReport({ }) {
                     .report-content {
                         min-height: 0;
                     }
-                    .pillars-container {
+                    .pillars-container, .respondents-container {
                         max-height: 200px;
                         overflow-y: auto;
                     }
@@ -447,9 +480,30 @@ export default function SurveyReport({ }) {
             <div className="bg-custom-wave bg-cover bg-repeat flex items-start justify-center p-4 container-report">
                 <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg p-6 md:p-8 report-content">
                     <h2 className="text-xl md:text-2xl font-bold text-teal-700 mb-6 text-center">
-                        Báo cáo khảo sát chuyển đổi số
+                        Báo cáo chuyển đổi số cho quỹ {institutionName}
                     </h2>
-    
+
+                    {/* Danh sách người trả lời */}
+                    <div className="w-full bg-gray-100 p-4 rounded-lg mb-6 respondents-container">
+                        <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-4 text-center md:text-left">
+                            Danh sách người trả lời
+                        </h3>
+                        {respondents.length > 0 ? (
+                            <ul className="list-disc pl-5 text-sm md:text-base text-gray-600">
+                                {respondents.map(respondent => (
+                                    <li key={respondent.id}>
+                                        {respondent.name} ({respondent.email}) - 
+                                        {respondent.group === "Leader" ? "Lãnh đạo & Quản lý" : "Cán bộ nghiệp vụ"} - 
+                                        <span className={respondent.submissionStatus === "submitted" ? "text-teal-600" : "text-red-600"}>
+                                            {respondent.submissionStatus === "submitted" ? "Đã nộp" : "Chưa nộp"}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500">Không có dữ liệu người trả lời.</p>
+                        )}
+                    </div>
                     {loading ? (
                         <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
                     ) : chartData ? (
@@ -460,7 +514,7 @@ export default function SurveyReport({ }) {
                                     <Radar data={chartData} options={chartOptions} />
                                 </div>
                             </div>
-    
+
                             {/* Pillars Section */}
                             <div className="w-full bg-gray-100 p-4 rounded-lg pillars-container">
                                 <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-4 text-center md:text-left">
@@ -491,7 +545,7 @@ export default function SurveyReport({ }) {
                     ) : (
                         <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
                     )}
-    
+
                     <button
                         onClick={handleLogout}
                         className="mt-6 w-full md:w-auto inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 print-button"
