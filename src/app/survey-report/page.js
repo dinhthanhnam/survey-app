@@ -480,7 +480,7 @@ export default function SurveyReport({ }) {
             <div className="bg-custom-wave bg-cover bg-repeat flex items-start justify-center p-4 container-report">
                 <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg p-6 md:p-8 report-content">
                     <h2 className="text-xl md:text-2xl font-bold text-teal-700 mb-6 text-center">
-                        Báo cáo chuyển đổi số cho quỹ {institutionName}
+                        Báo cáo chuyển đổi số cho {institutionName}
                     </h2>
 
                     {/* Danh sách người trả lời */}
