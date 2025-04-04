@@ -78,6 +78,43 @@ export default function AdminResponsePage() {
         }
     };
 
+    const deleteRespondent = async (respondentId) => {
+        try {
+            console.log('Sending POST request to delete respondent_id:', respondentId, 'Type:', typeof respondentId);
+            const response = await axios.post(
+                "/api/user/user-delete",
+                { respondent_id: respondentId },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            console.log('Response from server:', response.data);
+            if (response.data.message.includes("thành công")) {
+                setRespondents((prev) => prev.filter((r) => r.id !== respondentId));
+                if (selectedRespondent?.id === respondentId) {
+                    setSelectedRespondent(null);
+                }
+                alert("Xóa người dùng và câu trả lời thành công!");
+            }
+        } catch (error) {
+            console.error("Lỗi khi xóa người dùng:", error.response?.data || error.message);
+            alert("Có lỗi xảy ra khi xóa người dùng!");
+        }
+    };
+
+    // Hàm xử lý khi nhấn icon xóa
+    const handleDeleteClick = (respondent, e) => {
+        e.stopPropagation();
+        const confirmDelete = window.confirm(
+            `Xóa người dùng và câu trả lời của "${respondent.name}"?`
+        );
+        if (confirmDelete) {
+            deleteRespondent(respondent.id);
+        }
+    };
+
     useEffect(() => {
         fetchSurveyList(); 
     }, []);
@@ -287,17 +324,39 @@ export default function AdminResponsePage() {
                         {respondents?.map((respondent) => (
                             <li
                                 key={respondent.id}
-                                onClick={() => setSelectedRespondent(respondent)}
-                                className={`p-4 rounded-lg cursor-pointer transition-colors ${
+                                onClick={() => setSelectedRespondent(respondent)} // Giữ chức năng chọn người dùng
+                                className={`p-4 rounded-lg cursor-pointer transition-colors flex justify-between items-center ${
                                     selectedRespondent?.id === respondent.id
                                         ? "bg-teal-100 border-teal-500 border"
                                         : "bg-gray-50 hover:bg-gray-100"
                                 }`}
                             >
-                                <p className="font-semibold text-gray-800">{respondent.name}</p>
-                                <p className="text-sm text-gray-600">{respondent.email}</p>
-                                <p className="text-sm text-gray-500">{respondent.belong_to_group}</p>
-                                <p className="text-sm text-gray-600">Thời gian trả lời: {respondent.total_duration} giây </p>
+                                <div>
+                                    <p className="font-semibold text-gray-800">{respondent.name}</p>
+                                    <p className="text-sm text-gray-600">{respondent.email}</p>
+                                    <p className="text-sm text-gray-500">{respondent.belong_to_group}</p>
+                                    <p className="text-sm text-gray-600">Thời gian trả lời: {respondent.total_duration} giây </p>
+                                </div>
+                                <button
+                                    onClick={(e) => handleDeleteClick(respondent, e)} // Truyền event để ngăn propagation
+                                    className="text-red-500 hover:text-red-700 transition"
+                                    title="Xóa người dùng"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                </button>
                             </li>
                         ))}
                     </ul>
