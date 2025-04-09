@@ -18,6 +18,15 @@ model question_survey {
   @@index([survey_id], map: "survey_id")
 }
 
+model survey_pillars {
+  id                  Int         @id @default(autoincrement())
+  name                String      @db.VarChar(255)
+  weighted_percentage Float?
+  questions           questions[]
+  survey_id           Int
+  survey              surveys     @relation(fields: [survey_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pillar_ibfk_1")
+}
+
 model questions {
   id                  Int                     @id @default(autoincrement())
   question_name       String                  @db.VarChar(255)
@@ -30,6 +39,8 @@ model questions {
   question_survey     question_survey[]
   responses           responses[]
   parent_id           Int?
+  belongs_to_pillar   Int
+  survey_pillar       survey_pillars          @relation(fields: [belongs_to_pillar], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "questions_ibfk_1")
   weighted_percentage Float?
 }
 
@@ -53,11 +64,8 @@ model surveys {
   id                 Int               @id @default(autoincrement())
   survey_title       String            @db.Text
   survey_description String?           @db.Text
-  institution_id     Int
   question_survey    question_survey[]
-  institutions       institutions      @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "surveys_ibfk_1")
-
-  @@index([institution_id], map: "institution_id")
+  survey_pillars     survey_pillars[]
 }
 
 model question_options {
@@ -104,7 +112,6 @@ model institutions {
   name          String        @db.VarChar(255)
   identity_code String        @unique(map: "identity_code") @db.VarChar(255)
   respondents   respondents[]
-  surveys       surveys[]
 }
 
 model otptoken {
