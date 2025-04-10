@@ -89,11 +89,24 @@ const questionsData = [
         {
             option_text: 'Chưa có bất kỳ hiểu biết nào về chuyển đổi số.',
             option_note: 'Chỉ nghe qua mà không hiểu rõ',
+            weighted_value: 0,
         },
-        { option_text: 'Có hiểu biết cơ bản về chuyển đổi số nhưng chưa nắm được lợi ích và ứng dụng cụ thể.' },
-        { option_text: 'Hiểu được các khái niệm cơ bản và lợi ích của chuyển đổi số, nhưng chưa rõ ràng về cách triển khai trong thực tế.' },
-        { option_text: 'Nhận thức rõ về các khái niệm, lợi ích và các chiến lược chuyển đổi số tại đơn vị, có thể áp dụng một số phương pháp đơn giản.' },
-        { option_text: 'Hiểu rõ và có thể áp dụng chuyển đổi số vào công việc hàng ngày, đồng thời có khả năng đề xuất các sáng kiến chuyển đổi số trong đơn vị' },
+        {
+            option_text: 'Có hiểu biết cơ bản về chuyển đổi số nhưng chưa nắm được lợi ích và ứng dụng cụ thể.',
+            weighted_value: 1,
+        },
+        {
+            option_text: 'Hiểu được các khái niệm cơ bản và lợi ích của chuyển đổi số, nhưng chưa rõ ràng về cách triển khai trong thực tế.',
+            weighted_value: 2,
+        },
+        {
+            option_text: 'Nhận thức rõ về các khái niệm, lợi ích và các chiến lược chuyển đổi số tại đơn vị, có thể áp dụng một số phương pháp đơn giản.',
+            weighted_value: 3,
+        },
+        {
+            option_text: 'Hiểu rõ và có thể áp dụng chuyển đổi số vào công việc hàng ngày, đồng thời có khả năng đề xuất các sáng kiến chuyển đổi số trong đơn vị',
+            weighted_value: 4,
+        },
     ],
 },
 {
@@ -106,11 +119,11 @@ const questionsData = [
     survey_id: 1,
     question_target: ['Cán bộ nghiệp vụ'],
     question_options: [
-        { option_text: 'Hoàn toàn không thể sử dụng' },
-        { option_text: 'Có thể sử dụng nhưng cần hỗ trợ nhiều' },
-        { option_text: 'Có thể sử dụng ở mức cơ bản' },
-        { option_text: 'Sử dụng tốt và có thể làm việc độc lập' },
-        { option_text: 'Thành thạo và có thể hướng dẫn người khác' },
+        { option_text: 'Hoàn toàn không thể sử dụng', weighted_value: 0 },
+        { option_text: 'Có thể sử dụng nhưng cần hỗ trợ nhiều', weighted_value: 1 },
+        { option_text: 'Có thể sử dụng ở mức cơ bản', weighted_value: 2 },
+        { option_text: 'Sử dụng tốt và có thể làm việc độc lập', weighted_value: 3 },
+        { option_text: 'Thành thạo và có thể hướng dẫn người khác', weighted_value: 4 },
     ],
 },
 {
@@ -122,11 +135,11 @@ const questionsData = [
     belongs_to_pillar: 'Chính sách và hỗ trợ đào tạo',
     survey_id: 1,
     question_options: [
-        { option_text: 'Hoàn toàn không được đào tạo, không biết về bảo mật' },
-        { option_text: 'Được đào tạo nhưng chưa hiểu rõ' },
-        { option_text: 'Được đào tạo, hiểu một số nguyên tắc cơ bản' },
-        { option_text: 'Được đào tạo, hiểu rõ và bước đầu tuân thủ' },
-        { option_text: 'Được đào tạo, thành thạo về bảo mật và có thể hướng dẫn người khác' },
+        { option_text: 'Hoàn toàn không được đào tạo, không biết về bảo mật', weighted_value: 0 },
+        { option_text: 'Được đào tạo nhưng chưa hiểu rõ', weighted_value: 1 },
+        { option_text: 'Được đào tạo, hiểu một số nguyên tắc cơ bản', weighted_value: 2 },
+        { option_text: 'Được đào tạo, hiểu rõ và bước đầu tuân thủ', weighted_value: 3 },
+        { option_text: 'Được đào tạo, thành thạo về bảo mật và có thể hướng dẫn người khác', weighted_value: 4 },
     ],
 },
 {
@@ -138,11 +151,11 @@ const questionsData = [
     belongs_to_pillar: 'Chính sách và hỗ trợ đào tạo',
     survey_id: 1,
     question_options: [
-        { option_text: 'Hoàn toàn không sẵn sàng' },
-        { option_text: 'Không sẵn sàng' },
-        { option_text: 'Phân vân/Chưa quyết định' },
-        { option_text: 'Sẵn sàng' },
-        { option_text: 'Hoàn toàn sẵn sàng' },
+        { option_text: 'Hoàn toàn không sẵn sàng', weighted_value: 0 },
+        { option_text: 'Không sẵn sàng', weighted_value: 1 },
+        { option_text: 'Phân vân/Chưa quyết định', weighted_value: 2 },
+        { option_text: 'Sẵn sàng', weighted_value: 3 },
+        { option_text: 'Hoàn toàn sẵn sàng', weighted_value: 4 },
     ],
 },
 {
@@ -155,14 +168,14 @@ const questionsData = [
     belongs_to_pillar: 'Chính sách và hỗ trợ đào tạo',
     survey_id: 1,
     question_options: [
-        { option_text: 'Không thực hiện chương trình đào tạo nào' },
+        { option_text: 'Không thực hiện chương trình đào tạo nào', weighted_value: 0 },
         {
             option_text: 'Tổ chức các buổi đào tạo nội bộ định kỳ',
-            option_note: 'Nhân viên có kinh nghiệm hướng dẫn'
+            option_note: 'Nhân viên có kinh nghiệm hướng dẫn', weighted_value: 1
         },
-        { option_text: 'Mời chuyên gia bên ngoài đào tạo theo từng đợt' },
-        { option_text: 'Tổ chức đào tạo trực tuyến' },
-        { option_text: 'Hỗ trợ nhân sự tự học và cấp kinh phí/tài liệu đào tạo' },
+        { option_text: 'Mời chuyên gia bên ngoài đào tạo theo từng đợt', weighted_value: 2 },
+        { option_text: 'Tổ chức đào tạo trực tuyến', weighted_value: 3 },
+        { option_text: 'Hỗ trợ nhân sự tự học và cấp kinh phí/tài liệu đào tạo', weighted_value: 4 },
         { option_text: 'Đào tạo theo hình thức hướng dẫn thực tế khi làm việc' },
         {
             option_text: 'Khác',
@@ -181,11 +194,11 @@ const questionsData = [
     survey_id: 1,
     question_target: ['Cán bộ nghiệp vụ'],
     question_options: [
-        { option_text: 'Các chương trình không hữu ích' },
-        { option_text: 'Có chương trình nhưng nội dung chưa thực tế, khó áp dụng' },
-        { option_text: 'Chương trình có ích nhưng chưa thực sự hiệu quả' },
-        { option_text: 'Chương trình có nội dung phù hợp, hỗ trợ tốt cho công việc' },
-        { option_text: 'Chương trình hiệu quả, giúp nâng cao năng lực thực tế đáng kể' },
+        { option_text: 'Các chương trình không hữu ích', weighted_value: 0 },
+        { option_text: 'Có chương trình nhưng nội dung chưa thực tế, khó áp dụng', weighted_value: 1 },
+        { option_text: 'Chương trình có ích nhưng chưa thực sự hiệu quả', weighted_value: 2 },
+        { option_text: 'Chương trình có nội dung phù hợp, hỗ trợ tốt cho công việc', weighted_value: 3 },
+        { option_text: 'Chương trình hiệu quả, giúp nâng cao năng lực thực tế đáng kể', weighted_value: 4 },
     ],
 },
 {
@@ -198,11 +211,11 @@ const questionsData = [
     survey_id: 1,
     question_target: ['Lãnh đạo & Quản lý'],
     question_options: [
-        { option_text: 'Hoàn toàn không hỗ trợ/hỗ trợ không đáng kể' },
-        { option_text: 'Hỗ trợ còn hạn chế, chưa đáp ứng được nhu cầu thực tế' },
-        { option_text: 'Hỗ trợ khá đầy đủ nhưng ít thực tế' },
-        { option_text: 'Hỗ trợ khá đầy đủ và thực tế' },
-        { option_text: 'Hỗ trợ rất đầy đủ, hiệu quả và sát với nhu cầu thực tế' },
+        { option_text: 'Hoàn toàn không hỗ trợ/hỗ trợ không đáng kể', weighted_value: 0 },
+        { option_text: 'Hỗ trợ còn hạn chế, chưa đáp ứng được nhu cầu thực tế', weighted_value: 1 },
+        { option_text: 'Hỗ trợ khá đầy đủ nhưng ít thực tế', weighted_value: 2 },
+        { option_text: 'Hỗ trợ khá đầy đủ và thực tế', weighted_value: 3 },
+        { option_text: 'Hỗ trợ rất đầy đủ, hiệu quả và sát với nhu cầu thực tế', weighted_value: 4 },
     ],
 },
 {
@@ -216,9 +229,9 @@ const questionsData = [
     survey_id: 1,
     question_target: ['Lãnh đạo & Quản lý'],
     question_options: [
-        { option_text: 'Không có nhân sự phụ trách' },
-        { option_text: 'Cán bộ kiêm nhiệm cho CNTT' },
-        { option_text: 'Có cán bộ phụ trách CNTT' },
+        { option_text: 'Không có nhân sự phụ trách' , weighted_value: 0},
+        { option_text: 'Cán bộ kiêm nhiệm cho CNTT' , weighted_value: 1},
+        { option_text: 'Có cán bộ phụ trách CNTT' , weighted_value: 2},
         { option_text: 'Hợp tác với đối tác bên ngoài' },
         {
             option_text: 'Khác ...',
@@ -235,22 +248,22 @@ const questionsData = [
     survey_id: 1,
     question_target: ['Lãnh đạo & Quản lý'],
     question_options: [
-        { option_text: 'Không có nhu cầu tuyển dụng' },
+        { option_text: 'Không có nhu cầu tuyển dụng' , weighted_value: 0},
         {
             option_text: 'Rất khó khăn',
-            option_note: 'Không thể tuyển'
+            option_note: 'Không thể tuyển', weighted_value: 1
         },
         {
             option_text: 'Khó khăn',
-            option_note: 'Tuyển dụng ít, thiếu ứng viên phù hợp',
+            option_note: 'Tuyển dụng ít, thiếu ứng viên phù hợp', weighted_value: 2
         },
         {
             option_text: 'Dễ dàng',
-            option_note: 'Tuyển đủ số lượng nhưng cần đào tạo thêm',
+            option_note: 'Tuyển đủ số lượng nhưng cần đào tạo thêm', weighted_value: 3
         },
         {
             option_text: 'Rất dễ dàng',
-            option_note: 'Có thể tuyển ngay nhân sự đáp ứng yêu cầu',
+            option_note: 'Có thể tuyển ngay nhân sự đáp ứng yêu cầu', weighted_value: 4
         },
     ],
 },
@@ -262,11 +275,22 @@ const questionsData = [
     belongs_to_pillar: 'Nhận thức của nhân viên & lãnh đạo về CĐS',
     survey_id: 1,
     question_options: [
-        { option_text: 'Chưa thực hiện bất kỳ hành động nào liên quan đến chuyển đổi số và không quan tâm đến vấn đề này' },
-        { option_text: 'Đã nghe nói về chuyển đổi số nhưng chỉ thực hiện một số công việc nhỏ như sử dụng email, nhập liệu trên phần mềm mà chưa chủ động tìm hiểu hoặc áp dụng thêm' },
-        { option_text: 'Có áp dụng công nghệ vào công việc hằng ngày như sử dụng phần mềm nội bộ, khai thác dữ liệu số, nhưng chưa chủ động đề xuất hoặc tham gia cải tiến quy trình số hóa' },
-        { option_text: 'Chủ động sử dụng các công cụ công nghệ vào công việc, hướng dẫn đồng nghiệp sử dụng hệ thống số hóa và có đóng góp trong các sáng kiến chuyển đổi số tại Quỹ.' },
-        { option_text: 'Là người tiên phong trong chuyển đổi số, đề xuất giải pháp mới, thử nghiệm và triển khai công nghệ vào công việc, đồng thời hướng dẫn đồng nghiệp áp dụng.' },
+        {
+            option_text: 'Chưa thực hiện bất kỳ hành động nào liên quan đến chuyển đổi số và không quan tâm đến vấn đề này' ,
+            weighted_value: 0
+        },
+        {
+            option_text: 'Đã nghe nói về chuyển đổi số nhưng chỉ thực hiện một số công việc nhỏ như sử dụng email, nhập liệu trên phần mềm mà chưa chủ động tìm hiểu hoặc áp dụng thêm',
+            weighted_value: 1
+        },
+        {
+            option_text: 'Có áp dụng công nghệ vào công việc hằng ngày như sử dụng phần mềm nội bộ, khai thác dữ liệu số, nhưng chưa chủ động đề xuất hoặc tham gia cải tiến quy trình số hóa',
+            weighted_value: 2 },
+        {
+            option_text: 'Chủ động sử dụng các công cụ công nghệ vào công việc, hướng dẫn đồng nghiệp sử dụng hệ thống số hóa và có đóng góp trong các sáng kiến chuyển đổi số tại Quỹ',
+            weighted_value: 3 },
+        { option_text: 'Là người tiên phong trong chuyển đổi số, đề xuất giải pháp mới, thử nghiệm và triển khai công nghệ vào công việc, đồng thời hướng dẫn đồng nghiệp áp dụng',
+            weighted_value: 4 },
     ],
 },
 {
@@ -278,12 +302,12 @@ const questionsData = [
     belongs_to_pillar: 'Chính sách và hỗ trợ đào tạo',
     survey_id: 1,
     question_options: [
-        { option_text: 'Chưa có chương trình nào' },
-        { option_text: 'Đang triển khai các chương trình cơ bản về ứng dụng CNTT' },
-        { option_text: 'Đã triển khai các chương trình về nghiệp vụ' },
-        { option_text: 'Đã triển khai các chương trình về quản trị thông tin' },
-        { option_text: 'Đã triển khai các chương trình về bảo mật thông tin' },
-        { option_text: 'Đã triển khai các chương trình về quản trị rủi ro' },
+        { option_text: 'Chưa có chương trình nào', weighted_value: 0 },
+        { option_text: 'Đang triển khai các chương trình cơ bản về ứng dụng CNTT', weighted_value: 1 },
+        { option_text: 'Đã triển khai các chương trình về nghiệp vụ', weighted_value: 2 },
+        { option_text: 'Đã triển khai các chương trình về quản trị thông tin', weighted_value: 3 },
+        { option_text: 'Đã triển khai các chương trình về sử dụng cơ sở hạ tầng', weighted_value: 4 },
+        { option_text: 'Đã triển khai các chương trình khác', option_note: 'Ngoài các chương trình trên' },
     ],
 },
 {
@@ -297,23 +321,23 @@ const questionsData = [
     question_options: [
         {
             option_text: 'Hoàn toàn không sẵn sàng',
-            option_note: 'Không quan tâm',
+            option_note: 'Không quan tâm', weighted_value: 0
         },
         {
             option_text: 'Không sẵn sàng',
-            option_note: 'Quan tâm nhưng chưa có hành động',
+            option_note: 'Quan tâm nhưng chưa có hành động', weighted_value: 1
         },
         {
             option_text: 'Khá sẵn sàn',
-            option_note: 'Có nhận thức nhưng cần thêm hỗ trợ',
+            option_note: 'Có nhận thức nhưng cần thêm hỗ trợ', weighted_value: 2
         },
         {
             option_text: 'Sẵn sàn',
-            option_note: 'Đã có hành động ban đầu',
+            option_note: 'Đã có hành động ban đầu', weighted_value: 3
         },
         {
             option_text: 'Hoàn toàn sẵn sàng',
-            option_note: 'Đang tích cực triển khai & mở rộng',
+            option_note: 'Đang tích cực triển khai & mở rộng', weighted_value: 4
         },
     ],
 },
@@ -331,27 +355,32 @@ const questionsData = [
             option_text: 'Chưa có kế hoạch',
             option_note:
                 'Đơn vị vẫn hoạt động theo mô hình truyền thống, chưa có định hướng chuyển đổi số, các quy trình chủ yếu thực hiện thủ công',
+            weighted_value: 0
         },
         {
             option_text: 'Mới bắt đầu tìm hiểu',
             option_note:
                 'Đơn vị đang nghiên cứu mô hình ngân hàng số, đánh giá khả năng áp dụng công nghệ nhưng chưa có kế hoạch cụ thể',
+            weighted_value: 1
         },
         {
             option_text: 'Đã có kế hoạch sơ bộ nhưng chưa triển khai',
             option_note:
                 'Đơn vị đã xác định chiến lược chuyển đổi số, bước đầu xây dựng kế hoạch nhưng chưa thực hiện do hạn chế tài chính, nhân lực hoặc công nghệ',
+            weighted_value: 2
         },
         {
             option_text:
                 'Đã có kế hoạch sơ bộ, đang triển khai từng phần',
             option_note:
                 'Đã bắt đầu số hóa một số mảng như dịch vụ khách hàng, quản lý nội bộ hoặc tín dụng nhưng chưa tích hợp đầy đủ hệ thống ngân hàng số',
+            weighted_value: 3
         },
         {
             option_text: 'Đã có kế hoạch hoàn chỉnh và đang thực hiện',
             option_note:
                 'Đơn vị đã có chiến lược số hóa đồng bộ, triển khai ngân hàng số với nền tảng công nghệ tích hợp, tự động hóa quy trình vận hành và trải nghiệm khách hàng số toàn diện',
+            weighted_value: 4
         },
     ],
 },
@@ -369,27 +398,32 @@ const questionsData = [
             option_text: 'Chưa có kế hoạch',
             option_note:
                 'Quản lý nội bộ vẫn chủ yếu thủ công, chưa ứng dụng công nghệ trong giám sát, điều hành và ra quyết định',
+            weighted_value: 0
         },
         {
             option_text: 'Mới bắt đầu tìm hiểu',
             option_note:
                 'Đang đánh giá mô hình quản trị số, nghiên cứu hệ thống quản lý nhưng chưa xây dựng kế hoạch cụ thể',
+            weighted_value: 1
         },
         {
             option_text: 'Đã có kế hoạch sơ bộ nhưng chưa triển khai',
             option_note:
                 'Có kế hoạch triển khai hệ thống quản trị số nhưng chưa thực hiện do hạn chế nguồn lực hoặc công nghệ',
+            weighted_value: 2
         },
         {
             option_text:
                 'Đã có kế hoạch sơ bộ, đang triển khai từng phần',
             option_note:
                 'Một số mảng như quản lý nhân sự, tài chính đã có hệ thống nhưng chưa đồng bộ hoặc chưa khai thác dữ liệu số để ra quyết định',
+            weighted_value: 3
         },
         {
             option_text: 'Đã có kế hoạch hoàn chỉnh và đang thực hiện',
             option_note:
                 'Đơn vị đã triển khai quản trị số đồng bộ, dữ liệu được kết nối và khai thác, có hệ thống hỗ trợ ra quyết định thông minh',
+            weighted_value: 4
         },
     ],
 },
@@ -407,15 +441,26 @@ const questionsData = [
             option_text: 'Hoàn toàn thủ công',
             option_note:
                 'Tất cả quy trình thực hiện bằng giấy tờ, không có hệ thống hỗ trợ',
+            weighted_value: 0
         },
         {
             option_text: 'Số hóa một phần',
             option_note:
                 'Chỉ nhập liệu cơ bản vào hệ thống, nhưng xử lý vẫn thủ công',
+            weighted_value: 1
         },
-        { option_text: 'Số hóa phần lớn nhưng còn phụ thuộc vào giấy tờ, chưa có AI hỗ trợ' },
-        { option_text: 'Hầu hết quy trình đã số hóa, tích hợp vào hệ thống Core' },
-        { option_text: 'Hoàn toàn số hóa, có hệ thống tự động hỗ trợ xét duyệt tín dụng' },
+        {
+            option_text: 'Số hóa phần lớn nhưng còn phụ thuộc vào giấy tờ, chưa có AI hỗ trợ',
+            weighted_value: 2
+        },
+        {
+            option_text: 'Hầu hết quy trình đã số hóa, tích hợp vào hệ thống Core',
+            weighted_value: 3
+        },
+        {
+            option_text: 'Hoàn toàn số hóa, có hệ thống tự động hỗ trợ xét duyệt tín dụng',
+            weighted_value: 4
+        },
     ],
 },
 {
@@ -431,22 +476,27 @@ const questionsData = [
         {
             option_text: 'Hoàn toàn thủ công',
             option_note: 'Sổ sách giấy, không có phần mềm hỗ trợ',
+            weighted_value: 0
         },
         {
             option_text: 'Số hóa một phần',
             option_note: 'Chỉ nhập liệu cơ bản, xử lý vẫn thủ công',
+            weighted_value: 1
         },
         {
             option_text:
                 'Số hóa phần lớn nhưng chưa tích hợp hệ thống Ngân hàng',
+            weighted_value: 2
         },
         {
             option_text: 'Hầu hết quy trình đã số hóa',
             option_note: 'Có tích hợp phần mềm kế toán',
+            weighted_value: 3
         },
         {
             option_text: 'Hoàn toàn số hóa và tự động hóa',
             option_note: 'Báo cáo tài chính tự động, đối soát tự động',
+            weighted_value: 4
         },
     ],
 },
@@ -463,14 +513,25 @@ const questionsData = [
         {
             option_text: 'Không tích hợp',
             option_note: 'Chỉ giao dịch trực tiếp',
+            weighted_value: 0
         },
         {
             option_text: 'Mới có một số dịch vụ cơ bản',
-            option_note: 'Tin nhắn, tổng đài'
+            option_note: 'Tin nhắn, tổng đài',
+            weighted_value: 1
         },
-        { option_text: 'Tích hợp các kênh online nhưng chưa hoàn chỉnh' },
-        { option_text: 'Đã có ứng dụng hoặc cổng giao dịch trực tuyến' },
-        { option_text: 'Hoàn toàn số hóa, có hệ thống quản trị nội bộ đồng bộ, dữ liệu liên kết chặt chẽ' },
+        {
+            option_text: 'Tích hợp các kênh online nhưng chưa hoàn chỉnh',
+            weighted_value: 2
+        },
+        {
+            option_text: 'Đã có ứng dụng hoặc cổng giao dịch trực tuyến',
+            weighted_value: 3
+        },
+        {
+            option_text: 'Hoàn toàn số hóa, có hệ thống quản trị nội bộ đồng bộ',
+            weighted_value: 4
+        },
     ],
 },
 {
@@ -483,11 +544,11 @@ const questionsData = [
     survey_id: 2,
     question_target: ['Cán bộ nghiệp vụ'],
     question_options: [
-        { option_text: 'Hoàn toàn chưa tích hợp' },
-        { option_text: 'Đã tích hợp các nghiệp vụ trong core nội bộ' },
-        { option_text: 'Đã tích hợp được nghiệp vụ trong core và một số ứng dụng CNTT khác tại nội bộ đơn vị' },
-        { option_text: 'Đã tích hợp được nghiệp vụ trong core và tất cả các ứng dụng CNTT khác tại nội bộ đơn vị' },
-        { option_text: 'Đã tích hợp được tất cả các ứng dụng CNTT tại đơn vị với các hệ thống của NHNN và Coop – Bank.' },
+        { option_text: 'Hoàn toàn chưa tích hợp', weighted_value: 0 },
+        { option_text: 'Đã tích hợp các nghiệp vụ trong core nội bộ', weighted_value: 1 },
+        { option_text: 'Đã tích hợp được nghiệp vụ trong core và một số ứng dụng CNTT khác tại nội bộ đơn vị', weighted_value: 2 },
+        { option_text: 'Đã tích hợp được nghiệp vụ trong core và tất cả các ứng dụng CNTT khác tại nội bộ đơn vị', weighted_value: 3 },
+        { option_text: 'Đã tích hợp được tất cả các ứng dụng CNTT tại đơn vị với các hệ thống của NHNN và Coop – Bank.', weighted_value: 4 },
     ],
 },
 {
@@ -500,29 +561,29 @@ const questionsData = [
     survey_id: 2,
     question_target: ['Lãnh đạo & Quản lý'],
     question_options: [
-        { option_text: 'Chưa  có kế hoạch' },
-        { option_text: 'Chưa  có kế hoạch nhưng có nhu cầu' },
-        { option_text: 'Có kế hoạch sơ bộ và đang triển khai từng phần' },
-        { option_text: 'Có kế hoạch hoàn chỉnh và đã triển khai nhưng chưa hoàn thiện' },
-        { option_text: 'Đã triển khai hoàn thiện và đang tối ưu' },
+        { option_text: 'Chưa có kế hoạch', weighted_value: 0 },
+        { option_text: 'Chưa có kế hoạch nhưng có nhu cầu', weighted_value: 1 },
+        { option_text: 'Có kế hoạch sơ bộ và đang triển khai từng phần', weighted_value: 2 },
+        { option_text: 'Có kế hoạch hoàn chỉnh và đã triển khai nhưng chưa hoàn thiện', weighted_value: 3 },
+        { option_text: 'Đã triển khai hoàn thiện và đang tối ưu', weighted_value: 4 },
     ],
 },
 {
     question_text:
-        'Đơn vị đang gặp những rào cản nào khi chuẩn hóa quy trình  để số hóa?',
+        'Đơn vị đang gặp những rào cản nào khi chuẩn hóa quy trình để số hóa?',
     question_name: 'Câu 2.8',
     question_note: 'Có thể chọn nhiều đáp án',
-    question_type: 'radiogroup',
+    question_type: 'checkbox',
     weighted_percentage: 0.03,
     belongs_to_pillar: 'Các rào cản và khó khăn trong quá trình chuẩn hóa và số hóa quy trình nghiệp vụ',
     survey_id: 2,
     question_target: ['Lãnh đạo & Quản lý'],
     question_options: [
-        { option_text: 'Ngân sách hạn chế cho việc đầu tư vào công nghệ và số hóa quy trình' },
-        { option_text: 'Không đủ nhân sự có kỹ năng chuyên sâu về CNTT và chuyển đổi số' },
-        { option_text: 'Công nghệ hiện tại không đủ để hỗ trợ các quy trình số hóa' },
-        { option_text: 'Thiếu chiến lược chuyển đổi số rõ ràng và thực tế' },
-        { option_text: 'Khó khăn trong việc thay đổi thói quen và quy trình làm việc cũ' },
+        { option_text: 'Ngân sách hạn chế cho việc đầu tư vào công nghệ và số hóa quy trình', weighted_value: 0 },
+        { option_text: 'Không đủ nhân sự có kỹ năng chuyên sâu về CNTT và chuyển đổi số', weighted_value: 1 },
+        { option_text: 'Công nghệ hiện tại không đủ để hỗ trợ các quy trình số hóa', weighted_value: 2 },
+        { option_text: 'Thiếu chiến lược chuyển đổi số rõ ràng và thực tế', weighted_value: 3 },
+        { option_text: 'Khó khăn trong việc thay đổi thói quen và quy trình làm việc cũ', weighted_value: 4 },
         {
             option_text: 'Vui lòng mô tả thêm về khó khăn lớn nhất mà đơn vị đang gặp phải trong quá trình số hóa quy trình:…',
             require_reason: 1
@@ -546,7 +607,7 @@ const questionsData = [
         { option_text: 'Chưa có sự kết nối/liên thông tốt với các hệ thống khác' },
         { option_text: 'Chi phí vận hành & duy trì hệ thống quá cao' },
         { option_text: 'Nhân sự chưa được đào tạo đầy đủ về hệ thống' },
-        { option_text: 'Khác', option_note: 'Vui lòng ghi rõ', require_reason: 1 },
+        { option_text: 'Khác', option_note: 'Vui lòng ghi rõ' },
     ],
 },
 {
@@ -558,11 +619,11 @@ const questionsData = [
     belongs_to_pillar: 'Các rào cản và khó khăn trong quá trình chuẩn hóa và số hóa quy trình nghiệp vụ',
     survey_id: 2,
     question_options: [
-        { option_text: 'Chưa có kế hoạch cụ thể' },
-        { option_text: 'Đang xây dựng kế hoạch nhưng chưa triển khai' },
-        { option_text: 'Có kế hoạch nhưng chưa thực hiện được do hạn chế nguồn lực' },
-        { option_text: 'Đã triển khai một phần nhưng chưa hoàn chỉnh' },
-        { option_text: 'Đã có kế hoạch hoàn chỉnh và đang thực hiện' },
+        { option_text: 'Chưa có kế hoạch cụ thể', weighted_value: 0 },
+        { option_text: 'Đang xây dựng kế hoạch nhưng chưa triển khai', weighted_value: 1 },
+        { option_text: 'Có kế hoạch nhưng chưa thực hiện được do hạn chế nguồn lực', weighted_value: 2 },
+        { option_text: 'Đã triển khai một phần nhưng chưa hoàn chỉnh', weighted_value: 3 },
+        { option_text: 'Đã có kế hoạch hoàn chỉnh và đang thực hiện', weighted_value: 4 },
     ],
 },
 {
@@ -575,13 +636,13 @@ const questionsData = [
     belongs_to_pillar: 'Các rào cản và khó khăn trong quá trình chuẩn hóa và số hóa quy trình nghiệp vụ',
     survey_id: 2,
     question_options: [
-        { option_text: 'Hệ thống nghiệp vụ ngân hàng lõi (CoreBanking)' },
-        { option_text: 'Hệ thống Mobile Banking cho thành viên/khách hàng' },
-        { option_text: 'Hệ thống thanh toán chuyển tiền CF-eBank' },
-        { option_text: 'Hệ thống chấm điểm tín dụng khách hàng' },
-        { option_text: 'Hệ thống báo cáo quản trị điều hành' },
-        { option_text: 'Hệ thống mã định danh tài khoản thu hộ/chi hộ' },
-        { option_text: 'Hệ thống trục thanh toán Payment Hub kết nối với NHHT' },
+        { option_text: 'Hệ thống nghiệp vụ ngân hàng lõi (CoreBanking)', weighted_value: 1 },
+        { option_text: 'Hệ thống Mobile Banking cho thành viên/khách hàng', weighted_value: 2 },
+        { option_text: 'Hệ thống thanh toán chuyển tiền CF-eBank', weighted_value: 2 },
+        { option_text: 'Hệ thống chấm điểm tín dụng khách hàng', weighted_value: 2 },
+        { option_text: 'Hệ thống báo cáo quản trị điều hành', weighted_value: 3 },
+        { option_text: 'Hệ thống mã định danh tài khoản thu hộ/chi hộ', weighted_value: 2 },
+        { option_text: 'Hệ thống trục thanh toán Payment Hub kết nối với NHHT', weighted_value: 3 },
         {
             option_text: 'Khác',
             option_note: 'Vui lòng ghi rõ',
@@ -600,14 +661,14 @@ const questionsData = [
     question_note: 'Có thể chọn nhiều đáp án',
     question_target: ['Cán bộ nghiệp vụ'],
     question_options: [
-        { option_text: 'Hệ thống thanh toán chuyển tiền CF-eBank' },
-        { option_text: 'Hệ thống khởi tạo dịch vụ từ xa CFePCF' },
-        { option_text: 'Ứng dụng di động Co-opBank Mobile Banking' },
-        { option_text: 'Ứng dụng Mobile Banking dành cho QTDND (CFeBiz)' },
-        { option_text: 'Ứng dụng giáo dục tài chính Co-opSmart' },
-        { option_text: 'Hệ thống trục thanh toán Payment Hub' },
-        { option_text: 'Hệ thống quản lý tài khoản định danh CfeAM' },
-        { option_text: 'Không sử dụng bất kỳ hệ thống nào' },
+        { option_text: 'Hệ thống thanh toán chuyển tiền CF-eBank', weighted_value: 1 },
+        { option_text: 'Hệ thống khởi tạo dịch vụ từ xa CFePCF', weighted_value: 2 },
+        { option_text: 'Ứng dụng di động Co-opBank Mobile Banking', weighted_value: 2 },
+        { option_text: 'Ứng dụng Mobile Banking dành cho QTDND (CFeBiz)', weighted_value: 3 },
+        { option_text: 'Ứng dụng giáo dục tài chính Co-opSmart', weighted_value: 2 },
+        { option_text: 'Hệ thống trục thanh toán Payment Hub', weighted_value: 3 },
+        { option_text: 'Hệ thống quản lý tài khoản định danh CfeAM', weighted_value: 2 },
+        { option_text: 'Không sử dụng bất kỳ hệ thống nào', weighted_value: 0 },
         {
             option_text: 'Khác',
             option_note: 'Vui lòng ghi rõ',
@@ -632,12 +693,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -649,12 +710,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -666,12 +727,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -683,12 +744,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -700,12 +761,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -717,12 +778,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -734,12 +795,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 {
@@ -751,12 +812,12 @@ const questionsData = [
     survey_id: 2,
     parent: 'Câu 2.13',
     question_options: [
-        { option_text: 'Không hiệu quả' },
-        { option_text: 'Đáp ứng một phần' },
-        { option_text: 'Đáp ứng cơ bản' },
-        { option_text: 'Hiệu quả' },
-        { option_text: 'Rất hiệu quả' },
-        { option_text: 'Không sử dụng' },
+        { option_text: 'Không hiệu quả', weighted_value: 0 },
+        { option_text: 'Đáp ứng một phần', weighted_value: 1 },
+        { option_text: 'Đáp ứng cơ bản', weighted_value: 2 },
+        { option_text: 'Hiệu quả', weighted_value: 3 },
+        { option_text: 'Rất hiệu quả', weighted_value: 4 },
+        { option_text: 'Không sử dụng', weighted_value: 0 },
     ],
 },
 // {
@@ -2657,9 +2718,6 @@ async function main() {
         }
 
         console.log('Seeding completed successfully!');
-    } catch (e) {
-        console.error('Seeding failed:', e);
-        process.exit(1);
     } finally {
         await prisma.$disconnect();
     }
