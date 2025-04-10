@@ -1367,6 +1367,7 @@ const questionsData = [
     weighted_percentage: 0.01,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1383,6 +1384,7 @@ const questionsData = [
     weighted_percentage: 0.01,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1399,6 +1401,7 @@ const questionsData = [
     weighted_percentage: 0.01,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1415,6 +1418,7 @@ const questionsData = [
     weighted_percentage: 0.05/3,
     belongs_to_pillar: 'Tuân thủ tiêu chuẩn NHNN',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1431,6 +1435,7 @@ const questionsData = [
     weighted_percentage: 0.02/3,
     belongs_to_pillar: 'Biện pháp ứng phó rủi ro',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1447,6 +1452,7 @@ const questionsData = [
     weighted_percentage: 0.02/3,
     belongs_to_pillar: 'Biện pháp ứng phó rủi ro',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1463,6 +1469,7 @@ const questionsData = [
     weighted_percentage: 0.02/3,
     belongs_to_pillar: 'Biện pháp ứng phó rủi ro',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1479,6 +1486,7 @@ const questionsData = [
     weighted_percentage: 0.05/3,
     belongs_to_pillar: 'Tuân thủ tiêu chuẩn NHNN',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1495,6 +1503,7 @@ const questionsData = [
     weighted_percentage: 0.05/3,
     belongs_to_pillar: 'Tuân thủ tiêu chuẩn NHNN',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1511,6 +1520,7 @@ const questionsData = [
     weighted_percentage: 0.03/2,
     belongs_to_pillar: 'Hỗ trợ từ tổ chức bên ngoài',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1527,6 +1537,7 @@ const questionsData = [
     weighted_percentage: 0.03/2,
     belongs_to_pillar: 'Hỗ trợ từ tổ chức bên ngoài',
     survey_id: 4,
+    parent: 'Câu 4.14',
     question_options: [
         { option_text: 'Hoàn toàn không đồng ý', weighted_value: 0 },
         { option_text: 'Không đồng ý', weighted_value: 1 },
@@ -1549,6 +1560,7 @@ const questionsData = [
     question_name: 'Câu 4.15.1',
     question_type: 'radiogroup',
     survey_id: 4,
+    parent: 'Câu 4.15',
     weighted_percentage: 0.05/4,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     question_target: ['Lãnh đạo & Quản lý'],
@@ -1566,6 +1578,7 @@ const questionsData = [
     question_name: 'Câu 4.15.2',
     question_type: 'radiogroup',
     survey_id: 4,
+    parent: 'Câu 4.15',
     weighted_percentage: 0.05/4,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     question_target: ['Lãnh đạo & Quản lý'],
@@ -1583,6 +1596,7 @@ const questionsData = [
     question_name: 'Câu 4.15.3',
     question_type: 'radiogroup',
     survey_id: 4,
+    parent: 'Câu 4.15',
     weighted_percentage: 0.05/4,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     question_target: ['Lãnh đạo & Quản lý'],
@@ -1600,6 +1614,7 @@ const questionsData = [
     question_name: 'Câu 4.15.4',
     question_type: 'radiogroup',
     survey_id: 4,
+    parent: 'Câu 4.15',
     weighted_percentage: 0.05/4,
     belongs_to_pillar: 'Mức độ bảo mật dữ liệu KH & giao dịch',
     question_target: ['Lãnh đạo & Quản lý'],
