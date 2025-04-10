@@ -1196,7 +1196,7 @@ const questionsData = [
         { option_text: 'Có tổ chức đào tạo nhưng không theo định kỳ', option_note: 'Thỉnh thoảng, không thường xuyên', weighted_value: 2 },
         { option_text: 'Tổ chức đào tạo định kỳ với hiệu quả tốt', weighted_value: 3 },
         { option_text: 'Đào tạo thường xuyên có hiệu quả', weighted_value: 4 },
-        { option_text: 'Tổ chức đào tạo định kỳ hiệu quả tốt và sát với thực tiễn công việc', weighted_value: 5 },
+        { option_text: 'Tổ chức đào tạo định kỳ hiệu quả tốt và sát với thực tiễn công việc', weighted_value: 4 },
     ],
 },
 {
@@ -1273,14 +1273,11 @@ const questionsData = [
     question_target: ['Cán bộ nghiệp vụ'],
     question_note: 'Có thể chọn nhiều đáp án',
     question_options: [
-        { option_text: 'Lộ dữ liệu khách hàng' },
-        {
-            option_text: 'Bị tấn công mạng',
-            option_note: 'DDoS, Malware, Phishing',
-        },
-        { option_text: 'Virus/Trojan ảnh hưởng đến hệ thống' },
-        { option_text: 'Nhân viên vô tình gây ra lỗi bảo mật' },
-        { option_text: 'Chưa từng gặp sự cố nào' },
+        { option_text: 'Lộ dữ liệu khách hàng', weighted_value: 0 },
+        { option_text: 'Bị tấn công mạng', option_note: 'DDoS, Malware, Phishing', weighted_value: 1.5 },
+        { option_text: 'Virus/Trojan ảnh hưởng đến hệ thống', weighted_value: 1.5 },
+        { option_text: 'Nhân viên vô tình gây ra lỗi bảo mật', weighted_value: 2 },
+        { option_text: 'Chưa từng gặp sự cố nào', weighted_value: 4 },
         {
             option_text: 'Khác',
             require_reason: 1,
