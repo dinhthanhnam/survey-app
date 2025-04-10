@@ -148,7 +148,7 @@ const Body = ({ scrollToTop }) => {
     useEffect(() => {
         const getGroupQuestionIds = async () => {
             const data = await fetchGroupQuestionIds();
-            setGroupQuestionIds(data.questionGroup.map((q) => q.question_id));
+            setGroupQuestionIds(data.questionGroup.map((q) => q.id));
         };
 
         getGroupQuestionIds();
@@ -391,7 +391,7 @@ const Body = ({ scrollToTop }) => {
                         const childQuestions = surveyData.question_survey.filter((q) =>
                             q.questions.question_name.startsWith(question.question_name + '.')
                         );
-                        if (groupQuestionIds.includes(question.id)) return null;
+                        if (groupQuestionIds.includes(question.parent_id)) return null;
                         questionCounter++;
                         return (
                             <div

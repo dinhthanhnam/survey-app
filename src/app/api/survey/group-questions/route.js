@@ -8,9 +8,12 @@ export async function GET() {
         const authResponse = await ProtectApi();
         if (authResponse) return authResponse;
 
-        const questionGroup = await prisma.question_group.findMany({
+        const questionGroup = await prisma.questions.findMany({
+            where: {
+              question_type: "group",
+            },
             select: {
-                question_id: true,
+                id: true,
             },
         });
         return Response.json({ questionGroup });
