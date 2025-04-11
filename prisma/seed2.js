@@ -2554,7 +2554,7 @@ const questionsData = [
         question_text:
             'Anh/Chị hãy đánh giá mức độ đồng ý của mình đối với các nhận định liên quan đến việc quản lý thông tin, dữ liệu phục vụ công việc của QTDND.',
         question_name: 'Câu 5.10',
-        survey_id: 2,
+        survey_id: 5,
         question_type: 'group',
         question_target: ['Cán bộ nghiệp vụ'],
     },
