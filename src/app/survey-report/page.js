@@ -18,167 +18,70 @@ import { useRouter, usePathname } from "next/navigation";
 // Register Chart.js components
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export default function SurveyReport({ }) {
+export default function SurveyReport({}) {
     const [chartData, setChartData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [pillarAverages, setPillarAverages] = useState([]);
+    const [pillars, setPillars] = useState([]); // Lưu pillars để dùng cho màu nhãn
     const [respondent_Institution_Id, setRespondent_Institution_Id] = useState(null);
     const [institutionName, setInstitutionName] = useState("");
     const [respondents, setRespondents] = useState([]);
     const router = useRouter();
 
+    // Hard-coded colors for pillars
+    const pillarColors = [
+        { color: "rgba(255, 147, 96, 0.2)", borderColor: "rgba(255, 147, 96, 1)" }, // Orange
+        { color: "rgba(255, 105, 180, 0.2)", borderColor: "rgba(255, 105, 180, 1)" }, // Pink
+        { color: "rgba(54, 162, 235, 0.2)", borderColor: "rgba(54, 162, 235, 1)" }, // Blue
+        { color: "rgba(75, 192, 192, 0.2)", borderColor: "rgba(75, 192, 192, 1)" }, // Green
+        { color: "rgba(153, 102, 255, 0.2)", borderColor: "rgba(153, 102, 255, 1)" }, // Purple
+        { color: "rgba(255, 206, 86, 0.2)", borderColor: "rgba(255, 206, 86, 1)" }, // Yellow// Red
+        { color: "rgba(54, 54, 54, 0.2)", borderColor: "rgba(54, 54, 54, 1)" }, // Gray
+    ];
+
     useEffect(() => {
-        const respondentData = localStorage.getItem('respondent');
+        const respondentData = localStorage.getItem("respondent");
         if (respondentData) {
             const respondent = JSON.parse(respondentData);
             setRespondent_Institution_Id(respondent.institution_id);
         }
     }, []);
 
-    // Define the structure of surveys (pillars) and their sub-labels
-    const pillars = [
-        {
-            name: "NHÂN LỰC VÀ NĂNG LỰC NHẬN THỨC CHUYỂN ĐỔI SỐ",
-            surveyId: 1,
-            color: "rgba(255, 147, 96, 0.2)", // Orange
-            borderColor: "rgba(255, 147, 96, 1)",
-            subLabels: [
-                { label: "Hiểu biết về CĐS", questions: [1] },
-                { label: "Thành thạo công cụ số", questions: [2, 3] },
-                { label: "Sẵn sàng học tập & đào tạo", questions: [4, 5, 6, 7] },
-                { label: "Nhân sự & hỗ trợ CNTT", questions: [8, 9] },
-                { label: "Hành động thực tế về CĐS", questions: [10, 11, 12] },
-            ],
-        },
-        {
-            name: "HIỆN TRẠNG QUY TRÌNH NGHIỆP VỤ & MÔ HÌNH QUẢN TRỊ SỐ",
-            surveyId: 2,
-            color: "rgba(255, 105, 180, 0.2)", // Pink
-            borderColor: "rgba(255, 105, 180, 1)",
-            subLabels: [
-                { label: "Chuẩn bị số hóa quy trình & quản trị số", questions: [1, 2] },
-                { label: "Số hóa nghiệp vụ cốt lõi", questions: [3, 4] },
-                { label: "Tích hợp công nghệ vào dịch vụ khách hàng", questions: [5] },
-                { label: "Liên thông & tích hợp hệ thống", questions: [6] },
-                { label: "Tự động hóa quy trình", questions: [7] },
-                { label: "Tuân thủ tiêu chuẩn ngành", questions: [8] },
-                { label: "Rào cản & kế hoạch khắc phục", questions: [9, 11] },
-                { label: "Ứng dụng công nghệ vào hệ thống Co-opBank", questions: [12, 13, 14] },
-            ],
-        },
-        {
-            name: "CƠ SỞ HẠ TẦNG CNTT & MỨC ĐỘ ỨNG DỤNG CÔNG NGHỆ",
-            surveyId: 3,
-            color: "rgba(54, 162, 235, 0.2)", // Blue
-            borderColor: "rgba(54, 162, 235, 1)",
-            subLabels: [
-                { label: "Hiện trạng hạ tầng", questions: [1, 2, 3] },
-                { label: "Nâng cấp & kế hoạch phát triển", questions: [4, 5, 6, 9] },
-                { label: "Ứng dụng công nghệ hiện đại", questions: [7, 8, 10] },
-                { label: "Mức độ tích hợp hệ thống", questions: [11, 12] },
-                { label: "Sẵn sàng vận hành công nghệ mới", questions: [13] },
-            ],
-        },
-        {
-            name: "AN NINH THÔNG TIN & QUẢN TRỊ RỦI RO CÔNG NGHỆ",
-            surveyId: 4,
-            color: "rgba(75, 192, 192, 0.2)", // Green
-            borderColor: "rgba(75, 192, 192, 1)",
-            subLabels: [
-                { label: "Hiện trạng an toàn CNTT", questions: [1, 2] },
-                { label: "Nhận thức & đào tạo về an ninh mạng", questions: [3, 4] },
-                { label: "Ứng phó với sự cố an ninh mạng", questions: [5, 6, 7, 8, 9] },
-                { label: "Công cụ & giám sát bảo mật", questions: [10, 11] },
-                { label: "Tuân thủ & hỗ trợ an ninh mạng", questions: [12, 13] },
-            ],
-        },
-        {
-            name: "QUẢN LÝ & KHAI THÁC DỮ LIỆU SỐ",
-            surveyId: 5,
-            color: "rgba(153, 102, 255, 0.2)", // Purple
-            borderColor: "rgba(153, 102, 255, 1)",
-            subLabels: [
-                { label: "Mức độ số hóa dữ liệu", questions: [1] },
-                { label: "Hệ thống lưu trữ dữ liệu", questions: [2] },
-                { label: "Ứng dụng công cụ phân tích dữ liệu", questions: [3, 4] },
-                { label: "Khai thác dữ liệu khách hàng", questions: [5, 6, 7] },
-                { label: "Mức độ liên thông dữ liệu", questions: [8, 9] },
-                { label: "Quản lý và sử dụng dữ liệu", questions: [10, 11, 12] },
-                { label: "Khó khăn trong khai thác dữ liệu", questions: [13, 14] },
-            ],
-        },
-        {
-            name: "PHÁT TRIỂN SẢN PHẨM & DỊCH VỤ NGÂN HÀNG SỐ",
-            surveyId: 6,
-            color: "rgba(255, 206, 86, 0.2)", // Yellow
-            borderColor: "rgba(255, 206, 86, 1)",
-            subLabels: [
-                { label: "Mức độ ứng dụng dịch vụ ngân hàng số", questions: [1] },
-                { label: "Kế hoạch triển khai các dịch vụ ngân hàng số", questions: [2, 3, 4] },
-                { label: "Mức độ hài lòng của khách hàng", questions: [5, 9] },
-                { label: "Kế hoạch hợp tác và mở rộng hệ sinh thái số", questions: [6, 7, 8] },
-            ],
-        },
-        {
-            name: "NGUỒN LỰC TÀI CHÍNH & KHẢ NĂNG HỢP TÁC",
-            surveyId: 7,
-            color: "rgba(255, 99, 132, 0.2)", // Red
-            borderColor: "rgba(255, 99, 132, 1)",
-            subLabels: [
-                { label: "Ngân sách & Đầu tư CNTT", questions: [1, 2, 4] },
-                { label: "Sẵn sàng đầu tư & mở rộng tài chính", questions: [3, 5] },
-                { label: "Hợp tác tài chính với NHNN/NHHTX & TCTD", questions: [6, 7] },
-            ],
-        },
-        {
-            name: "LỘ TRÌNH CHUYỂN ĐỔI SỐ ĐỒNG BỘ & THỐNG NHẤT",
-            surveyId: 8,
-            color: "rgba(54, 54, 54, 0.2)", // Gray
-            borderColor: "rgba(54, 54, 54, 1)",
-            subLabels: [
-                { label: "Tầm nhìn & mục tiêu chuyển đổi số", questions: [1, 2] },
-                { label: "Số hóa nghiệp vụ ngân hàng", questions: [3, 4] },
-                { label: "Lộ trình & kế hoạch triển khai", questions: [5] },
-                { label: "Mức độ phối hợp với NHHTX & TCTD", questions: [6, 7] },
-                { label: "Hợp tác với tổ chức công nghệ & mở rộng hệ sinh thái", questions: [8] },
-            ],
-        },
-    ];
     const fetchChartData = async () => {
         try {
             setLoading(true);
-            const response = await axios.post(
-                "/api/survey/response/institution-response",
-                { institution_id: respondent_Institution_Id },
-                { withCredentials: true }
-            );
 
-            const data = response.data;
-            console.log("Raw API Response:", data);
-    
-            if (!data.surveys || !data.responses) {
-                throw new Error("Dữ liệu từ API không đầy đủ: Thiếu surveys hoặc responses");
+            // Fetch data from both APIs
+            const [surveyResponse, pillarsResponse] = await Promise.all([
+                axios.post("/api/survey/response/institution-response", {
+                    institution_id: respondent_Institution_Id,
+                }, { withCredentials: true }),
+                axios.post("/api/survey/pillars", { withCredentials: true }),
+            ]);
+
+            const surveyData = surveyResponse.data;
+            const pillarsData = pillarsResponse.data;
+
+            if (!surveyData.surveys || !surveyData.responses || !pillarsData.survey_pillars) {
+                throw new Error("Dữ liệu từ API không đầy đủ");
             }
-    
-            const allLabels = pillars.flatMap(pillar => pillar.subLabels.map(sub => sub.label));
-    
-            // Hàm tính điểm phần trăm cho một câu hỏi (0-100%)
-            const calculateQuestionPercentage = (question, responses) => {
+
+            // Hàm tính điểm cho một câu hỏi
+            const calculateQuestionScore = (question, responses, allQuestions) => {
                 const questionType = question.question_type;
                 const userAnswers = responses.filter(response => response.question_id === question.id);
-    
+
                 if (!userAnswers.length) {
                     console.log(`No responses for question "${question.question_name}"`);
                     return 0;
                 }
-    
+
+                let questionScore = 0;
+
                 if (questionType === "radiogroup") {
-                    const maxWeightedValue = Math.max(
-                        ...question.question_options.map(opt => opt.weighted_value || 0)
-                    );
                     let totalWeightedValue = 0;
                     let responseCount = 0;
-    
+
                     userAnswers.forEach(answer => {
                         const selectedOption = question.question_options.find(
                             opt => opt.id === answer.question_option_id
@@ -186,100 +89,112 @@ export default function SurveyReport({ }) {
                         totalWeightedValue += selectedOption?.weighted_value || 0;
                         responseCount++;
                     });
-    
-                    const avgWeightedValue = responseCount > 0 ? totalWeightedValue / responseCount : 0;
-                    return maxWeightedValue > 0
-                        ? (avgWeightedValue / maxWeightedValue) * 100
-                        : 0;
+
+                    questionScore = responseCount > 0 ? totalWeightedValue / responseCount : 0;
                 } else if (questionType === "checkbox") {
-                    const totalPossibleWeightedValue = question.question_options.reduce(
-                        (sum, opt) => sum + (opt.weighted_value || 0),
-                        0
-                    );
-                    let totalSelectedWeightedValue = 0;
-    
+                    let totalWeightedValue = 0;
+                    let optionCount = 0;
+
                     userAnswers.forEach(answer => {
                         const selectedOption = question.question_options.find(
                             opt => opt.id === answer.question_option_id
                         );
-                        totalSelectedWeightedValue += selectedOption?.weighted_value || 0;
+                        totalWeightedValue += selectedOption?.weighted_value || 0;
+                        optionCount++;
                     });
-    
-                    return totalPossibleWeightedValue > 0
-                        ? Math.min((totalSelectedWeightedValue / totalPossibleWeightedValue) * 100, 100)
-                        : 0;
+
+                    questionScore = optionCount > 0 ? totalWeightedValue / optionCount : 0;
                 } else if (questionType === "group") {
-                    const childQuestions = data.surveys
-                        .flatMap(survey => survey.question_survey)
-                        .map(qs => qs.questions)
-                        .filter(q => q.parent_id === question.id);
-    
+                    const childQuestions = allQuestions.filter(q => q.parent_id === question.id);
+
                     if (!childQuestions.length) {
                         console.log(`No child questions for group "${question.question_name}"`);
                         return 0;
                     }
-    
-                    const childScores = childQuestions.map(child => calculateQuestionPercentage(child, responses));
-                    return childScores.length
+
+                    const childScores = childQuestions.map(child =>
+                        calculateQuestionScore(child, responses, allQuestions)
+                    );
+                    questionScore = childScores.length
                         ? childScores.reduce((sum, score) => sum + score, 0) / childScores.length
                         : 0;
                 }
-    
-                return 0; // Trường hợp không xác định
+
+                return questionScore * (question.weighted_percentage || 0);
             };
-    
-            const datasetsWithAllScores = pillars.map(pillar => {
+
+            const allQuestions = surveyData.surveys.flatMap(survey =>
+                survey.question_survey.map(qs => qs.questions)
+            );
+
+            // Build pillars dynamically
+            const pillarsArray = surveyData.surveys.map((survey, index) => {
+                const relatedPillars = pillarsData.survey_pillars.filter(p => p.survey_id === survey.id);
+
+                const subLabels = relatedPillars.map(pillar => {
+                    const questions = survey.question_survey
+                        .filter(qs => qs.questions.belongs_to_pillar === pillar.id)
+                        .map(qs => qs.questions);
+
+                    if (questions.length === 0) {
+                        return null;
+                    }
+
+                    let totalScore = 0;
+                    questions.forEach(question => {
+                        const questionScore = calculateQuestionScore(question, surveyData.responses, allQuestions);
+                        totalScore += questionScore;
+                    });
+
+                    const pillarWeightedPercentage = pillar.weighted_percentage || 1;
+                    const pillarScore = Math.min(totalScore / pillarWeightedPercentage, 4);
+                    const label = pillar.name.length > 20 ? pillar.name.substring(0, 17) + "..." : pillar.name;
+
+                    return {
+                        label: label,
+                        score: pillarScore,
+                        weightedPercentage: pillar.weighted_percentage || 0,
+                    };
+                }).filter(sub => sub !== null && sub.score > 0);
+
+                let totalSurveyScore = 0;
+                subLabels.forEach(subLabel => {
+                    totalSurveyScore += subLabel.score * subLabel.weightedPercentage;
+                });
+
+                return {
+                    name: survey.survey_title,
+                    surveyId: survey.id,
+                    color: pillarColors[index % pillarColors.length].color,
+                    borderColor: pillarColors[index % pillarColors.length].borderColor,
+                    subLabels,
+                    average: Math.min(totalSurveyScore, 4),
+                };
+            }).filter(pillar => pillar.subLabels.length > 0);
+
+            if (pillarsArray.length === 0) {
+                console.log("No valid pillars found.");
+                setChartData(null);
+                setPillarAverages([]);
+                setPillars([]);
+                return;
+            }
+
+            setPillars(pillarsArray);
+
+            const allLabels = Array.from(
+                new Set(pillarsArray.flatMap(pillar => pillar.subLabels.map(sub => sub.label)))
+            );
+
+            const datasets = pillarsArray.map(pillar => {
                 const scores = allLabels.map(label => {
                     const subLabel = pillar.subLabels.find(sub => sub.label === label);
-                    if (!subLabel) return 0;
-    
-                    let totalPercentage = 0;
-                    const questions = subLabel.questions;
-    
-                    // Tính trung bình điểm phần trăm của các câu hỏi trong label
-                    questions.forEach(questionNum => {
-                        const expectedQuestionName = `Câu ${pillar.surveyId}.${questionNum}`;
-                        const questionSurvey = data.surveys
-                            .find(survey => survey.id === pillar.surveyId)
-                            ?.question_survey.find(qs => qs.questions.question_name === expectedQuestionName);
-    
-                        if (!questionSurvey) {
-                            console.log(`Question "${expectedQuestionName}" not found`);
-                            return;
-                        }
-    
-                        const question = questionSurvey.questions;
-                        const percentageScore = calculateQuestionPercentage(question, data.responses);
-                        totalPercentage += percentageScore;
-                    });
-    
-                    const questionCount = questions.length;
-                    return questionCount > 0 ? Math.round(totalPercentage / questionCount) : 0;
+                    return subLabel ? subLabel.score : 0;
                 });
-    
-                // Tính điểm trung bình của trụ cột dựa trên weighted_percentage
-                let totalPillarScore = 0;
-                let totalWeight = 0;
-    
-                allLabels.forEach((label, index) => {
-                    const subLabel = pillar.subLabels.find(sub => sub.label === label);
-                    if (!subLabel || scores[index] === 0) return;
-    
-                    const firstQuestionName = `Câu ${pillar.surveyId}.${subLabel.questions[0]}`;
-                    const firstQuestionSurvey = data.surveys
-                        .find(survey => survey.id === pillar.surveyId)
-                        ?.question_survey.find(qs => qs.questions.question_name === firstQuestionName);
-                    const weight = firstQuestionSurvey?.questions.weighted_percentage || 0;
-    
-                    totalPillarScore += scores[index] * weight;
-                    totalWeight += weight;
-                });
-    
-                const average = totalWeight > 0 ? Math.round(totalPillarScore / totalWeight) : 0;
-    
+
                 return {
                     label: pillar.name,
-                    data: scores, // Điểm của sub-label (0-100%)
+                    data: scores,
                     backgroundColor: pillar.color,
                     borderColor: pillar.borderColor,
                     borderWidth: 2,
@@ -289,49 +204,51 @@ export default function SurveyReport({ }) {
                     pointHoverBorderColor: pillar.borderColor,
                     pointRadius: 4,
                     pointHoverRadius: 6,
-                    average: average, // Điểm trung bình của trụ cột
+                    average: pillar.average,
                 };
             });
-    
+
             const labelScores = allLabels.map((label, labelIndex) => {
-                const scoresForLabel = datasetsWithAllScores.map(dataset => dataset.data[labelIndex]);
+                const scoresForLabel = datasets.map(dataset => dataset.data[labelIndex]);
                 const maxScore = Math.max(...scoresForLabel);
                 return { label, maxScore };
             });
-    
+
             const nonZeroLabels = labelScores
                 .filter(item => item.maxScore > 0)
                 .map(item => item.label);
-    
+
             if (nonZeroLabels.length === 0) {
                 console.log("No non-zero scores found.");
                 setChartData(null);
                 setPillarAverages([]);
+                setPillars([]);
                 return;
             }
-    
-            const filteredDatasets = datasetsWithAllScores.map(dataset => ({
+
+            const filteredDatasets = datasets.map(dataset => ({
                 ...dataset,
                 data: allLabels
                     .map((label, index) => ({ label, score: dataset.data[index] }))
                     .filter(item => nonZeroLabels.includes(item.label))
                     .map(item => item.score),
             }));
-    
+
             setChartData({
                 labels: nonZeroLabels,
                 datasets: filteredDatasets,
             });
-    
-            setPillarAverages(datasetsWithAllScores.map(dataset => ({
-                name: dataset.label,
-                average: dataset.average,
-                color: dataset.borderColor,
+
+            setPillarAverages(pillarsArray.map(pillar => ({
+                name: pillar.name,
+                average: Number(pillar.average.toFixed(2)),
+                color: pillar.borderColor,
             })));
         } catch (error) {
             console.error("Error fetching chart data:", error.response?.status, error.message);
             setChartData(null);
             setPillarAverages([]);
+            setPillars([]);
         } finally {
             setLoading(false);
         }
@@ -357,10 +274,9 @@ export default function SurveyReport({ }) {
                 email: respondent.email,
                 phone: respondent.phone,
                 group: respondent.belong_to_group,
-                submissionStatus: respondent.submission_status
+                submissionStatus: respondent.submission_status,
             })));
         } catch (error) {
-            setLoading(false);
             console.error("Error fetching institution and respondents:", error);
             setInstitutionName("Không xác định");
             setRespondents([]);
@@ -387,49 +303,37 @@ export default function SurveyReport({ }) {
                 },
                 ticks: {
                     display: true,
-                    stepSize: 20,
-                    callback: (value) => `${value}%`,
-                    font: {
-                        size: 12,
-                    },
+                    stepSize: 1,
+                    callback: (value) => value,
+                    font: { size: 12 },
                     color: "#333",
                 },
                 pointLabels: {
-                    font: {
-                        size: 8,
-                        weight: "bold",
-                    },
+                    font: { size: 10, weight: "bold" },
+                     // Tăng từ 8 lên 10 để dễ đọc hơn
                     color: (context) => {
                         const label = context.label;
                         const pillar = pillars.find(p => p.subLabels.some(sub => sub.label === label));
-                        return pillar ? pillar.borderColor : "#333";
+                        return pillar ? pillar.borderColor : "#333"; // Giữ nguyên màu của nhãn
                     },
                 },
                 suggestedMin: 0,
-                suggestedMax: 100,
+                suggestedMax: 4,
             },
         },
         plugins: {
-            legend: {
-                display: false,
-            },
+            legend: { display: false },
             tooltip: {
                 enabled: true,
                 backgroundColor: "rgba(0, 0, 0, 0.8)",
-                titleFont: {
-                    size: 14,
-                },
-                bodyFont: {
-                    size: 12,
-                },
+                titleFont: { size: 14 },
+                bodyFont: { size: 12 },
                 titleColor: "#fff",
                 bodyColor: "#fff",
                 padding: 10,
                 cornerRadius: 5,
                 callbacks: {
-                    label: (context) => {
-                        return `${context.dataset.label}: ${context.raw}%`;
-                    },
+                    label: (context) => `${context.dataset.label}: ${context.raw.toFixed(2)}`,
                 },
             },
         },
@@ -438,15 +342,15 @@ export default function SurveyReport({ }) {
 
     const handleLogout = async () => {
         try {
-          await axios.post("/api/logout", {}, { withCredentials: true });
-          localStorage.removeItem("respondent");
-          router.push("/auth");
+            await axios.post("/api/logout", {}, { withCredentials: true });
+            localStorage.removeItem("respondent");
+            router.push("/auth");
         } catch (error) {
-          console.error("Lỗi khi đăng xuất:", error);
+            console.error("Lỗi khi đăng xuất:", error);
         }
-      };
+    };
 
-      return (
+    return (
         <>
             <style jsx>{`
                 @media (max-width: 2048px) {
@@ -504,18 +408,16 @@ export default function SurveyReport({ }) {
                             <p className="text-gray-500">Không có dữ liệu người trả lời.</p>
                         )}
                     </div>
+
                     {loading ? (
                         <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
                     ) : chartData ? (
                         <div className="flex flex-col gap-6">
-                            {/* Radar Chart */}
                             <div className="w-full border border-gray-300 rounded-lg shadow-md p-4 bg-gray-50 chart-container">
                                 <div className="h-[400px] md:h-[700px]">
                                     <Radar data={chartData} options={chartOptions} />
                                 </div>
                             </div>
-
-                            {/* Pillars Section */}
                             <div className="w-full bg-gray-100 p-4 rounded-lg pillars-container">
                                 <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-4 text-center md:text-left">
                                     Trụ cột
@@ -534,7 +436,7 @@ export default function SurveyReport({ }) {
                                             </div>
                                             <div className="ml-6 mt-1">
                                                 <span className="text-lg font-bold text-gray-800">
-                                                    {pillar.average}%
+                                                    {pillar.average}
                                                 </span>
                                             </div>
                                         </div>
