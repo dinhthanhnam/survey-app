@@ -597,12 +597,12 @@ const questionsData = [
                 weighted_value: 1,
             },
             {
-                option_text: 'Khá sẵn sàn',
+                option_text: 'Khá sẵn sàng',
                 option_note: 'Có nhận thức nhưng cần thêm hỗ trợ',
                 weighted_value: 2,
             },
             {
-                option_text: 'Sẵn sàn',
+                option_text: 'Sẵn sàng',
                 option_note: 'Đã có hành động ban đầu',
                 weighted_value: 3,
             },
@@ -3219,7 +3219,6 @@ const questionsData = [
         survey_id: 7,
         weighted_percentage: 0.1,
         belongs_to_pillar: 'Mức độ sẵn sàng đầu tư',
-        question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
             { option_text: '0% chi phí hoạt động', weighted_value: 0 },
             {
