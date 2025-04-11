@@ -3219,23 +3219,20 @@ const questionsData = [
         survey_id: 7,
         weighted_percentage: 0.1,
         belongs_to_pillar: 'Mức độ sẵn sàng đầu tư',
+        question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
-            { option_text: '0% chi phí hoạt động', weighted_value: 0 },
+            { option_text: '0% chi phí hoạt động' },
             {
                 option_text: 'Khoảng 0% - 2% chi phí hoạt động',
-                weighted_value: 1,
             },
             {
                 option_text: 'Khoảng 2% - 4% chi phí hoạt động',
-                weighted_value: 2,
             },
             {
                 option_text: 'Khoảng 4% - 5% chi phí hoạt động',
-                weighted_value: 3,
             },
             {
                 option_text: 'Khoảng 5% - 6% chi phí hoạt động',
-                weighted_value: 4,
             },
         ],
     },
@@ -3314,13 +3311,20 @@ const questionsData = [
         belongs_to_pillar: 'Khả năng tham gia tài chính',
         question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
-            { option_text: 'Hoàn toàn không sẵn sàng' },
-            { option_text: 'Không sẵn sàng' },
-            { option_text: 'Đang cân nhắc nhưng chưa có cam kết' },
-            { option_text: 'Sẵn sàng tham gia nếu có hỗ trợ' },
+            { option_text: 'Hoàn toàn không sẵn sàng', weighted_value: 0 },
+            { option_text: 'Không sẵn sàng', weighted_value: 1 },
+            {
+                option_text: 'Đang cân nhắc nhưng chưa có cam kết',
+                weighted_value: 2,
+            },
+            {
+                option_text: 'Sẵn sàng tham gia nếu có hỗ trợ',
+                weighted_value: 3,
+            },
             {
                 option_text:
                     'Hoàn toàn sẵn sàng và đang tìm kiếm cơ hội hợp tác',
+                weighted_value: 4,
             },
         ],
     },
@@ -3334,12 +3338,15 @@ const questionsData = [
         belongs_to_pillar: 'Khả năng tham gia tài chính',
         question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
-            { option_text: 'Chưa có dự án dùng chung' },
-            { option_text: 'Hoàn toàn không hiệu quả' },
-            { option_text: 'Hiệu quả rất thấp' },
-            { option_text: 'Hiệu quả trung bình' },
-            { option_text: 'Hiệu quả tốt' },
-            { option_text: 'Rất hiệu quả và mang lại giá trị rõ ràng' },
+            { option_text: 'Chưa có dự án dùng chung', weighted_value: 0 },
+            { option_text: 'Hoàn toàn không hiệu quả', weighted_value: 1 },
+            { option_text: 'Hiệu quả rất thấp', weighted_value: 2 },
+            { option_text: 'Hiệu quả trung bình', weighted_value: 3 },
+            { option_text: 'Hiệu quả tốt', weighted_value: 4 },
+            {
+                option_text: 'Rất hiệu quả và mang lại giá trị rõ ràng',
+                weighted_value: 5,
+            },
         ],
     },
     {
@@ -3349,230 +3356,325 @@ const questionsData = [
         question_type: 'radiogroup',
         survey_id: 7,
         weighted_percentage: 0.2,
+        question_note: 'Vui lòng chọn mức độ phù hợp nhất',
         belongs_to_pillar: 'Khả năng tìm kiếm và tận dụng các nguồn tài trợ',
         question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
             { option_text: 'Hoàn toàn không thể' },
-            { option_text: 'Hỗ trợ rất hạn chế' },
-            { option_text: 'Hỗ trợ ở mức trung bình' },
+            {
+                option_text: 'Khó khăn trong tiếp cận',
+                option_note: 'Chỉ tận dụng được rất ít nguồn lực',
+            },
+            {
+                option_text: 'Có thể ở mức trung bình',
+                option_note: 'Đã tiếp cận một số chương trình',
+            },
+            {
+                option_text: 'Dễ dàng tiếp cận',
+                option_note: 'Có quan hệ đối tác ổn định',
+            },
+            {
+                option_text: 'Có quan hệ đối tác ổn định',
+                option_note: 'Nhận được nhiều ưu đãi đặc biệt',
+            },
+            ,
+        ],
+    },
+    {
+        question_text:
+            'Mức độ ứng dụng định danh điện tử (eKYC) tại đơn vị như thế nào?',
+        question_name: 'Câu 7.10',
+        question_type: 'radiogroup',
+        survey_id: 7,
+        question_target: ['Cán bộ nghiệp vụ'],
+        question_options: [
+            { option_text: 'Chưa áp dụng' },
+            {
+                option_text: 'Có kế hoạch triển khai',
+                option_note: 'Đang thử nghiệm',
+            },
+            { option_text: 'Đã triển khai nhưng chưa mở rộng toàn bộ dịch vụ' },
             { option_text: 'Nhận được hỗ trợ tốt' },
             {
                 option_text:
-                    'Hỗ trợ rất tốt và có nhiều cơ hội tiếp cận tài chính',
+                    'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số',
             },
         ],
     },
     {
         question_text:
-            'Đơn vị có nhận được hỗ trợ tài chính từ các tổ chức để thực hiện chuyển đổi số không?',
-        question_name: 'Câu 7.9',
+            'Dự kiến từ năm 2025 đến năm 2030, tỷ lệ các nghiệp vụ ngân hàng của Quỹ (thanh toán, mở tài khoản, vay vốn...) có thể thực hiện trên môi trường số là bao nhiêu?',
+        question_name: 'Câu 8.1',
         question_type: 'radiogroup',
-        survey_id: 7,
-        weighted_percentage: 0.2,
-        belongs_to_pillar: 'Khả năng tìm kiếm và tận dụng các nguồn tài trợ',
+        survey_id: 8,
+        weighted_percentage: 0.1,
+        belongs_to_pillar: 'Nhận thức tổng quan về lộ trình',
         question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
-            { option_text: 'Không có bất kỳ hỗ trợ nào' },
-            { option_text: 'Hỗ trợ rất hạn chế' },
-            { option_text: 'Hỗ trợ ở mức trung bình' },
-            { option_text: 'Nhận được hỗ trợ tốt' },
+            { option_text: '10% - 20%', weighted_value: 1 },
+            { option_text: '30% - 50%', weighted_value: 2 },
+            { option_text: '60% - 70%', weighted_value: 3 },
+            { option_text: '80% - 90%', weighted_value: 4 },
+            { option_text: '95% - 100%', weighted_value: 5 },
+        ],
+    },
+    {
+        question_text:
+            'Đến năm 2035, các nghiệp vụ ngân hàng của Quỹ có thể cho phép khách hàng và thành viên thực hiện trên môi trường số là bao nhiêu?',
+        question_name: 'Câu 8.2',
+        question_type: 'radiogroup',
+        survey_id: 8,
+        weighted_percentage: 0.1,
+        belongs_to_pillar: 'Nhận thức tổng quan về lộ trình',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_options: [
+            { option_text: '~20%', weighted_value: 1 },
+            { option_text: '~50%', weighted_value: 2 },
+            { option_text: '~70%', weighted_value: 3 },
+            { option_text: '~90%', weighted_value: 4 },
+            { option_text: '~100%', weighted_value: 5 },
+        ],
+    },
+    {
+        question_text:
+            'Từ nay đến năm 2030, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
+        question_name: 'Câu 8.3',
+        question_type: 'checkbox',
+        survey_id: 8,
+        weighted_percentage: 0.1,
+        belongs_to_pillar: 'Kế hoạch cụ thể để đạt được các mục tiêu',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_note: 'Có thể chọn nhiều phương án',
+        question_options: [
+            { option_text: 'Thanh toán 247', weighted_value: 2 },
+            { option_text: 'Tiết kiệm', weighted_value: 3 },
+            { option_text: 'Vay vốn', weighted_value: 3 },
+            { option_text: 'Các dịch vụ phi tài chính', weighted_value: 2 },
+        ],
+    },
+    {
+        question_text:
+            'Từ nay đến năm 2035, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
+        question_name: 'Câu 8.4',
+        survey_id: 8,
+        weighted_percentage: 0.1,
+        belongs_to_pillar: 'Kế hoạch cụ thể để đạt được các mục tiêu',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_type: 'checkbox',
+        question_note: 'Có thể chọn nhiều phương án',
+        question_options: [
+            { option_text: 'Thanh toán 247', weighted_value: 3 },
+            { option_text: 'Tiết kiệm', weighted_value: 3 },
+            { option_text: 'Vay vốn', weighted_value: 4 },
+            { option_text: 'Các dịch vụ phi tài chính', weighted_value: 3 },
+        ],
+    },
+    {
+        question_text:
+            'Đơn vị đã xây dựng lộ trình cụ thể để thực hiện chuyển đổi số theo định hướng của ngành ngân hàng chưa? (Bao gồm kế hoạch chi tiết về hạ tầng CNTT, nhân sự, tài chính và hợp tác với NHHTX, TCTD...)',
+        question_name: 'Câu 8.5',
+        survey_id: 8,
+        weighted_percentage: 0.25,
+        belongs_to_pillar:
+            'Mức độ chuẩn bị về nhân lực, hạ tầng CNTT và tài chính',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_type: 'radiogroup',
+        question_options: [
             {
-                option_text:
-                    'Hỗ trợ rất tốt và có nhiều cơ hội tiếp cận tài chính',
+                option_text: 'Chưa xây dựng',
+                option_note:
+                    'Chưa có kế hoạch hoặc chỉ mới có ý tưởng sơ bộ, chưa có tài liệu chính thức',
+                weighted_value: 0,
+            },
+            {
+                option_text: 'Xây dựng sơ bộ',
+                option_note:
+                    'Đã có định hướng chung nhưng chưa có kế hoạch chi tiết về tài chính, nhân sự, hạ tầng',
+                weighted_value: 1,
+            },
+            {
+                option_text: 'Gần hoàn chỉnh',
+                option_note:
+                    'Đã có kế hoạch tổng thể, xác định ngân sách & nguồn lực nhưng chưa chính thức phê duyệt',
+                weighted_value: 2,
+            },
+            {
+                option_text: 'Hoàn chỉnh',
+                option_note:
+                    'Kế hoạch đã hoàn tất, có phê duyệt nhưng chưa bắt đầu triển khai thực tế',
+                weighted_value: 3,
+            },
+            {
+                option_text: 'Hoàn chỉnh & đang triển khai',
+                option_note:
+                    'Đã triển khai theo kế hoạch, có sự phối hợp với NHHTX, TCTD hoặc các đối tác công nghệ',
+                weighted_value: 4,
             },
         ],
     },
-    // {
-    //     question_text:
-    //         'Dự kiến từ năm 2025 đến năm 2030, tỷ lệ các nghiệp vụ ngân hàng của Quỹ (thanh toán, mở tài khoản, vay vốn...) có thể thực hiện trên môi trường số là bao nhiêu?',
-    //     question_name: 'Câu 8.1',
-    //     question_type: 'radiogroup',
-    //     question_target: ['Lãnh đạo & Quản lý'],
-    //     question_options: [
-    //         { option_text: '20%' },
-    //         { option_text: '50%' },
-    //         { option_text: '70%' },
-    //         { option_text: '90%' },
-    //         { option_text: '100%' },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Đến năm 2035, các nghiệp vụ ngân hàng của Quỹ có thể cho phép khách hàng và thành viên thực hiện trên môi trường số là bao nhiêu?',
-    //     question_name: 'Câu 8.2',
-    //     question_type: 'radiogroup',
-    //     question_target: ['Lãnh đạo & Quản lý'],
-    //     question_options: [
-    //         { option_text: '20%' },
-    //         { option_text: '50%' },
-    //         { option_text: '70%' },
-    //         { option_text: '90%' },
-    //         { option_text: '100%' },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Từ nay đến năm 2030, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
-    //     question_name: 'Câu 8.3',
-    //     question_type: 'checkbox',
-    //     question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
-    //     question_note: 'Có thể chọn nhiều phương án',
-    //     question_options: [
-    //         { option_text: 'Thanh toán 247' },
-    //         { option_text: 'Mở tài khoản thanh toán và quản lý tài khoản' },
-    //         { option_text: 'Tiết kiệm' },
-    //         { option_text: 'Vay vốn' },
-    //         { option_text: 'Các dịch vụ phi tài chính' },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Từ nay đến năm 2035, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
-    //     question_name: 'Câu 8.4',
-    //     question_target: ['Lãnh đạo & Quản lý', 'Cán bộ nghiệp vụ'],
-    //     question_type: 'checkbox',
-    //     question_note: 'Có thể chọn nhiều phương án',
-    //     question_options: [
-    //         { option_text: 'Thanh toán 247' },
-    //         { option_text: 'Mở tài khoản thanh toán và quản lý tài khoản' },
-    //         { option_text: 'Tiết kiệm' },
-    //         { option_text: 'Vay vốn' },
-    //         { option_text: 'Các dịch vụ phi tài chính' },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Đơn vị đã xây dựng lộ trình cụ thể để thực hiện chuyển đổi số theo định hướng của ngành ngân hàng chưa? (Bao gồm kế hoạch chi tiết về hạ tầng CNTT, nhân sự, tài chính và hợp tác với NHHTX, TCTD...)',
-    //     question_name: 'Câu 8.5',
-    //     question_target: ['Lãnh đạo & Quản lý'],
-    //     question_type: 'radiogroup',
-    //     question_options: [
-    //         {
-    //             option_text: 'Chưa xây dựng',
-    //             option_note:
-    //                 'Chưa có kế hoạch hoặc chỉ mới có ý tưởng sơ bộ, chưa có tài liệu chính thức',
-    //         },
-    //         {
-    //             option_text: 'Xây dựng sơ bộ',
-    //             option_note:
-    //                 'Đã có định hướng chung nhưng chưa có kế hoạch chi tiết về tài chính, nhân sự, hạ tầng',
-    //         },
-    //         {
-    //             option_text: 'Gần hoàn chỉnh',
-    //             option_note:
-    //                 'Đã có kế hoạch tổng thể, xác định ngân sách & nguồn lực nhưng chưa chính thức phê duyệt',
-    //         },
-    //         {
-    //             option_text: 'Hoàn chỉnh',
-    //             option_note:
-    //                 'Kế hoạch đã hoàn tất, có phê duyệt nhưng chưa bắt đầu triển khai thực tế',
-    //         },
-    //         {
-    //             option_text: 'Hoàn chỉnh & đang triển khai',
-    //             option_note:
-    //                 'Đã triển khai theo kế hoạch, có sự phối hợp với NHHTX, TCTD hoặc các đối tác công nghệ',
-    //         },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Mức độ phối hợp của Quỹ với NHHTX trong quá trình thực hiện chuyển đổi số như thế nào? (Bao gồm hỗ trợ kỹ thuật, kết nối hệ thống, tài chính...)',
-    //     question_name: 'Câu 8.6',
-    //     question_type: 'radiogroup',
-    //     question_options: [
-    //         {
-    //             option_text: 'Chưa phối hợp',
-    //             option_note:
-    //                 'Chưa có bất kỳ hoạt động phối hợp nào với NHHTX về chuyển đổi số',
-    //         },
-    //         {
-    //             option_text: 'Có phối hợp nhưng rất hạn chế',
-    //             option_note:
-    //                 'Chỉ trao đổi thông tin cơ bản, chưa có hỗ trợ kỹ thuật hay tài chính',
-    //         },
-    //         {
-    //             option_text: 'Phối hợp ở mức trung bình',
-    //             option_note:
-    //                 'Có hỗ trợ kỹ thuật hoặc kết nối hệ thống, nhưng chưa đồng bộ hoặc chưa đầy đủ',
-    //         },
-    //         {
-    //             option_text: 'Phối hợp đầy đủ',
-    //             option_note:
-    //                 'Hợp tác tích cực, có hỗ trợ kỹ thuật và kết nối hệ thống nhưng chưa tối ưu',
-    //         },
-    //         {
-    //             option_text: 'Phối hợp chặt chẽ & có kế hoạch mở rộng',
-    //             option_note:
-    //                 'Đã có hợp tác toàn diện với NHHTX và đang lên kế hoạch nâng cấp, mở rộng hợp tác',
-    //         },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Mức độ phối hợp của Quỹ với các TCTD, công ty Fintech trong quá trình thực hiện chuyển đổi số như thế nào? (Bao gồm hợp tác công nghệ, kết nối API, dịch vụ số...)',
-    //     question_name: 'Câu 8.7',
-    //     question_type: 'radiogroup',
-    //     question_options: [
-    //         {
-    //             option_text: 'Chưa phối hợp',
-    //             option_note:
-    //                 'Không có bất kỳ hợp tác nào với TCTD, Fintech về chuyển đổi số',
-    //         },
-    //         {
-    //             option_text: 'Có tiếp cận nhưng chưa có hợp tác cụ thể',
-    //             option_note:
-    //                 'Đã có trao đổi, tìm hiểu nhưng chưa ký kết hợp tác',
-    //         },
-    //         {
-    //             option_text: 'Hợp tác ở mức cơ bản',
-    //             option_note:
-    //                 'Có hợp tác ở một số dịch vụ nhưng chưa tích hợp hệ thống hoặc chưa khai thác hiệu quả',
-    //         },
-    //         {
-    //             option_text: 'Hợp tác chặt chẽ',
-    //             option_note:
-    //                 'Đã có hợp tác thực tế, kết nối hệ thống và cung cấp sản phẩm/dịch vụ số nhưng chưa tối ưu',
-    //         },
-    //         {
-    //             option_text: 'Hợp tác toàn diện & có kế hoạch mở rộng',
-    //             option_note:
-    //                 'Đã tích hợp đầy đủ công nghệ với TCTD, Fintech và đang mở rộng hợp tác',
-    //         },
-    //     ],
-    // },
-    // {
-    //     question_text:
-    //         'Quỹ có kế hoạch tăng cường hợp tác với NHHTX, NHNN, Fintech và các TCTD khác để thúc đẩy chuyển đổi số không?',
-    //     question_name: 'Câu 8.8',
-    //     question_type: 'radiogroup',
-    //     question_options: [
-    //         {
-    //             option_text: 'Không có kế hoạch hợp tác',
-    //             option_note:
-    //                 'Chưa có ý định phối hợp với các tổ chức này về chuyển đổi số',
-    //         },
-    //         {
-    //             option_text: 'Có cân nhắc nhưng chưa có kế hoạch cụ thể',
-    //             option_note:
-    //                 'Đang nghiên cứu khả năng hợp tác nhưng chưa có kế hoạch chính thức',
-    //         },
-    //         {
-    //             option_text: 'Có kế hoạch sơ bộ',
-    //             option_note:
-    //                 'Đã lên ý tưởng hợp tác nhưng chưa có cam kết hoặc nguồn lực rõ ràng',
-    //         },
-    //         {
-    //             option_text: 'Có kế hoạch chi tiết',
-    //             option_note:
-    //                 'Đã xác định mục tiêu hợp tác và có bước triển khai cụ thể',
-    //         },
-    //         {
-    //             option_text: 'Đã triển khai & đang mở rộng hợp tác',
-    //             option_note:
-    //                 'Hợp tác đã được thực hiện và đang tìm cách mở rộng thêm đối tác',
-    //         },
-    //     ],
-    // },
+    {
+        question_text:
+            'Mức độ phối hợp của Quỹ với NHHTX trong quá trình thực hiện chuyển đổi số như thế nào? (Bao gồm hỗ trợ kỹ thuật, kết nối hệ thống, tài chính...)',
+        question_name: 'Câu 8.6',
+        survey_id: 8,
+        weighted_percentage: 0.08,
+        belongs_to_pillar:
+            'Mức độ phối hợp với các đơn vị trong hệ thống ngân hàng',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_type: 'radiogroup',
+        question_options: [
+            {
+                option_text: 'Chưa phối hợp',
+                option_note:
+                    'Chưa có bất kỳ hoạt động phối hợp nào với NHHTX về chuyển đổi số',
+                weighted_value: 0,
+            },
+            {
+                option_text: 'Có phối hợp nhưng rất hạn chế',
+                option_note:
+                    'Chỉ trao đổi thông tin cơ bản, chưa có hỗ trợ kỹ thuật hay tài chính',
+                weighted_value: 1,
+            },
+            {
+                option_text: 'Phối hợp ở mức trung bình',
+                option_note:
+                    'Có hỗ trợ kỹ thuật hoặc kết nối hệ thống, nhưng chưa đồng bộ hoặc chưa đầy đủ',
+                weighted_value: 2,
+            },
+            {
+                option_text: 'Phối hợp đầy đủ',
+                option_note:
+                    'Hợp tác tích cực, có hỗ trợ kỹ thuật và kết nối hệ thống nhưng chưa tối ưu',
+                weighted_value: 3,
+            },
+            {
+                option_text: 'Phối hợp chặt chẽ & có kế hoạch mở rộng',
+                option_note:
+                    'Đã có hợp tác toàn diện với NHHTX và đang lên kế hoạch nâng cấp, mở rộng hợp tác',
+                weighted_value: 4,
+            },
+        ],
+    },
+    {
+        question_text:
+            'Mức độ phối hợp của Quỹ với các TCTD, công ty Fintech trong quá trình thực hiện chuyển đổi số như thế nào? (Bao gồm hợp tác công nghệ, kết nối API, dịch vụ số...)',
+        question_name: 'Câu 8.7',
+        question_type: 'radiogroup',
+        survey_id: 8,
+        weighted_percentage: 0.07,
+        belongs_to_pillar:
+            'Mức độ phối hợp với các đơn vị trong hệ thống ngân hàng',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_options: [
+            {
+                option_text: 'Chưa phối hợp',
+                option_note:
+                    'Không có bất kỳ hợp tác nào với TCTD, Fintech về chuyển đổi số',
+                weighted_value: 0,
+            },
+            {
+                option_text: 'Có tiếp cận nhưng chưa có hợp tác cụ thể',
+                option_note:
+                    'Đã có trao đổi, tìm hiểu nhưng chưa ký kết hợp tác',
+                weighted_value: 1,
+            },
+            {
+                option_text: 'Hợp tác ở mức cơ bản',
+                option_note:
+                    'Có hợp tác ở một số dịch vụ nhưng chưa tích hợp hệ thống hoặc chưa khai thác hiệu quả',
+                weighted_value: 2,
+            },
+            {
+                option_text: 'Hợp tác chặt chẽ',
+                option_note:
+                    'Đã có hợp tác thực tế, kết nối hệ thống và cung cấp sản phẩm/dịch vụ số nhưng chưa tối ưu',
+                weighted_value: 3,
+            },
+            {
+                option_text: 'Hợp tác toàn diện & có kế hoạch mở rộng',
+                option_note:
+                    'Đã tích hợp đầy đủ công nghệ với TCTD, Fintech và đang mở rộng hợp tác',
+                weighted_value: 4,
+            },
+        ],
+    },
+    {
+        question_text:
+            'Quỹ có kế hoạch tăng cường hợp tác với NHHTX, NHNN, Fintech và các TCTD khác để thúc đẩy chuyển đổi số không?',
+        question_name: 'Câu 8.8',
+        question_type: 'radiogroup',
+        survey_id: 8,
+        weighted_percentage: 0.05,
+        belongs_to_pillar:
+            'Mức độ phối hợp với các đơn vị trong hệ thống ngân hàng',
+        question_target: ['Lãnh đạo & Quản lý'],
+        question_options: [
+            {
+                option_text: 'Không có kế hoạch hợp tác',
+                option_note:
+                    'Chưa có ý định phối hợp với các tổ chức này về chuyển đổi số',
+                weighted_value: 0,
+            },
+            {
+                option_text: 'Có cân nhắc nhưng chưa có kế hoạch cụ thể',
+                option_note:
+                    'Đang nghiên cứu khả năng hợp tác nhưng chưa có kế hoạch chính thức',
+                weighted_value: 1,
+            },
+            {
+                option_text: 'Có kế hoạch sơ bộ',
+                option_note:
+                    'Đã lên ý tưởng hợp tác nhưng chưa có cam kết hoặc nguồn lực rõ ràng',
+                weighted_value: 2,
+            },
+            {
+                option_text: 'Có kế hoạch chi tiết',
+                option_note:
+                    'Đã xác định mục tiêu hợp tác và có bước triển khai cụ thể',
+                weighted_value: 3,
+            },
+            {
+                option_text: 'Đã triển khai & đang mở rộng hợp tác',
+                option_note:
+                    'Hợp tác đã được thực hiện và đang tìm cách mở rộng thêm đối tác',
+                weighted_value: 4,
+            },
+        ],
+    },
+    {
+        question_text:
+            'Mức độ phối hợp giữa các bộ phận trong nội bộ đơn vị trong triển khai kế hoạch chuyển đổi số?',
+        question_name: 'Câu 8.9',
+        question_type: 'radiogroup',
+        survey_id: 8,
+        weighted_percentage: 0.05,
+        belongs_to_pillar:
+            'Mức độ phối hợp với các đơn vị trong hệ thống ngân hàng',
+        question_target: ['Cán bộ nghiệp vụ'],
+        question_options: [
+            {
+                option_text: 'Không có sự phối hợp',
+                weighted_value: 0,
+            },
+            {
+                option_text: 'Phối hợp ở mức rất hạn chế',
+                weighted_value: 1,
+            },
+            {
+                option_text: 'Có phối hợp cơ bản nhưng thiếu liên kết',
+                weighted_value: 2,
+            },
+            {
+                option_text: 'Phối hợp tốt, có chia sẻ dữ liệu và quy trình',
+                weighted_value: 3,
+            },
+            {
+                option_text:
+                    'Phối hợp chặt chẽ, hoạt động như một thể thống nhất',
+                weighted_value: 4,
+            },
+        ],
+    },
 ];
 
 // for (const question of questionsData) {
