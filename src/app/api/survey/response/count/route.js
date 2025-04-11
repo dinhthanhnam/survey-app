@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 // Bảng tổng số câu hỏi của khảo sát
 const surveyData = [
     { surveyId: 1, numQuestions: 14 },
-    { surveyId: 2, numQuestions: 22 },
-    { surveyId: 3, numQuestions: 13 },
+    { surveyId: 2, numQuestions: 20 },
+    { surveyId: 3, numQuestions: 14 },
     { surveyId: 4, numQuestions: 25 },
     { surveyId: 5, numQuestions: 18 },
     { surveyId: 6, numQuestions: 11 },
