@@ -143,6 +143,91 @@ const pillarsData = [
         weighted_percentage: 0.1,
         survey_id: 4,
     },
+    {
+        name: 'Mức độ số hóa dữ liệu và hệ thống lưu trữ',
+        weighted_percentage: 0.25,
+        survey_id: 5,
+    },
+    {
+        name: 'Ứng dụng công cụ phân tích dữ liệu hiện đại',
+        weighted_percentage: 0.15,
+        survey_id: 5,
+    },
+    {
+        name: 'Khai thác dữ liệu khách hàng',
+        weighted_percentage: 0.2,
+        survey_id: 5,
+    },
+    {
+        name: 'Liên thông dữ liệu với hệ thống bên ngoài',
+        weighted_percentage: 0.25,
+        survey_id: 5,
+    },
+    {
+        name: 'Câu hỏi đánh giá chung',
+        weighted_percentage: 0.2,
+        survey_id: 5,
+    },
+    {
+        name: 'Mức độ ứng dụng công nghệ trong phát triển sản phẩm/dịch vụ',
+        weighted_percentage: 0.15,
+        survey_id: 6,
+    },
+    {
+        name: 'Kế hoạch triển khai dịch vụ ngân hàng số',
+        weighted_percentage: 0.3,
+        survey_id: 6,
+    },
+    {
+        name: 'Mức độ hài lòng của khách hàng',
+        weighted_percentage: 0.2,
+        survey_id: 6,
+    },
+    {
+        name: 'Hợp tác với tổ chức công nghệ',
+        weighted_percentage: 0.35,
+        survey_id: 6,
+    },
+    {
+        name: 'Ngân sách hiện tại dành cho CNTT và chuyển đổi số',
+        weighted_percentage: 0.25,
+        survey_id: 7,
+    },
+    {
+        name: 'Mức độ sẵn sàng đầu tư',
+        weighted_percentage: 0.35,
+        survey_id: 7,
+    },
+    {
+        name: 'Khả năng tham gia tài chính',
+        weighted_percentage: 0.2,
+        survey_id: 7,
+    },
+    {
+        name: 'Khả năng tìm kiếm và tận dụng các nguồn tài trợ',
+        weighted_percentage: 0.2,
+        survey_id: 7,
+    },
+    {
+        name: 'Nhận thức tổng quan về lộ trình',
+        weighted_percentage: 0.2,
+        survey_id: 8,
+    },
+    {
+        name: 'Mức độ chuẩn bị về nhân lực, hạ tầng CNTT và tài chính',
+        weighted_percentage: 0.25,
+        survey_id: 8,
+    },
+    {
+        name: 'Mức độ phối hợp với các đơn vị trong hệ thống ngân hàng',
+        weighted_percentage: 0.25,
+        survey_id: 8,
+    },
+    {
+        name: 'Kế hoạch cụ thể để đạt được các mục tiêu',
+        weighted_percentage: 0.2,
+        survey_id: 8,
+    },
 ];
 
 // Dữ liệu question
@@ -378,7 +463,7 @@ const questionsData = [
             { option_text: 'Không có nhân sự phụ trách', weighted_value: 0 },
             { option_text: 'Cán bộ kiêm nhiệm cho CNTT', weighted_value: 1 },
             { option_text: 'Có cán bộ phụ trách CNTT', weighted_value: 2 },
-            { option_text: 'Hợp tác với đối tác bên ngoài' },
+            { option_text: 'Hợp tác với đối tác bên ngoài', weighted_value: 3 },
             {
                 option_text: 'Khác ...',
                 require_reason: 1,
@@ -2350,7 +2435,7 @@ const questionsData = [
         question_name: 'Câu 5.6',
         survey_id: 5,
         weighted_percentage: 0.1,
-        belongs_to_pillar: 'Khai thác dữ liệu khách hàngi',
+        belongs_to_pillar: 'Khai thác dữ liệu khách hàng',
         question_type: 'radiogroup',
         question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
