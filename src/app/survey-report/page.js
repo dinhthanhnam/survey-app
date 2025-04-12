@@ -148,7 +148,7 @@ export default function SurveyReport({}) {
 
                     const pillarWeightedPercentage = pillar.weighted_percentage || 1;
                     const pillarScore = Math.min(totalScore / pillarWeightedPercentage, 4);
-                    const label = pillar.name.length > 20 ? pillar.name.substring(0, 17) + "..." : pillar.name;
+                    const label = pillar.name.length > 40 ? pillar.name.substring(0, 41) + "..." : pillar.name;
 
                     return {
                         label: label,
