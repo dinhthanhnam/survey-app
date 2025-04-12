@@ -6,25 +6,25 @@ const prisma = new PrismaClient();
 // Bảng tổng số câu hỏi của khảo sát
 const surveyData = [
     { surveyId: 1, numQuestions: 12 },
-    { surveyId: 2, numQuestions: 20 },
-    { surveyId: 3, numQuestions: 14 },
-    { surveyId: 4, numQuestions: 29 },
+    { surveyId: 2, numQuestions: 21 },
+    { surveyId: 3, numQuestions: 18 },
+    { surveyId: 4, numQuestions: 31 },
     { surveyId: 5, numQuestions: 18 },
     { surveyId: 6, numQuestions: 11 },
-    { surveyId: 7, numQuestions: 8 },
-    { surveyId: 8, numQuestions: 8 },
+    { surveyId: 7, numQuestions: 10 },
+    { surveyId: 8, numQuestions: 9 },
 ];
 
 // Cấu hình số câu hỏi theo từng vai trò
 const surveyConfig = {
     'Lãnh đạo & Quản lý': [
-        { surveyId: 1, numQuestions: 11 },
+        { surveyId: 1, numQuestions: 10 },
         { surveyId: 2, numQuestions: 7 },
-        { surveyId: 3, numQuestions: 8 },
-        { surveyId: 4, numQuestions: 18 },
-        { surveyId: 5, numQuestions: 8 },
-        { surveyId: 6, numQuestions: 6 },
-        { surveyId: 7, numQuestions: 6 },
+        { surveyId: 3, numQuestions: 11 },
+        { surveyId: 4, numQuestions: 22 },
+        { surveyId: 5, numQuestions: 6 },
+        { surveyId: 6, numQuestions: 7 },
+        { surveyId: 7, numQuestions: 9 },
         { surveyId: 8, numQuestions: 8 },
     ],
     'Cán bộ nghiệp vụ': [
@@ -35,7 +35,7 @@ const surveyConfig = {
         { surveyId: 5, numQuestions: 15 },
         { surveyId: 6, numQuestions: 4 },
         { surveyId: 7, numQuestions: 2 },
-        { surveyId: 8, numQuestions: 0 },
+        { surveyId: 8, numQuestions: 1 },
     ],
     // 'Nhân viên CNTT & Hỗ trợ kỹ thuật': [
     //     { surveyId: 1, numQuestions: 11 },

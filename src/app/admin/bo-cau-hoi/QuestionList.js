@@ -108,16 +108,16 @@ export default function QuestionList({ setCurrentView, setSelectedQuestion }) {
                                     >
                                         <Eye size={16} />
                                     </button>
-                                    <button
-                                        onClick={() => {
-                                            setSelectedQuestion(question);
-                                            setCurrentView('edit');
-                                        }}
-                                        className="text-blue-500 hover:text-blue-700"
-                                        title="Sửa"
-                                    >
-                                        <Edit size={16} />
-                                    </button>
+                                    {/*<button*/}
+                                    {/*    onClick={() => {*/}
+                                    {/*        setSelectedQuestion(question);*/}
+                                    {/*        setCurrentView('edit');*/}
+                                    {/*    }}*/}
+                                    {/*    className="text-blue-500 hover:text-blue-700"*/}
+                                    {/*    title="Sửa"*/}
+                                    {/*>*/}
+                                    {/*    <Edit size={16} />*/}
+                                    {/*</button>*/}
                                 </td>
                             </tr>
 
@@ -146,16 +146,16 @@ export default function QuestionList({ setCurrentView, setSelectedQuestion }) {
                                             >
                                                 <Eye size={16} />
                                             </button>
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedQuestion(child);
-                                                    setCurrentView('edit');
-                                                }}
-                                                className="text-blue-500 hover:text-blue-700"
-                                                title="Sửa"
-                                            >
-                                                <Edit size={16} />
-                                            </button>
+                                            {/*<button*/}
+                                            {/*    onClick={() => {*/}
+                                            {/*        setSelectedQuestion(child);*/}
+                                            {/*        setCurrentView('edit');*/}
+                                            {/*    }}*/}
+                                            {/*    className="text-blue-500 hover:text-blue-700"*/}
+                                            {/*    title="Sửa"*/}
+                                            {/*>*/}
+                                            {/*    <Edit size={16} />*/}
+                                            {/*</button>*/}
                                         </td>
                                     </tr>
                                 ))}
