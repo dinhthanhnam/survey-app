@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
 
 // Bảng tổng số câu hỏi của khảo sát
 const surveyData = [
-    { surveyId: 1, numQuestions: 14 },
+    { surveyId: 1, numQuestions: 12 },
     { surveyId: 2, numQuestions: 20 },
     { surveyId: 3, numQuestions: 14 },
-    { surveyId: 4, numQuestions: 25 },
+    { surveyId: 4, numQuestions: 29 },
     { surveyId: 5, numQuestions: 18 },
     { surveyId: 6, numQuestions: 11 },
     { surveyId: 7, numQuestions: 8 },
@@ -31,7 +31,7 @@ const surveyConfig = {
         { surveyId: 1, numQuestions: 8 },
         { surveyId: 2, numQuestions: 16 },
         { surveyId: 3, numQuestions: 5 },
-        { surveyId: 4, numQuestions: 23 },
+        { surveyId: 4, numQuestions: 24 },
         { surveyId: 5, numQuestions: 15 },
         { surveyId: 6, numQuestions: 4 },
         { surveyId: 7, numQuestions: 2 },

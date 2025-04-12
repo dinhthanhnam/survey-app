@@ -3377,7 +3377,6 @@ const questionsData = [
                 option_text: 'Có quan hệ đối tác ổn định',
                 option_note: 'Nhận được nhiều ưu đãi đặc biệt',
             },
-            ,
         ],
     },
     {
@@ -3395,10 +3394,7 @@ const questionsData = [
             },
             { option_text: 'Đã triển khai nhưng chưa mở rộng toàn bộ dịch vụ' },
             { option_text: 'Nhận được hỗ trợ tốt' },
-            {
-                option_text:
-                    'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số',
-            },
+            { option_text: 'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số' },
         ],
     },
     {
@@ -3842,7 +3838,7 @@ async function main() {
                     await prisma.question_options.create({
                         data: {
                             question_id: createdQuestion.id,
-                            option_text: option.option_text,
+                            option_text: option.option_text || null,
                             option_note: option.option_note,
                             require_reason: option.require_reason || 0,
                             weighted_value: option.weighted_value,
