@@ -37,6 +37,14 @@ export default function SurveyReport({}) {
         { color: "rgba(153, 102, 255, 0.2)", borderColor: "rgba(153, 102, 255, 1)" }, // Purple
         { color: "rgba(255, 206, 86, 0.2)", borderColor: "rgba(255, 206, 86, 1)" }, // Yellow// Red
         { color: "rgba(54, 54, 54, 0.2)", borderColor: "rgba(54, 54, 54, 1)" }, // Gray
+        { color: "rgba(0, 128, 128, 0.2)", borderColor: "rgba(0, 128, 128, 1)" }, // Teal
+        { color: "rgba(255, 165, 0, 0.2)", borderColor: "rgba(255, 165, 0, 1)" }, // Amber
+        { color: "rgba(0, 100, 0, 0.2)", borderColor: "rgba(0, 100, 0, 1)" }, // Dark Green
+        { color: "rgba(0, 0, 139, 0.2)", borderColor: "rgba(0, 0, 139, 1)" }, // Dark Blue
+        { color: "rgba(128, 0, 0, 0.2)", borderColor: "rgba(128, 0, 0, 1)" }, // Maroon
+        { color: "rgba(255, 20, 147, 0.2)", borderColor: "rgba(255, 20, 147, 1)" }, // Deep Pink
+        { color: "rgba(210, 105, 30, 0.2)", borderColor: "rgba(210, 105, 30, 1)" }, // Chocolate
+        { color: "rgba(70, 130, 180, 0.2)", borderColor: "rgba(70, 130, 180, 1)" }, // Steel Blue
     ];
 
     useEffect(() => {
