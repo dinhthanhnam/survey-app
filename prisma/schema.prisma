@@ -39,8 +39,8 @@ model questions {
   question_survey     question_survey[]
   responses           responses[]
   parent_id           Int?
-  belongs_to_pillar   Int
-  survey_pillar       survey_pillars          @relation(fields: [belongs_to_pillar], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "questions_ibfk_1")
+  belongs_to_pillar   Int?
+  survey_pillar       survey_pillars?         @relation(fields: [belongs_to_pillar], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "questions_ibfk_1")
   weighted_percentage Float?
 }
 

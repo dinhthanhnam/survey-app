@@ -1569,7 +1569,7 @@ const questionsData = [
         ],
     },
     {
-        question_text: 'Có khả năng mở rộng khi tăng quy mô hoạt độngg',
+        question_text: 'Có khả năng mở rộng khi tăng quy mô hoạt động',
         question_name: 'Câu 3.13.2',
         question_type: 'radiogroup',
         weighted_percentage: 0.2 / 4,
@@ -1625,6 +1625,7 @@ const questionsData = [
             'Đơn vị có sử dụng các sản phẩm công nghệ dùng chung giữa QTDND, NHNN và NHHTX không?',
         question_name: 'Câu 3.14',
         question_type: 'radiogroup',
+        survey_id: 3,
         question_target: ['Lãnh đạo & Quản lý'],
         question_options: [
             {
@@ -3131,7 +3132,7 @@ const questionsData = [
     },
     {
         question_text:
-            'Khách hàng đánh giá mức độ hài lòng với các sản phẩm số hóa đã được cung cấp tại Quỹ như thế nào?',
+            'Đơn vị có hợp tác với các công ty Fintech, đối tác trung gian để mở rộng và phát triển hệ sinh thái tài chính số không?',
         question_name: 'Câu 6.10',
         question_type: 'radiogroup',
         survey_id: 6,
@@ -3150,7 +3151,7 @@ const questionsData = [
             },
             {
                 option_text:
-                    'Đang trong quá trình tìm hiểu và nghiên cứu hợp tác.',
+                    'Đã hợp tác nhưng ở quy mô nhỏ, chưa đủ mạnh mẽ',
                 weighted_value: 2,
             },
             {
@@ -3808,9 +3809,11 @@ async function main() {
         // 3. Seed questions và question_options
         console.log('Seeding questions and options...');
         for (const question of questionsData) {
-            const pillarId = await mapPillarNameToId(
-                question.belongs_to_pillar
-            );
+            let pillarId;
+            if(question.belongs_to_pillar) {
+                pillarId = await mapPillarNameToId(question.belongs_to_pillar);
+            }
+
             let parentId;
             if (question.parent) {
                 parentId = await mapQuestionNameToId(question.parent);
