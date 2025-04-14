@@ -38,7 +38,8 @@ export async function POST(req) {
         // Lấy tất cả người dùng thuộc quỹ đó từ bảng respondents
         const respondents = await prisma.respondents.findMany({
             where: {
-                institution_id: institution_id
+                institution_id: institution_id,
+                submission_status : "submitted"
             },
         });
 
@@ -57,7 +58,8 @@ export async function POST(req) {
             where: {
                 respondent_id: {
                     in: respondentIds // Tìm tất cả responses của các respondent_id trong danh sách
-                }
+                },
+                response_status: "submitted"
             },
         });
 
