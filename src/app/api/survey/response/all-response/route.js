@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export async function POST() {
     try {
         const responses = await prisma.responses.findMany({
-            //where: {response_status : "submitted"},
+            where: {response_status : "submitted"},
         });
 
         const surveys = await prisma.surveys.findMany({

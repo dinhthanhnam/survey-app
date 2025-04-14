@@ -38,7 +38,7 @@ export async function POST(req) {
         // Lấy tất cả người dùng thuộc quỹ đó từ bảng respondents
         const respondents = await prisma.respondents.findMany({
             where: {
-                institution_id: institution_id // Giả sử bảng respondents có trường fund_id
+                institution_id: institution_id
             },
         });
 
