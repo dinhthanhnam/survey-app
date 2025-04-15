@@ -2233,7 +2233,7 @@ const questionsData = [
     },
     {
         question_text:
-            'Tự động hóa các báo cáo giám sát, kiểm tra từ xa (Supervision Automation)',
+            'Đơn vị có triển khai hoặc có kế hoạch triển khai hệ thống tự động hóa báo cáo giám sát và kiểm tra từ xa cho NHNN và NHHTX không?',
         question_name: 'Câu 4.16',
         question_type: 'radiogroup',
         survey_id: 4,
@@ -2672,7 +2672,7 @@ const questionsData = [
     {
         question_text:
             'Hiện tại, Anh/Chị đang sử dụng các phương thức nào để lưu trữ thông tin và dữ liệu phục vụ công việc?',
-        question_name: 'Câu 5.12',
+        question_name: 'Câu 5.14',
         question_type: 'checkbox',
         question_target: ['Cán bộ nghiệp vụ'],
         survey_id: 5,
@@ -2765,7 +2765,7 @@ const questionsData = [
         question_text:
             'Theo anh/chị, đơn vị có gặp khó khăn gì trong việc số hóa và khai thác dữ liệu?',
         question_name: 'Câu 5.14',
-        question_type: 'radiogroup',
+        question_type: 'checkbox',
         survey_id: 5,
         weighted_percentage: 0.05,
         belongs_to_pillar: 'Câu hỏi đánh giá chung',
@@ -3071,7 +3071,7 @@ const questionsData = [
         weighted_percentage: 0.05,
         belongs_to_pillar: 'Mức độ hài lòng của khách hàng',
         question_target: ['Lãnh đạo & Quản lý'],
-        question_type: 'checkbox',
+        question_type: 'radiogroup',
         question_options: [
             { option_text: 'Các công ty Fintech', weighted_value: 2 },
             { option_text: 'Các tổ chức tài chính vi mô', weighted_value: 2 },
