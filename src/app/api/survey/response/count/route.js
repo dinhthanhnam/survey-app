@@ -3,52 +3,6 @@ import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-// Bảng tổng số câu hỏi của khảo sát
-const surveyData = [
-    { surveyId: 1, numQuestions: 12 },
-    { surveyId: 2, numQuestions: 21 },
-    { surveyId: 3, numQuestions: 18 },
-    { surveyId: 4, numQuestions: 31 },
-    { surveyId: 5, numQuestions: 18 },
-    { surveyId: 6, numQuestions: 11 },
-    { surveyId: 7, numQuestions: 10 },
-    { surveyId: 8, numQuestions: 9 },
-];
-
-// Cấu hình số câu hỏi theo từng vai trò
-const surveyConfig = {
-    'Lãnh đạo & Quản lý': [
-        { surveyId: 1, numQuestions: 10 },
-        { surveyId: 2, numQuestions: 7 },
-        { surveyId: 3, numQuestions: 11 },
-        { surveyId: 4, numQuestions: 22 },
-        { surveyId: 5, numQuestions: 6 },
-        { surveyId: 6, numQuestions: 7 },
-        { surveyId: 7, numQuestions: 9 },
-        { surveyId: 8, numQuestions: 8 },
-    ],
-    'Cán bộ nghiệp vụ': [
-        { surveyId: 1, numQuestions: 8 },
-        { surveyId: 2, numQuestions: 16 },
-        { surveyId: 3, numQuestions: 5 },
-        { surveyId: 4, numQuestions: 24 },
-        { surveyId: 5, numQuestions: 15 },
-        { surveyId: 6, numQuestions: 4 },
-        { surveyId: 7, numQuestions: 2 },
-        { surveyId: 8, numQuestions: 1 },
-    ],
-    // 'Nhân viên CNTT & Hỗ trợ kỹ thuật': [
-    //     { surveyId: 1, numQuestions: 11 },
-    //     { surveyId: 2, numQuestions: 11 },
-    //     { surveyId: 3, numQuestions: 4 },
-    //     { surveyId: 4, numQuestions: 4 },
-    //     { surveyId: 5, numQuestions: 7 },
-    //     { surveyId: 6, numQuestions: 3 },
-    //     { surveyId: 7, numQuestions: 1 },
-    //     { surveyId: 8, numQuestions: 3 },
-    // ],
-};
-
 export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
@@ -62,79 +16,71 @@ export async function GET(req) {
             );
         }
 
-        // Lấy `surveyData` theo vai trò
-        const roleSurveyData = surveyConfig[role] || [];
-        if (roleSurveyData.length === 0) {
-            return NextResponse.json(
-                { surveys: [], totalQuestions: 0, answeredCount: 0 },
-                { status: 200 }
-            );
-        }
-
-        // Xác định phạm vi `question_id` của từng khảo sát (dựa trên surveyData gốc)
-        let currentQuestion = 1;
-        const surveyQuestionRanges = surveyData.map((survey) => {
-            const start = currentQuestion;
-            const end = currentQuestion + survey.numQuestions - 1;
-            currentQuestion += survey.numQuestions;
-            return { surveyId: survey.surveyId, start, end };
+        // Lấy danh sách survey và câu hỏi, lọc theo vai trò và bỏ qua type "group"
+        const surveysWithQuestions = await prisma.surveys.findMany({
+            include: {
+                question_survey: {
+                    include: {
+                        questions: {
+                            select: {
+                                id: true,
+                                question_type: true,
+                                question_target: true,
+                            },
+                        },
+                    },
+                },
+            },
         });
 
-        // Lấy danh sách câu trả lời của người dùng
-        const responses = await prisma.responses.findMany({
-            where: { respondent_id: respondentId },
-            select: { question_id: true },
-        });
+        // Xử lý dữ liệu: Đếm số câu hỏi hợp lệ và số câu đã trả lời
+        const surveyResults = await Promise.all(
+            surveysWithQuestions.map(async (survey) => {
+                // Lọc câu hỏi: không phải type "group" và phù hợp với vai trò
+                const validQuestions = survey.question_survey.filter((qs) => {
+                    const question = qs.questions;
+                    if (question.question_type === 'group') return false;
 
-        // Chuyển danh sách câu trả lời thành Set để lọc trùng
-        const answeredQuestions = new Set(responses.map((r) => r.question_id));
+                    const target = question.question_target;
+                    if (!target || target === 'NULL') return true;
+                    return target.includes(role);
+                });
 
-        // Đối chiếu với `surveyConfig` theo vai trò để lấy số lượng câu hỏi chính xác
-        let roleCurrentQuestion = 1;
-        const roleSurveyRanges = roleSurveyData.map((survey) => {
-            const start = roleCurrentQuestion;
-            const end = roleCurrentQuestion + survey.numQuestions - 1;
-            roleCurrentQuestion += survey.numQuestions;
+                const questionIds = validQuestions.map((qs) => qs.question_id);
+                const total = questionIds.length;
 
-            // Xác định phạm vi câu hỏi trong bảng `surveyData`
-            const originalSurvey = surveyQuestionRanges.find(
-                (s) => s.surveyId === survey.surveyId
-            );
+                // Lấy danh sách question_id duy nhất từ responses (để xử lý câu hỏi checkbox)
+                const responses = await prisma.responses.findMany({
+                    where: {
+                        respondent_id: respondentId,
+                        question_id: { in: questionIds },
+                    },
+                    select: {
+                        question_id: true,
+                    },
+                    distinct: ['question_id'], // Đảm bảo chỉ lấy question_id duy nhất
+                });
 
-            if (!originalSurvey) {
+                const answered = responses.length; // Số câu hỏi đã trả lời (mỗi question_id chỉ tính 1 lần)
+
                 return {
-                    survey_id: survey.surveyId,
-                    answered: 0,
-                    total: survey.numQuestions,
+                    survey_id: survey.id,
+                    answered,
+                    total,
                 };
-            }
-
-            // Đếm số câu trả lời trong phạm vi của khảo sát
-            const answeredCount = Array.from(answeredQuestions).filter(
-                (q) => q >= originalSurvey.start && q <= originalSurvey.end
-            ).length;
-
-            return {
-                survey_id: survey.surveyId,
-                answered: answeredCount,
-                total: survey.numQuestions, // Số câu hỏi theo vai trò
-            };
-        });
-
-        // Tính tổng số câu hỏi và câu đã trả lời
-        const totalQuestions = roleSurveyData.reduce(
-            (sum, survey) => sum + survey.numQuestions,
-            0
-        );
-        const answeredCount = roleSurveyRanges.reduce(
-            (sum, survey) => sum + survey.answered,
-            0
+            })
         );
 
-        // Trả về dữ liệu với cả thông tin từng khảo sát và tổng cộng
+        // Lọc bỏ survey không có câu hỏi hợp lệ (total = 0)
+        const filteredSurveys = surveyResults.filter((survey) => survey.total > 0);
+
+        // Tính tổng số câu hỏi và số câu đã trả lời
+        const totalQuestions = filteredSurveys.reduce((sum, survey) => sum + survey.total, 0);
+        const answeredCount = filteredSurveys.reduce((sum, survey) => sum + survey.answered, 0);
+
         return NextResponse.json(
             {
-                surveys: roleSurveyRanges,
+                surveys: filteredSurveys,
                 totalQuestions,
                 answeredCount,
             },
