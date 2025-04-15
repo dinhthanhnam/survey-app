@@ -79,12 +79,12 @@ export async function POST(req) {
 
         const mailResponse = await sendOtpEmail(email, otp);
         if (!mailResponse.success) {
-            return Response.json({success: false, message: "Gửi OTP thất bại"}, {status: 500});
+            return Response.json({success: false, message: "Gửi OTP thất bại"}, {status: 499});
         }
         return Response.json({success: true, message: "OTP đã được gửi!", respondent: unAuthedRespondent});
     } catch (error) {
         console.error(error);
-        return Response.json({ success: false, message: "Lỗi server", error }, { status: 500 });
+        return Response.json({ success: false, message: "Lỗi server", error }, { status: 499 });
     }
 
 }

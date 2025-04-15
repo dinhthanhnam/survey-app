@@ -13,5 +13,7 @@ export async function GET() {
     } catch (error) {
         console.error('Lỗi khi đếm survey:', error);
         return Response.json({ error: 'Lỗi server' }, { status: 500 });
+    } finally {
+        prisma.$disconnect();
     }
 }

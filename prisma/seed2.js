@@ -2818,7 +2818,8 @@ const questionsData = [
         question_text:
             'QTDND của anh chị đã và đang triển khai thực hiện cung ứng sản phẩm dịch vụ ngân hàng số ở cấp độ nào?',
         question_name: 'Câu 6.1',
-        question_type: 'radiogroup',
+        question_note: 'Chọn nhiều đáp án',
+        question_type: 'checkbox',
         survey_id: 6,
         weighted_percentage: 0.15,
         belongs_to_pillar:

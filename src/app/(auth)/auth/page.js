@@ -41,7 +41,7 @@ export default function AuthPage() {
                 if (response.data.require_login) setRequireLogin(true);
             }
         } catch (error) {
-            setErrorMessage('Kiểm tra lại thông tin mã quỹ.');
+            console.error(error);
         }
     };
 
