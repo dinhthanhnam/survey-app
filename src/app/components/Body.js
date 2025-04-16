@@ -392,6 +392,19 @@ const Body = ({ scrollToTop }) => {
                             q.questions.question_name.startsWith(question.question_name + '.')
                         );
                         if (groupQuestionIds.includes(question.parent_id)) return null;
+
+                        // Logic điều kiện: Ẩn câu 6 nếu câu 5 chọn phương án 1
+                        const shouldDisplayQuestion = () => {
+                            if (question.id === 6) { // Câu 6
+                                const question5Answers = answers[5] || []; // Câu trả lời của câu 5
+                                // Nếu không có câu trả lời cho câu 5 hoặc phương án 1 không được chọn, hiển thị câu 6
+                                return !question5Answers.includes(21);
+                            }
+                            return true; // Các câu hỏi khác hiển thị bình thường
+                        };
+
+                        if (!shouldDisplayQuestion()) return null;
+
                         questionCounter++;
                         return (
                             <div
@@ -399,9 +412,9 @@ const Body = ({ scrollToTop }) => {
                                 className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50"
                             >
                                 <label className="block text-black font-medium text-lg text-justify flex items-center justify-between">
-                                    <span>
-                                        Câu {questionCounter}. {question.question_text}
-                                    </span>
+                        <span>
+                            Câu {questionCounter}. {question.question_text}
+                        </span>
                                     {question.question_note && (
                                         <div
                                             className="relative ml-2"
@@ -449,13 +462,13 @@ const Body = ({ scrollToTop }) => {
                                                     />
                                                     <div className="flex-1">
                                                         <div className="inline-flex items-center space-x-2">
-                                                            <span className="text-gray-800 font-medium">
-                                                                {option.option_text}
-                                                            </span>
+                                                <span className="text-gray-800 font-medium">
+                                                    {option.option_text}
+                                                </span>
                                                             {option.option_note && (
                                                                 <span className="text-gray-500 italic text-sm font-semibold">
-                                                                    {option.option_note}
-                                                                </span>
+                                                        {option.option_note}
+                                                    </span>
                                                             )}
                                                         </div>
 
