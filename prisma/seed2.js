@@ -145,7 +145,7 @@ const pillarsData = [
     },
     {
         name: 'Mức độ số hóa dữ liệu và hệ thống lưu trữ',
-        weighted_percentage: 0.25,
+        weighted_percentage: 0.2,
         survey_id: 5,
     },
     {
@@ -164,7 +164,7 @@ const pillarsData = [
         survey_id: 5,
     },
     {
-        name: 'Câu hỏi đánh giá chung',
+        name: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         weighted_percentage: 0.2,
         survey_id: 5,
     },
@@ -225,7 +225,7 @@ const pillarsData = [
     },
     {
         name: 'Kế hoạch cụ thể để đạt được các mục tiêu',
-        weighted_percentage: 0.2,
+        weighted_percentage: 0.3,
         survey_id: 8,
     },
 ];
@@ -924,7 +924,7 @@ const questionsData = [
             'Anh/Chị vui lòng cho biết những rào cản và khó khăn trong việc sử dụng các hệ thống thông tin  tại đơn vị?',
         question_name: 'Câu 2.9',
         question_note:
-            'Vui lòng chọn tối đa 3 lý do chính cản trở việc ứng dụng hiệu quả các HTTT tại đơn vịn',
+            'Vui lòng chọn tối đa 3 lý do chính cản trở việc ứng dụng hiệu quả các HTTT tại đơn vị',
         weighted_percentage: 0.03,
         belongs_to_pillar:
             'Các rào cản và khó khăn trong quá trình chuẩn hóa và số hóa quy trình nghiệp vụ',
@@ -1367,7 +1367,7 @@ const questionsData = [
                 option_text: 'Đã có kế hoạch nhưng chưa triển khai',
                 weighted_value: 1,
             },
-            { option_text: 'Đã triển chính thức một phần', weighted_value: 2 },
+            { option_text: 'Đã triển khai chính thức một phần', weighted_value: 2 },
             {
                 option_text:
                     'Đã triển khai hoàn chỉnh nhưng chưa khai thác hiệu quả',
@@ -2268,7 +2268,7 @@ const questionsData = [
         question_name: 'Câu 5.1',
         question_type: 'radiogroup',
         survey_id: 5,
-        weighted_percentage: 0.1,
+        weighted_percentage: 0.05,
         belongs_to_pillar: 'Mức độ số hóa dữ liệu và hệ thống lưu trữ',
         question_note:
             'Vui lòng chọn mức độ phù hợp nhất với tình trạng số hóa dữ liệu tại đơn vị của Anh/Chị',
@@ -2565,7 +2565,7 @@ const questionsData = [
         question_type: 'radiogroup',
         survey_id: 5,
         weighted_percentage: 0.08 / 4,
-        belongs_to_pillar: 'Câu hỏi đánh giá chung',
+        belongs_to_pillar: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         parent: 'Câu 5.10',
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
@@ -2583,7 +2583,7 @@ const questionsData = [
         question_type: 'radiogroup',
         survey_id: 5,
         weighted_percentage: 0.08 / 4,
-        belongs_to_pillar: 'Câu hỏi đánh giá chung',
+        belongs_to_pillar: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         parent: 'Câu 5.10',
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
@@ -2601,7 +2601,7 @@ const questionsData = [
         question_type: 'radiogroup',
         survey_id: 5,
         weighted_percentage: 0.08 / 4,
-        belongs_to_pillar: 'Câu hỏi đánh giá chung',
+        belongs_to_pillar: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         parent: 'Câu 5.10',
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
@@ -2619,7 +2619,7 @@ const questionsData = [
         question_type: 'radiogroup',
         survey_id: 5,
         weighted_percentage: 0.08 / 4,
-        belongs_to_pillar: 'Câu hỏi đánh giá chung',
+        belongs_to_pillar: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         parent: 'Câu 5.10',
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
@@ -2731,7 +2731,7 @@ const questionsData = [
         question_type: 'checkbox',
         survey_id: 5,
         weighted_percentage: 0.07,
-        belongs_to_pillar: 'Câu hỏi đánh giá chung',
+        belongs_to_pillar: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         question_target: ['Cán bộ nghiệp vụ'],
         question_note: 'Chọn nhiều đáp án',
         question_options: [
@@ -2768,7 +2768,7 @@ const questionsData = [
         question_type: 'checkbox',
         survey_id: 5,
         weighted_percentage: 0.05,
-        belongs_to_pillar: 'Câu hỏi đánh giá chung',
+        belongs_to_pillar: 'Kiểm soát và khai thác dữ liệu trong tổ chức',
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
             {
@@ -2959,7 +2959,7 @@ const questionsData = [
     },
     {
         question_text:
-            'Khách hàng đánh giá mức độ hài lòng với các sản phẩm số hóa đã được cung cấp tại Quỹ như thế nào?',
+            'Khách hàng đánh giá mức độ hài lòng với việc được hướng dẫn và hỗ trợ tiếp cận các sản phẩm, dịch vụ ngân hàng số tại Quỹ như thế nào?',
         question_name: 'Câu 6.5',
         question_type: 'radiogroup',
         survey_id: 6,
@@ -2969,28 +2969,28 @@ const questionsData = [
         question_options: [
             {
                 option_text: 'Rất không hài lòng',
-                option_note: 'Dịch vụ kém, khó sử dụng, nhiều lỗi.',
+                option_note: 'Không được hướng dẫn, không hiểu rõ sản phẩm.',
                 weighted_value: 0,
             },
             {
                 option_text: 'Không hài lòng',
                 option_note:
-                    'Chưa đáp ứng được nhu cầu, còn hạn chế tính năng.',
+                    'Có hướng dẫn nhưng thiếu thông tin, không rõ ràng.',
                 weighted_value: 1,
             },
             {
                 option_text: 'Trung lập',
-                option_note: 'Dịch vụ bình thường, không có ấn tượng đặc biệt.',
+                option_note: 'Có hỗ trợ nhưng chưa thật sự hiệu quả.',
                 weighted_value: 2,
             },
             {
                 option_text: 'Hài lòng',
-                option_note: 'Dịch vụ tốt, đáp ứng nhu cầu.',
+                option_note: 'Được hỗ trợ rõ ràng, dễ hiểu.',
                 weighted_value: 3,
             },
             {
                 option_text: 'Rất hài lòng',
-                option_note: 'Dịch vụ xuất sắc, vượt mong đợi.',
+                option_note: 'Được hướng dẫn tận tình, dễ tiếp cận, giải thích đầy đủ.',
                 weighted_value: 4,
             },
         ],
@@ -3215,7 +3215,7 @@ const questionsData = [
     },
     {
         question_text:
-            'Quỹ của anh/chị sẵn sàng đầu tư  chi phí cơ sở hạ tầng CNTT phục vụ cho chuyển đổi số ở mức nào?',
+            'Quỹ của anh/chị sẵn sàng đầu tư chi phí cơ sở hạ tầng CNTT phục vụ cho chuyển đổi số ở mức nào?',
         question_name: 'Câu 7.3',
         question_type: 'radiogroup',
         survey_id: 7,
@@ -3389,14 +3389,13 @@ const questionsData = [
         survey_id: 7,
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
-            { option_text: 'Chưa áp dụng' },
+            { option_text: 'Chưa áp dụng', weighted_value: 0},
             {
-                option_text: 'Có kế hoạch triển khai',
-                option_note: 'Đang thử nghiệm',
+                option_text: 'Có kế hoạch triển khai', weighted_value: 1
             },
-            { option_text: 'Đã triển khai nhưng chưa mở rộng toàn bộ dịch vụ' },
-            { option_text: 'Nhận được hỗ trợ tốt' },
-            { option_text: 'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số' },
+            { option_text: 'Đang thử nghiệm', weighted_value: 2 },
+            { option_text: 'Đã triển khai nhưng chưa mở rộng toàn bộ dịch vụ', weighted_value: 3 },
+            { option_text: 'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số', weighted_value: 4 },
         ],
     },
     {
@@ -3439,7 +3438,7 @@ const questionsData = [
         question_name: 'Câu 8.3',
         question_type: 'checkbox',
         survey_id: 8,
-        weighted_percentage: 0.1,
+        weighted_percentage: 0.15,
         belongs_to_pillar: 'Kế hoạch cụ thể để đạt được các mục tiêu',
         question_target: ['Lãnh đạo & Quản lý'],
         question_note: 'Có thể chọn nhiều phương án',
@@ -3455,7 +3454,7 @@ const questionsData = [
             'Từ nay đến năm 2035, các nghiệp vụ ngân hàng được ưu tiên thực hiện trên môi trường số tại Quỹ',
         question_name: 'Câu 8.4',
         survey_id: 8,
-        weighted_percentage: 0.1,
+        weighted_percentage: 0.15,
         belongs_to_pillar: 'Kế hoạch cụ thể để đạt được các mục tiêu',
         question_target: ['Lãnh đạo & Quản lý'],
         question_type: 'checkbox',
