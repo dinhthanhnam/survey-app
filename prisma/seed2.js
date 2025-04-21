@@ -1367,7 +1367,10 @@ const questionsData = [
                 option_text: 'Đã có kế hoạch nhưng chưa triển khai',
                 weighted_value: 1,
             },
-            { option_text: 'Đã triển khai chính thức một phần', weighted_value: 2 },
+            {
+                option_text: 'Đã triển khai chính thức một phần',
+                weighted_value: 2,
+            },
             {
                 option_text:
                     'Đã triển khai hoàn chỉnh nhưng chưa khai thác hiệu quả',
@@ -2833,12 +2836,12 @@ const questionsData = [
             },
             {
                 option_text:
-                    'Làm đại lý cung ứng sản phẩm dịch vụ ngân hàng số cho NHHTX',
+                    'CCung ứng sản phẩm dịch vụ ngân hàng số cho NHHTX',
                 weighted_value: 1,
             },
             {
                 option_text:
-                    'Làm đại lý cung ứng sản phẩm dịch vụ ngân hàng điện tử cho các Tổ chức tín dụng khác và các công ty Fintech…',
+                    'Cung ứng sản phẩm dịch vụ ngân hàng điện tử cho các Tổ chức tín dụng khác và các công ty Fintech…',
                 weighted_value: 2,
             },
             {
@@ -2990,7 +2993,8 @@ const questionsData = [
             },
             {
                 option_text: 'Rất hài lòng',
-                option_note: 'Được hướng dẫn tận tình, dễ tiếp cận, giải thích đầy đủ.',
+                option_note:
+                    'Được hướng dẫn tận tình, dễ tiếp cận, giải thích đầy đủ.',
                 weighted_value: 4,
             },
         ],
@@ -3151,8 +3155,7 @@ const questionsData = [
                 weighted_value: 1,
             },
             {
-                option_text:
-                    'Đã hợp tác nhưng ở quy mô nhỏ, chưa đủ mạnh mẽ',
+                option_text: 'Đã hợp tác nhưng ở quy mô nhỏ, chưa đủ mạnh mẽ',
                 weighted_value: 2,
             },
             {
@@ -3389,13 +3392,21 @@ const questionsData = [
         survey_id: 7,
         question_target: ['Cán bộ nghiệp vụ'],
         question_options: [
-            { option_text: 'Chưa áp dụng', weighted_value: 0},
+            { option_text: 'Chưa áp dụng', weighted_value: 0 },
             {
-                option_text: 'Có kế hoạch triển khai', weighted_value: 1
+                option_text: 'Có kế hoạch triển khai',
+                weighted_value: 1,
             },
             { option_text: 'Đang thử nghiệm', weighted_value: 2 },
-            { option_text: 'Đã triển khai nhưng chưa mở rộng toàn bộ dịch vụ', weighted_value: 3 },
-            { option_text: 'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số', weighted_value: 4 },
+            {
+                option_text: 'Đã triển khai nhưng chưa mở rộng toàn bộ dịch vụ',
+                weighted_value: 3,
+            },
+            {
+                option_text:
+                    'Đã triển khai đồng bộ và tích hợp sâu với hệ thống dịch vụ số',
+                weighted_value: 4,
+            },
         ],
     },
     {
@@ -3810,7 +3821,7 @@ async function main() {
         console.log('Seeding questions and options...');
         for (const question of questionsData) {
             let pillarId;
-            if(question.belongs_to_pillar) {
+            if (question.belongs_to_pillar) {
                 pillarId = await mapPillarNameToId(question.belongs_to_pillar);
             }
 
