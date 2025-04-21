@@ -1,3 +1,5 @@
+import { glossary, renderWithGlossary } from '@/utils/glossary';
+
 const GroupQuestion = ({
     groupQuestion,
     childQuestions,
@@ -24,7 +26,7 @@ const GroupQuestion = ({
                                 key={option.id}
                                 className="border border-gray-300 px-4 py-2 text-center"
                             >
-                                {option.option_text}
+                                {renderWithGlossary(option.option_text)}
                             </th>
                         ))}
                     </tr>
@@ -38,7 +40,9 @@ const GroupQuestion = ({
                             className="border-t border-gray-200"
                         >
                             <td className="border border-gray-300 px-4 py-2">
-                                {question.questions.question_text}
+                                {renderWithGlossary(
+                                    question.questions.question_text
+                                )}
                             </td>
                             {question.questions.question_options.map(
                                 (option) => (

@@ -10,7 +10,7 @@ import {
     fetchUserAnswers,
     fetchReviewData,
     saveUserResponse,
-    saveReasonResponse
+    saveReasonResponse,
 } from '@/utils/survey';
 import Navigation from './Navigation';
 import RadioQuestion from './questions/RadioQuestion';
@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
 import Visualize from './visualize/visualize'; // Import component Visualize
-
+import { glossary, renderWithGlossary } from '@/utils/glossary';
 const Body = ({ scrollToTop }) => {
     let questionCounter = 0;
     const [step, setStep] = useState(0);
@@ -53,10 +53,17 @@ const Body = ({ scrollToTop }) => {
 
     const fetchSurveyProgress = async (respondentId, role) => {
         try {
-            const countResponse = await axios.get("/api/survey/response/count", {
-                params: { respondent_id: respondentId, belong_to_group: role },
-            });
-            const { surveys, totalQuestions, answeredCount } = countResponse.data;
+            const countResponse = await axios.get(
+                '/api/survey/response/count',
+                {
+                    params: {
+                        respondent_id: respondentId,
+                        belong_to_group: role,
+                    },
+                }
+            );
+            const { surveys, totalQuestions, answeredCount } =
+                countResponse.data;
             setTotalQuestions(totalQuestions);
             setAnsweredCount(answeredCount);
             setSurveyProgress(countResponse.data?.surveys || []);
@@ -77,12 +84,16 @@ const Body = ({ scrollToTop }) => {
         try {
             const [countResponse, reviewResponse] = await Promise.all([
                 axios.get('/api/survey/response/count', {
-                    params: { respondent_id: respondentId, belong_to_group: role },
+                    params: {
+                        respondent_id: respondentId,
+                        belong_to_group: role,
+                    },
                 }),
                 fetchReviewData(respondentId),
             ]);
 
-            const { surveys, totalQuestions, answeredCount } = countResponse.data;
+            const { surveys, totalQuestions, answeredCount } =
+                countResponse.data;
             setSurveyCounts(surveys);
             setTotalQuestions(totalQuestions);
             setAnsweredCount(answeredCount);
@@ -119,7 +130,9 @@ const Body = ({ scrollToTop }) => {
 
     useEffect(() => {
         const loadUserAnswers = async () => {
-            const { answers, textInputs } = await fetchUserAnswers(respondentId);
+            const { answers, textInputs } = await fetchUserAnswers(
+                respondentId
+            );
             if (answers) {
                 setAnswers(answers);
             }
@@ -135,7 +148,9 @@ const Body = ({ scrollToTop }) => {
             const data = await fetchReviewData(respondentId);
             if (data) {
                 setReviewData(data);
-                const { answers, textInputs } = await fetchUserAnswers(respondentId);
+                const { answers, textInputs } = await fetchUserAnswers(
+                    respondentId
+                );
                 setAnswers(answers || {});
                 if (textInputs) setTextInputs(textInputs);
             }
@@ -194,7 +209,11 @@ const Body = ({ scrollToTop }) => {
         fetchSurveyProgress(respondentId, role);
     };
 
-    const handleCheckboxChange = async (questionId, optionId, requireReason) => {
+    const handleCheckboxChange = async (
+        questionId,
+        optionId,
+        requireReason
+    ) => {
         setAnswers((prev) => {
             let currentValues = prev[questionId];
             if (!currentValues) {
@@ -209,7 +228,9 @@ const Body = ({ scrollToTop }) => {
 
             setShowTextBox((prev) => ({
                 ...prev,
-                [`${questionId}-${optionId}`]: requireReason ? newValues.includes(optionId) : false,
+                [`${questionId}-${optionId}`]: requireReason
+                    ? newValues.includes(optionId)
+                    : false,
             }));
 
             if (!newValues.includes(optionId)) {
@@ -287,7 +308,9 @@ const Body = ({ scrollToTop }) => {
         if (!reviewData || !surveyCounts.length) {
             return (
                 <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 text-center">
-                    <p className="text-red-600">Không thể tải dữ liệu xem lại.</p>
+                    <p className="text-red-600">
+                        Không thể tải dữ liệu xem lại.
+                    </p>
                 </div>
             );
         }
@@ -316,10 +339,13 @@ const Body = ({ scrollToTop }) => {
                                 className="text-xl font-semibold text-teal-700 cursor-pointer hover:underline"
                                 onClick={handleTitleClick}
                             >
-                                {matchingSurvey ? matchingSurvey.survey_title : `Khảo sát ${survey.survey_id}`}
+                                {matchingSurvey
+                                    ? matchingSurvey.survey_title
+                                    : `Khảo sát ${survey.survey_id}`}
                             </h3>
                             <p className="text-gray-800">
-                                Số câu đã trả lời: {survey.answered} / {survey.total}
+                                Số câu đã trả lời: {survey.answered} /{' '}
+                                {survey.total}
                             </p>
                         </div>
                     );
@@ -327,7 +353,10 @@ const Body = ({ scrollToTop }) => {
 
                 <p className="text-red-900 font-semibold">
                     Đã trả lời: {answeredCount} / {totalQuestions} (
-                    {totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0}% tổng số câu hỏi)
+                    {totalQuestions > 0
+                        ? Math.round((answeredCount / totalQuestions) * 100)
+                        : 0}
+                    % tổng số câu hỏi)
                 </p>
                 {answeredCount / totalQuestions < 0.7 && totalQuestions > 0 && (
                     <p className="text-red-600 text-sm mt-2">
@@ -366,7 +395,9 @@ const Body = ({ scrollToTop }) => {
         return <Visualize respondentId={respondentId} />;
     }
 
-    const currentSurveyProgress = surveyProgress.find(s => s.survey_id === step);
+    const currentSurveyProgress = surveyProgress.find(
+        (s) => s.survey_id === step
+    );
 
     return (
         <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8">
@@ -380,22 +411,33 @@ const Body = ({ scrollToTop }) => {
                     </p>
                     {currentSurveyProgress && (
                         <p className="sticky top-0 bg-white z-10 p-4 shadow text-gray-700 font-semibold mb-6">
-                            Đã trả lời {currentSurveyProgress.answered} / {currentSurveyProgress.total} câu của trang này
+                            Đã trả lời {currentSurveyProgress.answered} /{' '}
+                            {currentSurveyProgress.total} câu của trang này
                             <br />
                             Tổng trả lời {answeredCount} / {totalQuestions} (
-                            {totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0}% tổng số câu hỏi)
+                            {totalQuestions > 0
+                                ? Math.round(
+                                      (answeredCount / totalQuestions) * 100
+                                  )
+                                : 0}
+                            % tổng số câu hỏi)
                         </p>
                     )}
                     {surveyData.question_survey.map((questionSurvey, index) => {
                         const question = questionSurvey.questions;
-                        const childQuestions = surveyData.question_survey.filter((q) =>
-                            q.questions.question_name.startsWith(question.question_name + '.')
-                        );
-                        if (groupQuestionIds.includes(question.parent_id)) return null;
+                        const childQuestions =
+                            surveyData.question_survey.filter((q) =>
+                                q.questions.question_name.startsWith(
+                                    question.question_name + '.'
+                                )
+                            );
+                        if (groupQuestionIds.includes(question.parent_id))
+                            return null;
 
                         // Logic điều kiện: Ẩn câu 6 nếu câu 5 chọn phương án 1
                         const shouldDisplayQuestion = () => {
-                            if (question.id === 6) { // Câu 6
+                            if (question.id === 6) {
+                                // Câu 6
                                 const question5Answers = answers[5] || []; // Câu trả lời của câu 5
                                 // Nếu không có câu trả lời cho câu 5 hoặc phương án 1 không được chọn, hiển thị câu 6
                                 return !question5Answers.includes(21);
@@ -412,17 +454,27 @@ const Body = ({ scrollToTop }) => {
                                 className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50"
                             >
                                 <label className="block text-black font-medium text-lg text-justify flex items-center justify-between">
-                        <span>
-                            Câu {questionCounter}. {question.question_text}
-                        </span>
+                                    <span>
+                                        Câu {questionCounter}.{' '}
+                                        {renderWithGlossary(
+                                            question.question_text
+                                        )}
+                                    </span>
                                     {question.question_note && (
                                         <div
                                             className="relative ml-2"
-                                            onMouseEnter={() => setTooltipId(question.question_id)}
-                                            onMouseLeave={() => setTooltipId(null)}
+                                            onMouseEnter={() =>
+                                                setTooltipId(
+                                                    question.question_id
+                                                )
+                                            }
+                                            onMouseLeave={() =>
+                                                setTooltipId(null)
+                                            }
                                         >
                                             <FaQuestionCircle className="text-teal-500 cursor-pointer" />
-                                            {tooltipId === question.question_id && (
+                                            {tooltipId ===
+                                                question.question_id && (
                                                 <div className="absolute top-full right-0 mt-1 p-2 bg-gray-200 text-gray-800 rounded-md text-sm shadow-md w-60">
                                                     {question.question_note}
                                                 </div>
@@ -432,7 +484,8 @@ const Body = ({ scrollToTop }) => {
                                 </label>
 
                                 <div className="mt-3 text-base text-justify">
-                                    {question.question_type === 'radiogroup' && (
+                                    {question.question_type ===
+                                        'radiogroup' && (
                                         <RadioQuestion
                                             question={question}
                                             answers={answers}
@@ -443,57 +496,113 @@ const Body = ({ scrollToTop }) => {
                                     )}
                                     {question.question_type === 'checkbox' && (
                                         <div className="space-y-3 mt-2">
-                                            {question.question_options.map((option) => (
-                                                <div
-                                                    key={option.id}
-                                                    className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
-                                                >
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={
-                                                            answers[question.id]
-                                                                ? Array.isArray(answers[question.id])
-                                                                    ? answers[question.id].includes(option.id)
-                                                                    : answers[question.id] === option.id
-                                                                : false
-                                                        }
-                                                        onChange={() => handleCheckboxChange(question.id, option.id, option.require_reason)}
-                                                        className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
-                                                    />
-                                                    <div className="flex-1">
-                                                        <div className="inline-flex items-center space-x-2">
-                                                <span className="text-gray-800 font-medium">
-                                                    {option.option_text}
-                                                </span>
-                                                            {option.option_note && (
-                                                                <span className="text-gray-500 italic text-sm font-semibold">
-                                                        {option.option_note}
-                                                    </span>
+                                            {question.question_options.map(
+                                                (option) => (
+                                                    <div
+                                                        key={option.id}
+                                                        className="flex items-center space-x-3 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-all cursor-pointer"
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={
+                                                                answers[
+                                                                    question.id
+                                                                ]
+                                                                    ? Array.isArray(
+                                                                          answers[
+                                                                              question
+                                                                                  .id
+                                                                          ]
+                                                                      )
+                                                                        ? answers[
+                                                                              question
+                                                                                  .id
+                                                                          ].includes(
+                                                                              option.id
+                                                                          )
+                                                                        : answers[
+                                                                              question
+                                                                                  .id
+                                                                          ] ===
+                                                                          option.id
+                                                                    : false
+                                                            }
+                                                            onChange={() =>
+                                                                handleCheckboxChange(
+                                                                    question.id,
+                                                                    option.id,
+                                                                    option.require_reason
+                                                                )
+                                                            }
+                                                            className="w-5 h-5 text-teal-600 bg-gray-200 border-gray-300 rounded-md focus:ring-teal-500"
+                                                        />
+                                                        <div className="flex-1">
+                                                            <div className="inline-flex items-center space-x-2">
+                                                                <span className="text-gray-800 font-medium">
+                                                                    {renderWithGlossary(
+                                                                        option.option_text
+                                                                    )}
+                                                                </span>
+                                                                {option.option_note && (
+                                                                    <span className="text-gray-500 italic text-sm font-semibold">
+                                                                        {renderWithGlossary(
+                                                                            option.option_note
+                                                                        )}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+
+                                                            {showTextBox[
+                                                                `${question.id}-${option.id}`
+                                                            ] && (
+                                                                <input
+                                                                    type="text"
+                                                                    className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
+                                                                    placeholder="Vui lòng nhập chi tiết..."
+                                                                    value={
+                                                                        textInputs[
+                                                                            `${question.id}-${option.id}`
+                                                                        ] || ''
+                                                                    }
+                                                                    onChange={async (
+                                                                        e
+                                                                    ) => {
+                                                                        const newText =
+                                                                            e
+                                                                                .target
+                                                                                .value;
+                                                                        setTextInputs(
+                                                                            (
+                                                                                prev
+                                                                            ) => ({
+                                                                                ...prev,
+                                                                                [`${question.id}-${option.id}`]:
+                                                                                    newText,
+                                                                            })
+                                                                        );
+                                                                    }}
+                                                                    onBlur={async () => {
+                                                                        await saveReasonResponse(
+                                                                            question.id,
+                                                                            respondentId,
+                                                                            option.id,
+                                                                            textInputs[
+                                                                                `${question.id}-${option.id}`
+                                                                            ] ||
+                                                                                null
+                                                                        );
+                                                                    }}
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        e.stopPropagation()
+                                                                    }
+                                                                />
                                                             )}
                                                         </div>
-
-                                                        {showTextBox[`${question.id}-${option.id}`] && (
-                                                            <input
-                                                                type="text"
-                                                                className="border-2 border-gray-300 rounded-lg p-2 mt-2 w-full focus:border-teal-500 focus:outline-none"
-                                                                placeholder="Vui lòng nhập chi tiết..."
-                                                                value={textInputs[`${question.id}-${option.id}`] || ''}
-                                                                onChange={async (e) => {
-                                                                    const newText = e.target.value;
-                                                                    setTextInputs((prev) => ({
-                                                                        ...prev,
-                                                                        [`${question.id}-${option.id}`]: newText,
-                                                                    }));
-                                                                }}
-                                                                onBlur={async () => {
-                                                                    await saveReasonResponse(question.id, respondentId, option.id, textInputs[`${question.id}-${option.id}`] || null);
-                                                                }}
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            />
-                                                        )}
                                                     </div>
-                                                </div>
-                                            ))}
+                                                )
+                                            )}
                                         </div>
                                     )}
 
@@ -503,7 +612,9 @@ const Body = ({ scrollToTop }) => {
                                             groupQuestion={questionSurvey}
                                             childQuestions={childQuestions}
                                             answers={answers}
-                                            handleRadioChange={handleRadioChange}
+                                            handleRadioChange={
+                                                handleRadioChange
+                                            }
                                             isReviewMode={false}
                                         />
                                     )}

@@ -1,3 +1,5 @@
+import { glossary, renderWithGlossary } from '@/utils/glossary';
+
 const CheckboxQuestion = ({
     question,
     answers,
