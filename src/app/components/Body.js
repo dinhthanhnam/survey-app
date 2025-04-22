@@ -436,12 +436,29 @@ const Body = ({ scrollToTop }) => {
                             return null;
 
                         // Logic điều kiện: Ẩn câu 6 nếu câu 5 chọn phương án 1
+                        // const shouldDisplayQuestion = () => {
+                        //     if (question.id === 6) {
+                        //         // Câu 6
+                        //         const question5Answers = answers[5] || []; // Câu trả lời của câu 5
+                        //         // Nếu không có câu trả lời cho câu 5 hoặc phương án 1 không được chọn, hiển thị câu 6
+                        //         return !question5Answers.includes(21);
+                        //     }
+                        //     return true; // Các câu hỏi khác hiển thị bình thường
+                        // };
                         const shouldDisplayQuestion = () => {
                             if (question.id === 6) {
                                 // Câu 6
-                                const question5Answers = answers[5] || []; // Câu trả lời của câu 5
-                                // Nếu không có câu trả lời cho câu 5 hoặc phương án 1 không được chọn, hiển thị câu 6
-                                return !question5Answers.includes(21);
+                                const question5Answers = answers[5]; // Câu trả lời của câu 5
+                                // Nếu không có câu trả lời cho câu 5, hiển thị câu 6
+                                if (!question5Answers) {
+                                    return true;
+                                }
+                                // Nếu câu 5 là radiogroup (single value), kiểm tra trực tiếp giá trị
+                                if (!Array.isArray(question5Answers)) {
+                                    return question5Answers !== 21; // Hiển thị câu 6 nếu không chọn option 21
+                                }
+                                // Nếu câu 5 là checkbox (array), kiểm tra mảng
+                                return !question5Answers.includes(21); // Hiển thị câu 6 nếu option 21 không được chọn
                             }
                             return true; // Các câu hỏi khác hiển thị bình thường
                         };
