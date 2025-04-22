@@ -60,8 +60,8 @@ const AdminHeader = () => {
                         <NavLink href="/admin/responses" active={pathname === "/admin/responses"}>
                             Câu trả lời
                         </NavLink>
-                        <NavLink href="/admin/unresponsive-funds" active={pathname === "/admin/unresponsive-funds"}>
-                            Quỹ chưa trả lời
+                        <NavLink href="/admin/funds" active={pathname === "/admin/funds"}>
+                            Quỹ trả lời
                         </NavLink>
                         <NavLink href="/admin/survey-stats" active={pathname === "/admin/survey-stats"}>
                             Thống kê
