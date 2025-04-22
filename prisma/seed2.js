@@ -2836,7 +2836,7 @@ const questionsData = [
             },
             {
                 option_text:
-                    'CCung ứng sản phẩm dịch vụ ngân hàng số cho NHHTX',
+                    'Cung ứng sản phẩm dịch vụ ngân hàng số cho NHHTX',
                 weighted_value: 1,
             },
             {

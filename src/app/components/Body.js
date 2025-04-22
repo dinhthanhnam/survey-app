@@ -19,6 +19,7 @@ import CheckboxQuestion from './questions/CheckboxQuestion';
 import GroupQuestion from './questions/GroupQuestion';
 import Visualize from './visualize/visualize'; // Import component Visualize
 import { glossary, renderWithGlossary } from '@/utils/glossary';
+import QuestionNoteTooltip from './QuestionNoteTooltip';
 const Body = ({ scrollToTop }) => {
     let questionCounter = 0;
     const [step, setStep] = useState(0);
@@ -453,7 +454,7 @@ const Body = ({ scrollToTop }) => {
                                 key={question.id}
                                 className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50"
                             >
-                                <label className="block text-black font-medium text-lg text-justify flex items-center justify-between">
+                                <label className=" text-black font-medium text-lg text-justify flex items-center justify-between">
                                     <span>
                                         Câu {questionCounter}.{' '}
                                         {renderWithGlossary(
@@ -461,25 +462,7 @@ const Body = ({ scrollToTop }) => {
                                         )}
                                     </span>
                                     {question.question_note && (
-                                        <div
-                                            className="relative ml-2"
-                                            onMouseEnter={() =>
-                                                setTooltipId(
-                                                    question.question_id
-                                                )
-                                            }
-                                            onMouseLeave={() =>
-                                                setTooltipId(null)
-                                            }
-                                        >
-                                            <FaQuestionCircle className="text-teal-500 cursor-pointer" />
-                                            {tooltipId ===
-                                                question.question_id && (
-                                                <div className="absolute top-full right-0 mt-1 p-2 bg-gray-200 text-gray-800 rounded-md text-sm shadow-md w-60">
-                                                    {question.question_note}
-                                                </div>
-                                            )}
-                                        </div>
+                                        <QuestionNoteTooltip note={question.question_note} />
                                     )}
                                 </label>
 
