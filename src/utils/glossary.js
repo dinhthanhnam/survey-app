@@ -30,46 +30,56 @@ export const glossary = {
 };
 
 import { GlossaryTooltip } from '@/app/components/GlossaryTooltip';
+
 export function renderWithGlossary(text) {
     const keys = Object.keys(glossary).sort((a, b) => b.length - a.length);
-    const elements = [];
-    let remaining = text;
+    let elements = [];
+    let currentIndex = 0;
+    let matches = [];
 
-    while (remaining.length > 0) {
-        let matched = false;
-
-        for (let key of keys) {
-            const escapedKey = escapeRegExp(key);
-            const regex = new RegExp(`\\b${escapedKey}\\b`); // ❌ bỏ cờ `i`
-
-            const match = remaining.match(regex);
-
-            if (match && match.index !== undefined) {
-                const index = match.index;
-                const fullMatch = match[0];
-                const before = remaining.slice(0, index);
-                const after = remaining.slice(index + fullMatch.length);
-
-                elements.push(before);
-                elements.push(
-                    <GlossaryTooltip
-                        key={elements.length}
-                        explanation={glossary[key]}
-                    >
-                        {fullMatch}
-                    </GlossaryTooltip>
-                );
-
-                remaining = after;
-                matched = true;
-                break;
-            }
+    // Tìm tất cả các thuật ngữ khớp trong văn bản
+    for (const key of keys) {
+        const escapedKey = escapeRegExp(key);
+        const regex = new RegExp(`\\b${escapedKey}\\b`, 'g');
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+            matches.push({
+                key,
+                index: match.index,
+                fullMatch: match[0],
+            });
         }
+    }
 
-        if (!matched) {
-            elements.push(remaining);
-            break;
+    // Sắp xếp các matches theo thứ tự xuất hiện trong văn bản
+    matches.sort((a, b) => a.index - b.index);
+
+    // Xây dựng mảng elements
+    for (const match of matches) {
+        // Thêm đoạn văn bản trước thuật ngữ
+        if (match.index > currentIndex) {
+            elements.push(text.slice(currentIndex, match.index));
         }
+        // Thêm thuật ngữ với GlossaryTooltip
+        elements.push(
+            <GlossaryTooltip
+                key={`${match.key}-${match.index}`}
+                explanation={glossary[match.key]}
+            >
+                {match.fullMatch}
+            </GlossaryTooltip>
+        );
+        currentIndex = match.index + match.fullMatch.length;
+    }
+
+    // Thêm phần văn bản còn lại sau thuật ngữ cuối cùng
+    if (currentIndex < text.length) {
+        elements.push(text.slice(currentIndex));
+    }
+
+    // Nếu không có thuật ngữ nào khớp, trả về toàn bộ văn bản
+    if (elements.length === 0) {
+        elements.push(text);
     }
 
     return elements;
