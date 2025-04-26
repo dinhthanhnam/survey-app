@@ -43,43 +43,101 @@
 // }
 
 // app/admin/phpmyadmin/route.js
+//
+// import { createProxyMiddleware } from 'http-proxy-middleware';
+// import { NextRequest } from 'next/server';
+//
+// const target = 'http://127.0.0.1'; // phpMyAdmin chạy ở đây
+//
+// // export mọi method, Next.js sẽ gọi tương ứng
+// export const GET = handleProxy;
+// export const POST = handleProxy;
+// export const PUT = handleProxy;
+// export const DELETE = handleProxy;
+// export const PATCH = handleProxy;
+// export const HEAD = handleProxy;
+// export const OPTIONS = handleProxy;
+//
+// async function handleProxy(req) {
+//     const { pathname, search } = new URL(req.url);
+//
+//     const proxyRes = await fetch(`${target}${pathname.replace('/admin', '')}${search}`, {
+//         method: req.method,
+//         headers: filterHeaders(req.headers),
+//         body: req.method === 'GET' || req.method === 'HEAD' ? undefined : req.body,
+//         redirect: 'manual',
+//     });
+//
+//     const resHeaders = {};
+//     proxyRes.headers.forEach((v, k) => resHeaders[k] = v);
+//
+//     return new Response(proxyRes.body, {
+//         status: proxyRes.status,
+//         headers: resHeaders,
+//     });
+// }
+//
+// function filterHeaders(headers) {
+//     const newHeaders = new Headers(headers);
+//     newHeaders.delete('host');
+//     newHeaders.delete('x-forwarded-for');
+//     return newHeaders;
+// }
 
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import { NextRequest } from 'next/server';
+import httpProxy from 'http-proxy';
 
-const target = 'http://127.0.0.1'; // phpMyAdmin chạy ở đây
+export const dynamic = 'force-dynamic';
 
-// export mọi method, Next.js sẽ gọi tương ứng
-export const GET = handleProxy;
-export const POST = handleProxy;
-export const PUT = handleProxy;
-export const DELETE = handleProxy;
-export const PATCH = handleProxy;
-export const HEAD = handleProxy;
-export const OPTIONS = handleProxy;
+const proxy = httpProxy.createProxyServer();
 
-async function handleProxy(req) {
-    const { pathname, search } = new URL(req.url);
-
-    const proxyRes = await fetch(`${target}${pathname.replace('/admin', '')}${search}`, {
-        method: req.method,
-        headers: filterHeaders(req.headers),
-        body: req.method === 'GET' || req.method === 'HEAD' ? undefined : req.body,
-        redirect: 'manual',
-    });
-
-    const resHeaders = {};
-    proxyRes.headers.forEach((v, k) => resHeaders[k] = v);
-
-    return new Response(proxyRes.body, {
-        status: proxyRes.status,
-        headers: resHeaders,
-    });
+export async function GET(req) {
+    return handleProxy(req);
+}
+export async function POST(req) {
+    return handleProxy(req);
+}
+export async function PUT(req) {
+    return handleProxy(req);
+}
+export async function DELETE(req) {
+    return handleProxy(req);
+}
+export async function PATCH(req) {
+    return handleProxy(req);
+}
+export async function OPTIONS(req) {
+    return handleProxy(req);
 }
 
-function filterHeaders(headers) {
-    const newHeaders = new Headers(headers);
-    newHeaders.delete('host');
-    newHeaders.delete('x-forwarded-for');
-    return newHeaders;
+function handleProxy(req) {
+    return new Promise((resolve, reject) => {
+        // Lấy URL path sau /admin/phpmyadmin
+        const url = new URL(req.url);
+        const targetPath = url.pathname.replace(/^\/admin\/phpmyadmin/, '/phpmyadmin');
+
+        proxy.web(
+            req,
+            {
+                ...req,
+                url: targetPath,
+            },
+            {
+                target: 'http://127.0.0.1',
+                changeOrigin: true,
+                selfHandleResponse: false,
+            },
+            (err) => {
+                console.error('Proxy error:', err);
+                reject(err);
+            }
+        );
+
+        proxy.on('proxyRes', (proxyRes) => {
+            resolve(
+                new Response(proxyRes, {
+                    status: proxyRes.statusCode,
+                })
+            );
+        });
+    });
 }
