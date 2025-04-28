@@ -130,7 +130,7 @@ export default function AuthPage() {
                         </div>
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                2. Số điện thoại
+                                3. Số điện thoại
                             </label>
                             <input
                                 type="text"
@@ -144,7 +144,7 @@ export default function AuthPage() {
                         {/* Vai trò */}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                3. Vai trò của bạn:
+                                4. Vai trò của bạn:
                             </label>
                             <select
                                 onChange={(e) => setRole(e.target.value)}
@@ -164,7 +164,7 @@ export default function AuthPage() {
                         {/* Email */}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                4. Email
+                                5. Email
                             </label>
                             <div className="flex items-center gap-2">
                                 <input
@@ -193,7 +193,7 @@ export default function AuthPage() {
                         )}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                5. Nhập OTP
+                                6. Nhập OTP
                             </label>
                             <div className="flex items-center gap-2">
                                 <input
