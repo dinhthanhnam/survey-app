@@ -131,6 +131,13 @@ model respondent_duration {
   @@index([respondent_id])
 }
 
+model otp_emails {
+  id        Int       @id @default(autoincrement())
+  email     String    @db.VarChar(255)
+  password  String    @db.VarChar(255)
+  last_used DateTime? @default(now())
+}
+
 enum questions_question_type {
   text
   radiogroup

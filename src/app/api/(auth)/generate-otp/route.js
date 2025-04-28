@@ -1,16 +1,16 @@
-import {PrismaClient} from "@prisma/client";
-import {sendOtpEmail} from "@/utils/mail";
+import { PrismaClient } from "@prisma/client";
+import { sendOtpEmail } from "@/utils/mail";
 import bcrypt from "bcryptjs";
-import {respondents_belong_to_group} from "@prisma/client";
+import { respondents_belong_to_group } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function POST(req) {
     try {
-        const {phone, name, email, creditCode, role} = await req.json();
+        const { phone, name, email, creditCode, role } = await req.json();
 
         if (!email || !creditCode || !role) {
-            return Response.json({success: false, message: "Vui lòng nhập đầy đủ thông tin!"}, {status: 400});
+            return Response.json({ success: false, message: "Vui lòng nhập đầy đủ thông tin!" }, { status: 400 });
         }
 
         const institution = await prisma.institutions.findUnique({
@@ -39,7 +39,6 @@ export async function POST(req) {
         const respondentExisted = await prisma.respondents.findFirst({
             where: {
                 email: email,
-                // belong_to_group: parsedRole,
             },
         });
 
@@ -50,15 +49,14 @@ export async function POST(req) {
                 success: false,
                 message: "Email này đã tồn tại trong hệ thống, chuyển qua giao diện đăng nhập!",
                 respondent: authedRespondent,
-                require_login: true
-            }, {status: 200});
+                require_login: true,
+            }, { status: 200 });
         }
-
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const otpHash = await bcrypt.hash(otp, 8);
 
-        await prisma.otptoken.deleteMany({where: {email}});
+        await prisma.otptoken.deleteMany({ where: { email } });
 
         await prisma.otptoken.create({
             data: {
@@ -74,17 +72,18 @@ export async function POST(req) {
             phone: phone,
             auth_status: "unauthorized",
             institution_id: institution.id,
-            belong_to_group: parsedRole
-        }
+            belong_to_group: parsedRole,
+        };
 
         const mailResponse = await sendOtpEmail(email, otp);
         if (!mailResponse.success) {
-            return Response.json({success: false, message: "Gửi OTP thất bại"}, {status: 499});
+            return Response.json({ success: false, message: mailResponse.message }, { status: 429 });
         }
-        return Response.json({success: true, message: "OTP đã được gửi!", respondent: unAuthedRespondent});
+        return Response.json({ success: true, message: "OTP đã được gửi!", respondent: unAuthedRespondent });
     } catch (error) {
         console.error(error);
-        return Response.json({ success: false, message: "Lỗi server", error }, { status: 499 });
+        return Response.json({ success: false, message: "Lỗi server", error }, { status: 500 });
+    } finally {
+        await prisma.$disconnect();
     }
-
 }

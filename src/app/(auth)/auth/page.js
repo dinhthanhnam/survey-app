@@ -14,9 +14,16 @@ export default function AuthPage() {
     const [errorMessage, setErrorMessage] = useState(''); // Thông báo lỗi
     const [unAuthedRespondent, setUnAuthedRespondent] = useState({});
     const [requireLogin, setRequireLogin] = useState(false);
+    const [isOtpButtonDisabled, setIsOtpButtonDisabled] = useState(false); // Trạng thái nút gửi OTP
     const loginLinkRef = useRef(null);
-    // Hàm gửi request lấy OTP
+    const timeoutRef = useRef(null); // Ref để lưu timeout
+
+    // Hàm gửi request lấy OTP với cơ chế debounce
     const handleRequestOTP = async () => {
+        if (isOtpButtonDisabled) {
+            return;
+        }
+
         setErrorMessage('');
         setSuccessMessage('');
         if (!name || !creditCode || !email || !role) {
@@ -24,7 +31,15 @@ export default function AuthPage() {
             return;
         }
         console.log({ name, creditCode, email, role });
+
         try {
+            // Vô hiệu hóa nút và bắt đầu countdown 30 giây
+            setIsOtpButtonDisabled(true);
+            timeoutRef.current = setTimeout(() => {
+                setIsOtpButtonDisabled(false);
+                setErrorMessage(''); // Xóa thông báo lỗi nếu có
+            }, 15000); // 15 giây
+
             const response = await axios.post('/api/generate-otp', {
                 name,
                 phone,
@@ -42,6 +57,7 @@ export default function AuthPage() {
             }
         } catch (error) {
             console.error(error);
+            setErrorMessage('Gửi OTP thất bại!');
         }
     };
 
@@ -74,6 +90,15 @@ export default function AuthPage() {
         setRequireLogin(false);
     }, [requireLogin]);
 
+    // Cleanup timeout khi component unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
     return (
         <div>
             <div className="min-h-screen bg-custom-wave bg-cover bg-repeat flex items-center justify-center p-4 sm:pt-8 sm:pb-8">
@@ -96,7 +121,7 @@ export default function AuthPage() {
                         </div>
 
                         {errorMessage && (
-                            <div className={`py-4`}>
+                            <div className="py-4">
                                 <p className="text-red-700 bg-red-200 border border-red-500 rounded-md px-4 py-2 text-sm font-semibold transition-all">
                                     {errorMessage}
                                 </p>
@@ -137,7 +162,7 @@ export default function AuthPage() {
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
-                                placeholder="Nhập họ tên đầy đủ..."
+                                placeholder="Nhập số điện thoại..."
                             />
                         </div>
 
@@ -158,7 +183,6 @@ export default function AuthPage() {
                                 <option value="Officer">
                                     Cán bộ nghiệp vụ
                                 </option>
-                                {/*<option value="ITSup">Nhân viên CNTT & Hỗ trợ kỹ thuật</option>*/}
                             </select>
                         </div>
                         {/* Email */}
@@ -166,26 +190,40 @@ export default function AuthPage() {
                             <label className="block text-gray-700 font-semibold text-lg">
                                 5. Email
                             </label>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                                    placeholder="Nhập email của bạn..."
-                                />
-                                <button
-                                    onClick={handleRequestOTP}
-                                    className="px-4 py-2 bg-gray-200 font-normal rounded-lg hover:bg-gray-300 focus:ring-2 focus:ring-teal-500 whitespace-nowrap"
-                                >
-                                    Gửi OTP
-                                </button>
+                            <div className="flex items-center gap-2 flex-col">
+                                {isOtpButtonDisabled && (
+                                    <p className="text-green-600 text-sm font-semibold">
+                                        Vui lòng chờ 15 giây trước khi gửi lại OTP
+                                    </p>
+                                )}
+                                <div className="flex gap-2 w-full">
+                                    <div className="flex-1">
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                            placeholder="Nhập email của bạn..."
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={handleRequestOTP}
+                                        disabled={isOtpButtonDisabled}
+                                        className={`px-4 py-2 font-normal rounded-lg whitespace-nowrap ${
+                                            isOtpButtonDisabled
+                                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                                                : 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-2 focus:ring-teal-500'
+                                        }`}
+                                    >
+                                        Gửi OTP
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
                         {/* OTP Input (chỉ hiển thị khi thành công) */}
                         {successMessage && (
-                            <div className={`pb-4`}>
+                            <div className="pb-4">
                                 <p className="text-green-700 bg-green-200 border border-green-500 rounded-md px-4 py-2 text-sm font-semibold transition-all">
                                     {successMessage}
                                 </p>
