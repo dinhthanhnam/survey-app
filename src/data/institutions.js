@@ -4750,5 +4750,13 @@ export const InstitutionData = [
   {
     "identity_code": "96902002",
     "name": "QTDND Thới Bình"
-  }
+  },
+  {
+    "identity_code": "99999998",
+    "name": "QTDND HVNH1"
+  },
+  {
+    "identity_code": "99999999",
+    "name": "QTDND HVNH2"
+  },
 ]

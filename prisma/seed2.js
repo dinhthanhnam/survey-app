@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { InstitutionData } from '../src/data/institutions.js';
+import { otp_emails } from '../src/data/otp-mails.js';
 const prisma = new PrismaClient();
 
 const institutionsData = [...InstitutionData];
@@ -2831,27 +2832,27 @@ const questionsData = [
         question_options: [
             {
                 option_text:
-                    'Chưa thực hiện cung ứng sản phẩm dịch vụ ngân hàng số',
+                    'Chưa triển khai cung ứng sản phẩm/dịch vụ ngân hàng số',
                 weighted_value: 0,
             },
             {
                 option_text:
-                    'Cung ứng sản phẩm dịch vụ ngân hàng số cho NHHTX',
+                    'Cung ứng sản phẩm/dịch vụ ngân hàng số cho Ngân hàng Hợp tác xã (NHHTX)',
                 weighted_value: 1,
             },
             {
                 option_text:
-                    'Cung ứng sản phẩm dịch vụ ngân hàng điện tử cho các Tổ chức tín dụng khác và các công ty Fintech…',
+                    'Cung ứng sản phẩm/dịch vụ ngân hàng số cho các Tổ chức tín dụng khác và công ty Fintech',
                 weighted_value: 2,
             },
             {
                 option_text:
-                    'Tự cung ứng sản phẩm dịch vụ ngân hàng số qua app riêng của Quỹ',
+                    'Tự cung ứng sản phẩm/dịch vụ ngân hàng số qua ứng dụng riêng của Quỹ',
                 weighted_value: 3,
             },
             {
                 option_text:
-                    'Tự triển khai dịch vụ ngân hàng số và có hợp tác với các TCTD khác để cung ứng dịch vụ',
+                    'Tự triển khai dịch vụ ngân hàng số và hợp tác với các Tổ chức tín dụng khác để cung ứng dịch vụ',
                 weighted_value: 4,
             },
         ],
@@ -3787,6 +3788,11 @@ async function main() {
         for (const institution of institutionsData) {
             await prisma.institutions.create({
                 data: institution,
+            });
+        }
+        for (const otp_email of otp_emails) {
+            await prisma.otp_emails.create({
+                data: otp_email,
             });
         }
         console.log('Seed institution done!...');
