@@ -130,7 +130,7 @@ export default function AuthPage() {
                         {/* Mã Quỹ Tín Dụng */}
                         <div className="border border-gray-300 rounded-lg shadow-md p-4 mb-6 bg-gray-50">
                             <label className="block text-gray-700 font-semibold text-lg">
-                                1. Mã quỹ tín dụng
+                                1. Mã quỹ tín dụng (01902001)
                             </label>
                             <input
                                 type="text"
