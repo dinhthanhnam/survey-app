@@ -1,13 +1,13 @@
 services:
- survey-app:
-  build:
-    context: .
-    dockerfile: Dockerfile
-  container_name: survey-app
-  working_dir: /var/www
-  restart: unless-stopped
-  networks:
-    - shared-net
+  survey-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: survey-app
+    working_dir: /var/www
+    restart: unless-stopped
+    networks:
+      - shared-net
 
 networks:
   shared-net:
