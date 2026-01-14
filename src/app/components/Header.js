@@ -20,19 +20,19 @@ const Header = () => {
     <div className="pt-4 pb-4 rounded-lg mb-6 text-left px-4 bg-teal-600">
       <div className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-4">
         <img
-          src="/img/coop.png"
+          src="/img/vdb.webp"
           alt="Logo CoopBank"
           className="h-10 sm:h-14 w-auto flex-shrink-0 object-contain"
         />
 
         <div className="flex items-center justify-center sm:justify-start gap-6">
-          <img
+          {/* <img
             src="/img/MCG.png"
             alt="Logo MCG"
             className="h-12 sm:h-16 w-auto flex-shrink-0 object-contain"
-          />
+          /> */}
           <img
-            src="/img/ITDE.png"
+            src="/img/itde_new.png"
             alt="Logo ITDE"
             className="h-14 sm:h-20 w-auto flex-shrink-0 object-contain"
           />
@@ -41,7 +41,7 @@ const Header = () => {
 
       <div>
         <h1 className="text-lg sm:text-2xl font-bold text-white text-center sm:text-left">
-          Khảo sát chuyển đổi số trong hệ thống quỹ tín dụng Co-op Bank
+          Khảo sát chuyển đổi số Ngân hàng phát triển Việt Nam
         </h1>
         <p className="text-gray-100 mt-2 text-sm sm:text-base text-justify">
           Nghiên cứu này nhằm thu thập ý kiến về thực trạng chuyển đổi số và những khó khăn thách thức trong hành trình này.
