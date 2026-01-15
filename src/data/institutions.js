@@ -1,7 +1,7 @@
 export const InstitutionData = [
   {
-    "identity_code": "01902001",
-    "name": "QTDND xã Vĩnh Ngọc"
+    "identity_code": "1",
+    "name": "TEST USER"
   },
   {
     "identity_code": "01902002",

@@ -1,7 +1,7 @@
 export const otp_emails = [
     {
-        "email": "khaosatcds@gmail.com",
-        "password": "mkylbyklzatkwnla"
+        "email": "nguyenthenghia.th@gmail.com",
+        "password": "Nghiathe123"
     },
     {
         "email": "khaosatqtdnd@gmail.com",

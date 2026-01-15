@@ -85,7 +85,7 @@ export default function RefreshPage() {
                             )}
 
                             <label className="block text-gray-700 font-semibold text-lg">
-                                Mã quỹ
+                                Mã thí sinh
                             </label>
                             <div className="flex items-center gap-2">
                                 <input
