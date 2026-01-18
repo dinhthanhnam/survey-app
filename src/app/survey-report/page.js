@@ -26,7 +26,6 @@ export default function SurveyReport({}) {
     const [respondent_Institution_Id, setRespondent_Institution_Id] = useState(null);
     const [institutionName, setInstitutionName] = useState("");
     const [respondents, setRespondents] = useState([]);
-    const [canShowChart, setCanShowChart] = useState(false);
     const router = useRouter();
 
     // Hard-coded colors for pillars
@@ -283,20 +282,10 @@ export default function SurveyReport({}) {
                 submissionStatus: respondent.submission_status,
             }));
             setRespondents(respondentsData);
-
-            // Kiểm tra điều kiện: ít nhất 1 cán bộ nghiệp vụ và 1 lãnh đạo quản lý đã nộp
-            const submittedStaff = respondentsData.filter(
-                r => r.group === "Officer" && r.submissionStatus === "submitted"
-            ).length;
-            const submittedLeaders = respondentsData.filter(
-                r => r.group === "Leader" && r.submissionStatus === "submitted"
-            ).length;
-            setCanShowChart(submittedStaff >= 1 && submittedLeaders >= 1);
         } catch (error) {
             console.error("Error fetching institution and respondents:", error);
             setInstitutionName("Không xác định");
             setRespondents([]);
-            setCanShowChart(false);
         }
     };
 
@@ -428,7 +417,7 @@ export default function SurveyReport({}) {
 
                     {loading ? (
                         <p className="text-gray-500 text-center">Đang tải dữ liệu...</p>
-                    ) : chartData && canShowChart ? ( // Kiểm tra canShowChart
+                    ) : chartData ? (
                         <div className="flex flex-col gap-6">
                             <div className="w-full border border-gray-300 rounded-lg shadow-md p-4 bg-gray-50 chart-container">
                                 <div className="h-[400px] md:h-[700px]">
@@ -462,11 +451,7 @@ export default function SurveyReport({}) {
                             </div>
                         </div>
                     ) : (
-                        <p className="text-gray-500 text-center">
-                            {canShowChart
-                                ? "Không có dữ liệu để hiển thị."
-                                : "Cần ít nhất 1 cán bộ nghiệp vụ và 1 lãnh đạo quản lý đã nộp để hiển thị biểu đồ."}
-                        </p>
+                        <p className="text-gray-500 text-center">Không có dữ liệu để hiển thị.</p>
                     )}
 
                     <button
