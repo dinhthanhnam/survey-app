@@ -25,19 +25,14 @@ const AdminHeader = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-2">
                     <div className="flex justify-center sm:justify-start">
                         <img
-                            src="/img/coop.png"
-                            alt="Logo CoopBank"
+                            src="/img/vdb.webp"
+                            alt="Logo VDB"
                             className="h-10 sm:h-12 w-auto max-w-[180px] object-contain"
                         />
                     </div>
                     <div className="flex items-center justify-center gap-3">
                         <img
-                            src="/img/MCG.png"
-                            alt="Logo MCG"
-                            className="h-10 sm:h-12 w-auto max-w-[90px] object-contain"
-                        />
-                        <img
-                            src="/img/ITDE.png"
+                            src="/img/itde_new.png"
                             alt="Logo ITDE"
                             className="h-10 sm:h-12 w-auto max-w-[70px] object-contain"
                         />
@@ -47,7 +42,7 @@ const AdminHeader = () => {
                 {/* Tiêu đề */}
                 <div className="text-center mb-2">
                     <h1 className="text-base sm:text-lg md:text-xl font-bold text-teal-800">
-                        Quản trị khảo sát chuyển đổi số trong hệ thống quỹ tín dụng Co-op Bank
+                        Quản trị khảo sát chuyển đổi số trong hệ thống VietNam Development Bank
                     </h1>
                 </div>
 

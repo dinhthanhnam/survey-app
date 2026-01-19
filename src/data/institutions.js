@@ -4,8 +4,8 @@ export const InstitutionData = [
     "name": "TEST USER"
   },
   {
-    "identity_code": "01902002",
-    "name": "QTDND xã Nam Hồng"
+    "identity_code": "2",
+    "name": "TEST USER 2"
   },
   {
     "identity_code": "01902003",

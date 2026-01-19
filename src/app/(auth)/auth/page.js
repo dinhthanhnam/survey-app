@@ -137,7 +137,7 @@ export default function AuthPage() {
                                 value={creditCode}
                                 onChange={(e) => setCreditCode(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 mt-2"
-                                placeholder="Nhập mã quỹ tín dụng..."
+                                placeholder="Nhập mã thí sinh..."
                             />
                         </div>
 
